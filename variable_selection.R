@@ -391,6 +391,8 @@ dataprep<-function(data){
       
       diagnosted_sti_12months = factor(v763a, levels = c(0,1,8), labels = c("No","Yes","Dont Know")),
       
+      hiv_screening_last12months = factor(qs603, levels = c(0,1,8), labels = c("No","Yes","Dont Know")),
+      
       have_sti_symptoms = case_when((v763b==1 & v763c==0)~"Only sore/ulcer",
                                   (v763b==1 & v763c==8)~"Only sore/ulcer",
                                   (v763b==0 & v763c==1)~"Only flow",
@@ -398,9 +400,98 @@ dataprep<-function(data){
                                   (v763b==1 & v763c==1)~"Both",
                                   ((v763b==0 & v763c==0) | (V763B==8 & v763c==8) | (V763B==8 & v763c==0) | (V763B==0 & v763c==8))~"None"),
       
+      identity_1 = case_when(is.na(qs25bb) ~ NA,
+                             qs25bb==7 ~ "Mixed race",
+                             qs25bb==5 ~ "Afroperuvian",
+                             qs25bb==6 ~ "White",
+                             qs25bb==8 ~ "Other",
+                             TRUE ~ "Indigenous"),
+      
+      identity_2 = case_when(is.na(s119d) ~ NA,
+                             s119d==7 ~ "Mixed race",
+                             s119d==5 ~ "Afroperuvian",
+                             s119d==6 ~ "White",
+                             s119d==8 ~ "Other",
+                             TRUE ~ "Indigenous"),
+      
+      know_hiv = factor(v750, levels = c(0,1), labels = c("No", "Yes")),
+      
+      know_hiv_1 = factor(qs29a, levels = c(0,1), labels = c("No", "Yes")),
+      
+      know_hiv_2 = factor(qs601a, levels = c(0,1), labels = c("No", "Yes")),
+      
+      total_children_born = case_when(is.na(v201) ~ NA,
+                                      v201==0 ~ "O",
+                                      v201==1 ~ "1",
+                                      v201==2 ~ "2",
+                                      v201==3 ~ "3",
+                                      v201==4 ~ "4",
+                                      TRUE ~ "More than 4"),
+      
+      dead_children = case_when((v206==0 & v207==0) ~ "None",
+                                (v206==1 | v207==1) ~ "1",
+                                (v206>=2 | v207>=2) ~ "More than 1"),
+      
+      living_children = case_when(is.na(v218) ~ NA,
+                                  v218==0 ~ "O",
+                                  v218==1 ~ "1",
+                                  v218==2 ~ "2",
+                                  v218==3 ~ "3",
+                                  v218==4 ~ "4",
+                                  TRUE ~ "More than 4"),
+      
+      total_children = case_when(is.na(v219) ~ NA,
+                                  v219==0 ~ "O",
+                                  v219==1 ~ "1",
+                                  v219==2 ~ "2",
+                                  v219==3 ~ "3",
+                                  v219==4 ~ "4",
+                                  TRUE ~ "More than 4"),
+      
+      under_sixyears_children = case_when(is.na(v208) ~ NA,
+                                          v208==0 ~ "O",
+                                          v208==1 ~ "1",
+                                          v208==2 ~ "2",
+                                          v208>=2 ~ "More than 2"),
+      
+      under_fouryears_children = case_when(is.na(v238) ~ NA,
+                                          v238==0 ~ "O",
+                                          v238==1 ~ "1",
+                                          v238==2 ~ "2",
+                                          v238>=2 ~ "More than 2"),
+      
+      pregnant = factor(v213, levels = c(0,1), labels = c("No/not sure", "Yes")), 
+      
+      intended_pregnancy = case_when(is.na(v225) ~ NA,
+                                     v225==0 ~ "Yes, at the moment",
+                                     v225==1 ~ "No, wanted to wait more",
+                                     v225==2 ~ "Did not want more children"),
+      
+      abortion_stillbirth = factor(v228, levels = c(0,1), labels = c("No", "Yes")),
+      
+      
+      abortion_stillbirth_months = factor(v233, levels = c (0,1,2,3,4,5,6,7,8,9)),
+      
+      contraceptive_method_ever = case_when(is.na(v302) ~ NA,
+                                            v302==0 ~ "Never",
+                                            v302==1 ~ "Other/folkloric",
+                                            v302==2 ~ "Traditional",
+                                            TRUE ~ "Modern"),
+      
+      contraceptive_method_ever = case_when(is.na(v313) ~ NA,
+                                            v313==0 ~ "Never",
+                                            v313==1 ~ "Folkloric",
+                                            v313==2 ~ "Traditional",
+                                            TRUE ~ "Modern"),
+      
+      age_first_sexual_intercourse = case_when((v531==98 | v531==97) ~ NA), 
+      age_first_sexual_intercourse = factor(v531, levels = c(0:49)),
+      
+      
+      
       TOTAL_CHILDREN = factor(V201, levels = c (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)),
       
-      UNDER_SIXYEARS_CHILDREN =factor(V208, levels = c(1,2,3,4))
+      UNDER_SIXYEARS_CHILDREN =ç
       
      ) %>%  rename(year_birth = b2)
 }
