@@ -334,10 +334,14 @@ dataprep<-function(data){
                                (m19<2500) ~ "low",
                                (m19==9996 | m19==9998) ~ NA),
       
-      age_mother = ifelse(v012<19,"15-19",
+      age_mother = ifelse(v012<18,"15-17",
+                           ifelse(v012>=18 & v012<30, "18-29",
+                                  ifelse(v012>=30,"30-49", NA))),
+      
+      age_mother_2 = ifelse(v012<=19,"15-19",
                           ifelse(v012>19 & v012<25, "20-24",
-                              ifelse(v012>=25&v012<30,"25-30",
-                                  ifelse(v012>=30&v012<35,"30-35",
+                              ifelse(v012>=25&v012<30,"25-29",
+                                  ifelse(v012>=30&v012<35,"30-34",
                                       ifelse(v012>=35,"35 more",NA))))),
       
       ethnicity = case_when(is.na(v131) ~ NA,
@@ -487,11 +491,76 @@ dataprep<-function(data){
       age_first_sexual_intercourse = case_when((v531==98 | v531==97) ~ NA), 
       age_first_sexual_intercourse = factor(v531, levels = c(0:49)),
       
+      age_partner = ifelse(v730<18,"15-17",
+                            ifelse(v730>=18 & v730<30, "18-29",
+                                    ifelse(v730>=30,"30-49", NA))),
       
+      age_partner_2 = ifelse(v730<=19,"15-19",
+                          ifelse(v730>19 & v730<25, "20-24",
+                                 ifelse(v730>=25&v730<30,"25-29",
+                                        ifelse(v730>=30&v730<35,"30-34",
+                                               ifelse(v730>=35,"35 more",NA))))),
       
-      TOTAL_CHILDREN = factor(V201, levels = c (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)),
+      condon_use_last_partner = factor(v761, levels = c(0,1), labels = c("No", "Yes")),
       
-      UNDER_SIXYEARS_CHILDREN =ç
+      condon_use_penultimate_partner = factor(v761b, levels = c(0,1), labels = c("No", "Yes")),
       
-     ) %>%  rename(year_birth = b2)
+      sexual_partner_1 = case_when(v766b==0 ~ "None",
+                                   v766b==1 ~ "1",
+                                   v766b>=2 ~ "More than 1",
+                                   v766b==98~ NA),
+      
+      sexual_partner_2 = case_when(v836==0 ~ "None",
+                                   v836==1 ~ "1",
+                                   v836>=2 ~ "More than 1",
+                                   v836==98~ NA),
+      
+      time_knowing_partner = factor(v768a, levels = c(101:399)),
+      
+      can_get_condoms = case_when(v769==0 ~ "No",
+                                  v769==1 ~ "Yes",
+                                  v769==2 ~ "Don't know"),
+      
+      treatment_advice_sti = factor(v770, levels = c(0,1), labels = c("No", "Yes")),
+      
+      treatment_advice_sti = factor(v785, levels = c(0,1), labels = c("No", "Yes")),
+                                  
+      age_first_sexual_partner = case_when((v830==98) ~ NA), #aquí el 98 significa "no sabe", para dejarlo numérico se consideró como NA
+      age_first_sexual_partner = factor(v830, levels = c(0:97)),
+      
+      alcohol_prior_sexual_intercourse = case_when(is.na(v835a) ~ NA,
+                                                   (v835a==0 | v835a==4) ~ "No",
+                                                   (v835a==1 | v835a==2) ~ "Only one of them",
+                                                   TRUE ~ "Both"),
+      
+      prenancy_duration = factor(q220a, levels = c (0,1,2,3,4,5,6,7,8,9)),
+      
+      weight_1 = v437/10,
+      
+      weight_2 = ha2/10,
+      
+      size_1 = v438/1000,
+      
+      size_2 = ha3/1000,
+      
+      body_mass_index_1 = v445/100,
+        
+      body_mass_index_2 = ha40/100,
+      
+      hb = v453/10,
+      
+      hb_height_adjusted = v456/10,
+      
+      anemia_level = factor(v457, levels = c(4,3,2,1), labels = c("No", "Leve", "Mode", "Grave")),
+      
+      smoke = factor(v463a, levels = c(0,1), labels = c("No", "Yes")),
+      
+      number_cigarettes_lastday = case_when(is.na(v464) ~ NA,
+                                            v464==0 ~ "No",
+                                            v464==1 ~ "1",
+                                            TRUE ~ "More than 1"),
+      
+      year_birth = factor(b2, levels = c(1970:2022))
+      
+      )
 }
