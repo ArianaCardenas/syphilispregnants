@@ -1,5 +1,9 @@
-dataprep<-function(data){
-  data %>% 
+data_syph_funct<-function(data_syph){
+  # Convierte en dataframe si es un vector o un objeto de clase "character"
+  if(!is.data.frame(data_syph)){
+    data_syph <- as.data.frame(data_syph)}
+  print(data_syph)
+  data_syph %>% 
     select(caseid,
            qh95,
            qh106,
@@ -227,7 +231,7 @@ dataprep<-function(data){
                                               (v150==3)~ "Daugther",
                                               TRUE     ~ "Other"),
       
-      wealth_index = factor(v190, levels = c(1:5), labels = c("Poorest","Poor","Middle","Rich","Richest")),
+      wealth_index = factor(v190.x, levels = c(1:5), labels = c("Poorest","Poor","Middle","Rich","Richest")),
       
       natural_region = factor(sregion, levels = c(1:4), labels = c("Lima Metropolitan","Rest of Coast","Highland","Jungle")),
       

@@ -7,6 +7,7 @@ library(survey)
 library(stringr)
 library(dplyr)
 library(janitor)
+library(purrr)
 
 ## Preparacion de datos
 
@@ -75,7 +76,7 @@ ITS <- ITS %>% select(ID1, CASEID, S108N, SREGION, SPROVIN, SDISTRI, S119D,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2021/REC94.sav")
-prenatal2 <- prenatal2 %>% select(ID1, CASEID, IDX94, S410B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(ID1, CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                 S411CA, S411DA, S411EA, S426FA,QI411_M,
                                 QI411F) %>%
   clean_names() #VD
@@ -113,7 +114,12 @@ df_gestantes2021<-
   left_join(peso, by = "caseid") %>%
   left_join(hogar2, by = "caseid") %>%
   inner_join(nino, by = "caseid") %>%
-  mutate(year = "2021")
+  mutate(year = "2021",
+         v131 = case_when((v131==3 | v131==4 | v131==5 | v131==6 | v131==7 | v131==8 | v131==9) ~ 4,
+                          (v131==2) ~ 3,
+                          (v131==1) ~ 2,
+                          (v131==10) ~ 1,
+                          (v131==11 | v131==12) ~ 5))
 
 table(df_gestantes2021$s411g, exclude = NULL)
 
@@ -178,7 +184,7 @@ ITS <- ITS %>% select(ID1, CASEID, S108N, SREGION, SPROVIN, SDISTRI, S119D,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2020/REC94.sav")
-prenatal2 <- prenatal2 %>% select(ID1, CASEID, IDX94, S410B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(ID1, CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA, S426FA,QI411_M,
                                   QI411F) %>%
   clean_names() #VD
@@ -215,7 +221,12 @@ df_gestantes2020<-
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
   left_join(hogar2, by = "caseid") %>%
-  mutate(year = "2020")
+  mutate(year = "2020",
+         v131 = case_when((v131==3 | v131==4 | v131==5 | v131==6 | v131==7 | v131==8 | v131==9) ~ 4,
+                          (v131==2) ~ 3,
+                          (v131==1) ~ 2,
+                          (v131==10) ~ 1,
+                          (v131==11 | v131==12) ~ 5))
 
 table(df_gestantes2020$s411g, exclude = NULL)
 dim(df_gestantes2020)  
@@ -280,7 +291,7 @@ ITS <- ITS %>% select(ID1, CASEID, S108N, SREGION, SPROVIN, SDISTRI, S119D,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2019/REC94.sav")
-prenatal2 <- prenatal2 %>% select(ID1, CASEID, IDX94, S410B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(ID1, CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA, S426FA,QI411_M,
                                   QI411F) %>%
   clean_names() #VD
@@ -317,7 +328,12 @@ df_gestantes2019<-
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
   left_join(hogar2, by = "caseid") %>%
-  mutate(year = "2019")
+  mutate(year = "2019",
+         v131 = case_when((v131==3 | v131==4 | v131==5 | v131==6 | v131==7 | v131==8 | v131==9) ~ 4,
+                          (v131==2) ~ 3,
+                          (v131==1) ~ 2,
+                          (v131==10) ~ 1,
+                          (v131==11 | v131==12) ~ 5))
 
 table(df_gestantes2019$s411g, exclude = NULL)
 dim(df_gestantes2019) 
@@ -378,7 +394,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI, S119D,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2018/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA, S426FA,QI411_M,
                                   QI411F) %>%
   clean_names() #VD
@@ -415,7 +431,12 @@ df_gestantes2018<-
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
   left_join(hogar2, by = "caseid") %>%
-  mutate(year = "2018")
+  mutate(year = "2018",
+         v131 = case_when((v131==3 | v131==4 | v131==5 | v131==6 | v131==7 | v131==8 | v131==9) ~ 4,
+                          (v131==2) ~ 3,
+                          (v131==1) ~ 2,
+                          (v131==10) ~ 1,
+                          (v131==11 | v131==12) ~ 5))
 
 table(df_gestantes2018$s411g, exclude = NULL)
 dim(df_gestantes2018) 
@@ -476,7 +497,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI, S119D,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2017/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA, S426FA) %>%
   clean_names() #VD
 sociodemo <- read_sav("./Data_endes/2017/REC0111.sav")
@@ -511,7 +532,12 @@ df_gestantes2017<-
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
   left_join(hogar2, by = "caseid") %>%
-  mutate(year = "2017")
+  mutate(year = "2017",
+         v131 = case_when((v131==3 | v131==4 | v131==5 | v131==6 | v131==7 | v131==8 | v131==9) ~ 4,
+                          (v131==2) ~ 3,
+                          (v131==1) ~ 2,
+                          (v131==10) ~ 1,
+                          (v131==11 | v131==12) ~ 5))
 
 table(df_gestantes2017$s411g, exclude = NULL)
 dim(df_gestantes2017) 
@@ -571,7 +597,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2016/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA, S426FA) %>%
   clean_names() #VD
 sociodemo <- read_sav("./Data_endes/2016/REC0111.sav")
@@ -666,7 +692,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2015/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA, S426FA) %>%
   clean_names() #VD
 sociodemo <- read_sav("./Data_endes/2015/REC0111.sav")
@@ -764,7 +790,7 @@ ITS <- ITS %>% select(CASEID, S108N, SPROVIN, SDISTRI,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2014/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA) %>%
   clean_names() #VD
 sociodemo <- read_sav("./Data_endes/2014/REC0111.sav")
@@ -859,7 +885,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2013/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA) %>%
   clean_names() #VD
 sociodemo <- read_sav("./Data_endes/2013/REC0111.sav")
@@ -951,7 +977,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2012/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA) %>%
   clean_names() #VD
 sociodemo <- read_sav("./Data_endes/2012/REC0111.sav")
@@ -1049,7 +1075,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2011/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA) %>%
   clean_names() #VD
 sociodemo <- read_sav("./Data_endes/2011/REC0111.sav")
@@ -1144,7 +1170,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2010/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA) %>%
   clean_names() #VD
 sociodemo <- read_sav("./Data_endes/2010/REC0111.sav")
@@ -1190,27 +1216,26 @@ list <- bind_rows(df_gestantes2010,df_gestantes2011,df_gestantes2012,
             df_gestantes2016,df_gestantes2017,df_gestantes2018,
             df_gestantes2019,df_gestantes2020, df_gestantes2021)
 
-sifilis_gestantes<- map_df(.x = list,
-                 .f = ~dataprep(.x)) # funcion de prueba creada
+sifilis_gestantes<- map_dfr(.x = list,
+                 .f = ~ data_syph_funct(.x)) # funcion de prueba creada
 
 (list=ls()) # Elimina todos los objetos del enviroment
 
 
 ## Transformar los datos en objetos survey
 
-df_gestantes<- sifilis_gestantes %>% 
+df_syphilis<- datafinal %>% 
     mutate(
     year = as.numeric(year),
-    filtro = year - B2
+    filtro = year - b2
   ) %>% 
   
   filter(filtro == 1) %>% 
   
   
-  group_by(CASEID) %>% 
+  group_by(caseid) %>% 
   slice(1) %>% 
   
   ungroup()
 
-write.csv(df_gestantes,"./data/datatest.csv", row.names = F)
-```
+write.csv(df_syphilis,"./Data_final/data_syphilis.csv", row.names = F)
