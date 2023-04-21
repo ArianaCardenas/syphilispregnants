@@ -1216,26 +1216,5 @@ list <- bind_rows(df_gestantes2010,df_gestantes2011,df_gestantes2012,
             df_gestantes2016,df_gestantes2017,df_gestantes2018,
             df_gestantes2019,df_gestantes2020, df_gestantes2021)
 
-sifilis_gestantes<- map_dfr(.x = list,
-                 .f = ~ data_syph_funct(.x)) # funcion de prueba creada
-
-(list=ls()) # Elimina todos los objetos del enviroment
 
 
-## Transformar los datos en objetos survey
-
-df_syphilis<- datafinal %>% 
-    mutate(
-    year = as.numeric(year),
-    filtro = year - b2
-  ) %>% 
-  
-  filter(filtro == 1) %>% 
-  
-  
-  group_by(caseid) %>% 
-  slice(1) %>% 
-  
-  ungroup()
-
-write.csv(df_syphilis,"./Data_final/data_syphilis.csv", row.names = F)
