@@ -95,6 +95,6 @@ Data_ins_2016 <- Data_ins_2016 %>% mutate(RAPID_TEST_NUMBER = P_RAPIDA._I + P_RA
 INS_2016_long <- Data_ins_2016 %>% select(id,distrito, grupo_edad, rapid_test_number, p_rapida_reactivo,  rpr_number, p_rpr_reactivo, year)
 
 #JOINT#
-Data_unida<- rbind(INS_2011_long, INS_2012_long,INS_2013_long, INS_2014_long, INS_2015_long, INS_2016_long)
+INS_final<- rbind(INS_2011_long, INS_2012_long,INS_2013_long, INS_2014_long, INS_2015_long, INS_2016_long)
 
 
