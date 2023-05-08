@@ -19,7 +19,7 @@ getwd()
 
 salud <- read_sav("./Data_endes/2021/CSALUD01.sav") %>% unite("CASEID", HHID, QSNUMERO, sep = "  ",remove = FALSE) #HHID
 
-salud <- salud %>% select(ID1,
+salud <- salud %>% select(ID1,QHCLUSTER,
                           HHID,
                           CASEID,
                           QS25BB,
@@ -28,14 +28,16 @@ salud <- salud %>% select(ID1,
                           QS603) %>%
   clean_names()
 progsociales <- read_sav("./Data_endes/2021/programassociales.sav") #No identificador individual
-progsociales <- progsociales %>% select(ID1,
+progsociales <- progsociales %>% select(ID1,QHCLUSTER,
                           HHID,
                           QH95,
                           QH106) %>%
   clean_names()
-gestacion1 <- read_sav("./Data_endes/2021/RE223132.sav")
-gestacion1 <- gestacion1 %>% select(ID1, CASEID, V201, V206, V207, V208, V213
-                                    ,V218, V219, V225, V228, V233, V238, V302, V313) %>%
+gestacion1 <- read_sav("./Data_endes/2021/RE223132.sav") %>%
+  #separate(CASEID, c(NA, "QSNUMERO"),remove = FALSE,extra = "merge", fill = "right") %>%
+  #separate(QSNUMERO, c("HHID", "QSNUMERO"),remove = TRUE,extra = "merge", fill = "right") %>%
+  select(CASEID,V201, V206, V207, V208, V213
+         ,V218, V219, V225, V228, V233, V238, V302, V313) %>%
   clean_names()
 pareja <- read_sav("./Data_endes/2021/RE516171.sav")
 pareja <- pareja %>% select(ID1,
@@ -89,18 +91,22 @@ estadocivil <- estadocivil %>% select (ID1, HV115, CASEID) %>%
 peso <- read_sav("./Data_endes/2021/RECH5.sav")%>% unite("CASEID", HHID, HA0, sep = "  ",remove = FALSE) #HHID
 peso <- peso %>% select(ID1, HHID,CASEID, HA2, HA3, HA40) %>%
   clean_names()
-hogar2 <- read_sav("./Data_endes/2021/RECH0.sav")%>% unite("CASEID", HHID, HV003, sep = "  ",remove = FALSE) #HHID
-
-hogar2 <- hogar2 %>% select(ID1, HHID,CASEID, HV001, HV007, UBIGEO, longitudx, 
+hogar2 <- read_sav("./Data_endes/2021/RECH0.sav")
+hogar2 <- hogar2 %>% select(ID1, HHID,HV001, HV007, UBIGEO, longitudx, 
                             latitudy, HV022, HV005) %>%
   clean_names()
 
-#Se une SALUD y PROGSOCIALES por HHID
-dfprogsociales <- salud %>% left_join(progsociales, by = "hhid")
+#Se une SALUD, PROGSOCIALES y HOGAR por HHID
+dfprogsociales21 <- salud %>% left_join(progsociales, by = "hhid") %>%
+  left_join(hogar2, by ="hhid") 
+  #separate(caseid, c(NA, "QSNUMERO"),remove = FALSE,extra = "merge", fill = "right") %>%
+  #separate(QSNUMERO, c("hhid", "qsnumero"),remove = TRUE,extra = "merge", fill = "right") %>%
+  #clean_names()
+table(is.na(dfprogsociales21$latitudy))
 
 df_gestantes2021<-
-  prenatal2 %>% 
-  left_join(dfprogsociales, by = "caseid") %>% 
+  prenatal2%>% 
+  left_join(dfprogsociales21, by = "caseid") %>% 
   left_join(gestacion1, by = "caseid") %>% 
   left_join(pareja, by = "caseid") %>%
   left_join(sexualidad, by = "caseid") %>% 
@@ -112,7 +118,6 @@ df_gestantes2021<-
   left_join(sociodemo, by = "caseid") %>%
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
-  left_join(hogar2, by = "caseid") %>%
   inner_join(nino, by = "caseid") %>%
   mutate(year = "2021",
          v131 = case_when((v131==3 | v131==4 | v131==5 | v131==6 | v131==7 | v131==8 | v131==9) ~ 4,
@@ -122,7 +127,7 @@ df_gestantes2021<-
                           (v131==11 | v131==12) ~ 5))
 
 table(df_gestantes2021$s411g, exclude = NULL)
-
+table(is.na(df_gestantes2021$latitudy))
 
 ## Gestantes 2020
 
@@ -197,17 +202,18 @@ estadocivil <- estadocivil %>% select (ID1, HV115, CASEID) %>%
 peso <- read_sav("./Data_endes/2020/RECH5.sav")%>% unite("CASEID", HHID, HA0, sep = "  ",remove = FALSE) #HHID
 peso <- peso %>% select(ID1, HHID,CASEID, HA2, HA3, HA40) %>%
   clean_names()
-hogar2 <- read_sav("./Data_endes/2020/RECH0.sav")%>% unite("CASEID", HHID, HV003, sep = "  ",remove = FALSE) #HHID
-hogar2 <- hogar2 %>% select(ID1, HHID,CASEID, HV001, HV007, UBIGEO, longitudx, 
+hogar2 <- read_sav("./Data_endes/2020/RECH0.sav")
+hogar2 <- hogar2 %>% select(ID1, HHID, HV001, HV007, UBIGEO, longitudx, 
                             latitudy, HV022, HV005) %>%
   clean_names()
 
 #Se une SALUD y PROGSOCIALES por HHID
-dfprogsociales <- salud %>% left_join(progsociales, by = "hhid")
+dfprogsociales20 <- salud %>% left_join(progsociales, by = "hhid") %>%
+  left_join(hogar2, by ="hhid") 
 
 df_gestantes2020<-
   prenatal2 %>% 
-  left_join(dfprogsociales, by = "caseid") %>% 
+  left_join(dfprogsociales20, by = "caseid") %>% 
   left_join(gestacion1, by = "caseid") %>% 
   left_join(pareja, by = "caseid") %>%
   left_join(sexualidad, by = "caseid") %>% 
@@ -220,7 +226,6 @@ df_gestantes2020<-
   left_join(sociodemo, by = "caseid") %>%
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
-  left_join(hogar2, by = "caseid") %>%
   mutate(year = "2020",
          v131 = case_when((v131==3 | v131==4 | v131==5 | v131==6 | v131==7 | v131==8 | v131==9) ~ 4,
                           (v131==2) ~ 3,
@@ -304,17 +309,19 @@ estadocivil <- estadocivil %>% select (ID1, HV115, CASEID) %>%
 peso <- read_sav("./Data_endes/2019/RECH5.sav")%>% unite("CASEID", HHID, HA0, sep = "  ",remove = FALSE) #HHID
 peso <- peso %>% select(ID1, HHID,CASEID, HA2, HA3, HA40) %>%
   clean_names()
-hogar2 <- read_sav("./Data_endes/2019/RECH0.sav")%>% unite("CASEID", HHID, HV003, sep = "  ",remove = FALSE) #HHID
-hogar2 <- hogar2 %>% select(ID1, HHID,CASEID, HV001, HV007, UBIGEO, longitudx, 
+hogar2 <- read_sav("./Data_endes/2019/RECH0.sav")
+hogar2 <- hogar2 %>% select(ID1, HHID, HV001, HV007, UBIGEO, longitudx, 
                             latitudy, HV022, HV005) %>%
   clean_names()
 
 #Se une SALUD y PROGSOCIALES por HHID
-dfprogsociales <- salud %>% left_join(progsociales, by = "hhid")
+dfprogsociales19 <- salud %>% left_join(progsociales, by = "hhid") %>%
+  left_join(hogar2, by= "hhid")
+table(is.na(dfprogsociales19$latitudy))
 
 df_gestantes2019<-
   prenatal2 %>% 
-  left_join(dfprogsociales, by = "caseid") %>% 
+  left_join(dfprogsociales19, by = "caseid") %>% 
   left_join(gestacion1, by = "caseid") %>% 
   left_join(pareja, by = "caseid") %>%
   left_join(sexualidad, by = "caseid") %>% 
@@ -327,7 +334,6 @@ df_gestantes2019<-
   left_join(sociodemo, by = "caseid") %>%
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
-  left_join(hogar2, by = "caseid") %>%
   mutate(year = "2019",
          v131 = case_when((v131==3 | v131==4 | v131==5 | v131==6 | v131==7 | v131==8 | v131==9) ~ 4,
                           (v131==2) ~ 3,
@@ -407,17 +413,18 @@ estadocivil <- estadocivil %>% select (HV115, CASEID) %>%
 peso <- read_sav("./Data_endes/2018/RECH5.sav")%>% unite("CASEID", HHID, HA0, sep = "  ",remove = FALSE) #HHID
 peso <- peso %>% select(HHID,CASEID, HA2, HA3, HA40) %>%
   clean_names()
-hogar2 <- read_sav("./Data_endes/2018/RECH0.sav")%>% unite("CASEID", HHID, HV003, sep = "  ",remove = FALSE) #HHID
-hogar2 <- hogar2 %>% select(HHID,CASEID, HV001, longitudx, 
+hogar2 <- read_sav("./Data_endes/2018/RECH0.sav")
+hogar2 <- hogar2 %>% select(HHID, HV001, longitudx, 
                             latitudy, HV022, HV005) %>%
   clean_names()
 
 #Se une SALUD y PROGSOCIALES por HHID
-dfprogsociales <- salud %>% left_join(progsociales, by = "hhid")
+dfprogsociales18 <- salud %>% left_join(progsociales, by = "hhid") %>%
+  left_join(hogar2, by = "hhid")
 
 df_gestantes2018<-
   prenatal2 %>% 
-  left_join(dfprogsociales, by = "caseid") %>% 
+  left_join(dfprogsociales18, by = "caseid") %>% 
   left_join(gestacion1, by = "caseid") %>% 
   left_join(pareja, by = "caseid") %>%
   left_join(sexualidad, by = "caseid") %>% 
@@ -430,7 +437,6 @@ df_gestantes2018<-
   left_join(sociodemo, by = "caseid") %>%
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
-  left_join(hogar2, by = "caseid") %>%
   mutate(year = "2018",
          v131 = case_when((v131==3 | v131==4 | v131==5 | v131==6 | v131==7 | v131==8 | v131==9) ~ 4,
                           (v131==2) ~ 3,
@@ -509,16 +515,17 @@ estadocivil <- estadocivil %>% select (HV115, CASEID) %>%
 peso <- read_sav("./Data_endes/2017/RECH5.sav")%>% unite("CASEID", HHID, HA0, sep = "  ",remove = FALSE) #HHID
 peso <- peso %>% select(HHID,CASEID, HA2, HA3, HA40) %>%
   clean_names()
-hogar2 <- read_sav("./Data_endes/2017/RECH0.sav")%>% unite("CASEID", HHID, HV003, sep = "  ",remove = FALSE) #HHID
-hogar2 <- hogar2 %>% select(HHID,CASEID, HV001, HV007, HV022, HV005, long_ccpp, lat_ccpp) %>%
+hogar2 <- read_sav("./Data_endes/2017/RECH0.sav")
+hogar2 <- hogar2 %>% select(HHID, HV001, HV007, HV022, HV005, long_ccpp, lat_ccpp) %>%
   clean_names() %>% rename(longitudx = long_ccpp, latitudy = lat_ccpp)
 
 #Se une SALUD y PROGSOCIALES por HHID
-dfprogsociales <- salud %>% left_join(progsociales, by = "hhid")
+dfprogsociales17 <- salud %>% left_join(progsociales, by = "hhid") %>%
+  left_join(hogar2, by = "hhid")
 
 df_gestantes2017<-
   prenatal2 %>% 
-  left_join(dfprogsociales, by = "caseid") %>% 
+  left_join(dfprogsociales17, by = "caseid") %>% 
   left_join(gestacion1, by = "caseid") %>% 
   left_join(pareja, by = "caseid") %>%
   left_join(sexualidad, by = "caseid") %>% 
@@ -531,7 +538,6 @@ df_gestantes2017<-
   left_join(sociodemo, by = "caseid") %>%
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
-  left_join(hogar2, by = "caseid") %>%
   mutate(year = "2017",
          v131 = case_when((v131==3 | v131==4 | v131==5 | v131==6 | v131==7 | v131==8 | v131==9) ~ 4,
                           (v131==2) ~ 3,
@@ -609,17 +615,17 @@ estadocivil <- estadocivil %>% select (HV115, CASEID) %>%
 peso <- read_sav("./Data_endes/2016/RECH5.sav")%>% unite("CASEID", HHID, HA0, sep = "  ",remove = FALSE) #HHID
 peso <- peso %>% select(HHID,CASEID, HA2, HA3, HA40) %>%
   clean_names()
-hogar2 <- read_sav("./Data_endes/2016/RECH0.sav")%>% unite("CASEID", HHID, HV003, sep = "  ",remove = FALSE) #HHID
-hogar2 <- hogar2 %>% select(HHID,CASEID, HV001, HV007,  longitudx, 
-                            latitudy) %>%
+hogar2 <- read_sav("./Data_endes/2016/RECH0.sav")
+hogar2 <- hogar2 %>% select(HHID, HV001, HV007,  longitudx, latitudy) %>%
   clean_names()
 
 #Se une SALUD y PROGSOCIALES por HHID
-dfprogsociales <- salud %>% left_join(progsociales, by = "hhid")
+dfprogsociales16 <- salud %>% left_join(progsociales, by = "hhid") %>%
+  left_join(hogar2, by = "hhid")
 
 df_gestantes2016<-
   prenatal2 %>% 
-  left_join(dfprogsociales, by = "caseid") %>% 
+  left_join(dfprogsociales16, by = "caseid") %>% 
   left_join(gestacion1, by = "caseid") %>% 
   left_join(pareja, by = "caseid") %>%
   left_join(sexualidad, by = "caseid") %>% 
@@ -632,7 +638,6 @@ df_gestantes2016<-
   left_join(sociodemo, by = "caseid") %>%
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
-  left_join(hogar2, by = "caseid") %>%
   mutate(year = "2016")
 
 table(df_gestantes2016$s411g, exclude = NULL)
@@ -704,17 +709,18 @@ estadocivil <- estadocivil %>% select (HV115, CASEID) %>%
 peso <- read_sav("./Data_endes/2015/RECH5.sav")%>% unite("CASEID", HHID, HA0, sep = "  ",remove = FALSE) #HHID
 peso <- peso %>% select(HHID,CASEID, HA2, HA3, HA40) %>%
   clean_names()
-hogar2 <- read_sav("./Data_endes/2015/RECH0.sav")%>% unite("CASEID", HHID, HV003, sep = "  ",remove = FALSE) #HHID
-hogar2 <- hogar2 %>% select(HHID,CASEID, HV001, HV007, longitudx, 
+hogar2 <- read_sav("./Data_endes/2015/RECH0.sav")
+hogar2 <- hogar2 %>% select(HHID, HV001, HV007, longitudx, 
                             latitudy, HV022, HV005) %>%
   clean_names()
 
 #Se une SALUD y PROGSOCIALES por HHID
-dfprogsociales <- salud %>% left_join(progsociales, by = "hhid")
+dfprogsociales15 <- salud %>% left_join(progsociales, by = "hhid") %>%
+  left_join(hogar2, by = "hhid")
 
 df_gestantes2015<-
   prenatal2 %>% 
-  left_join(dfprogsociales, by = "caseid") %>% 
+  left_join(dfprogsociales15, by = "caseid") %>% 
   left_join(gestacion1, by = "caseid") %>% 
   left_join(pareja, by = "caseid") %>%
   left_join(sexualidad, by = "caseid") %>% 
@@ -727,7 +733,6 @@ df_gestantes2015<-
   left_join(sociodemo, by = "caseid") %>%
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
-  left_join(hogar2, by = "caseid") %>%
   mutate(year = "2015")
 
 table(df_gestantes2015$s411g, exclude = NULL)
@@ -802,17 +807,18 @@ estadocivil <- estadocivil %>% select (HV115, CASEID) %>%
 peso <- read_sav("./Data_endes/2014/RECH5.sav")%>% unite("CASEID", HHID, HA0, sep = "  ",remove = FALSE) #HHID
 peso <- peso %>% select(HHID,CASEID, HA2, HA3, HA40) %>%
   clean_names()
-hogar2 <- read_sav("./Data_endes/2014/RECH0.sav")%>% unite("CASEID", HHID, HV003, sep = "  ",remove = FALSE) #HHID
-hogar2 <- hogar2 %>% select(ID1, HHID,CASEID, HV001, HV007, UBIGEO, longitudx, 
+hogar2 <- read_sav("./Data_endes/2014/RECH0.sav")
+hogar2 <- hogar2 %>% select(ID1, HHID, HV001, HV007, UBIGEO, longitudx, 
                             latitudy, HV022, HV005) %>%
   clean_names()
 
 #Se une SALUD y PROGSOCIALES por HHID
-dfprogsociales <- salud %>% left_join(progsociales, by = "hhid")
+dfprogsociales14 <- salud %>% left_join(progsociales, by = "hhid") %>%
+  left_join(hogar2, by = "hhid")
 
 df_gestantes2014<-
   prenatal2 %>% 
-  left_join(dfprogsociales, by = "caseid") %>% 
+  left_join(dfprogsociales14, by = "caseid") %>% 
   left_join(gestacion1, by = "caseid") %>% 
   left_join(pareja, by = "caseid") %>%
   left_join(sexualidad, by = "caseid") %>% 
@@ -825,7 +831,6 @@ df_gestantes2014<-
   left_join(sociodemo, by = "caseid") %>%
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
-  left_join(hogar2, by = "caseid") %>%
   mutate(year = "2014")
 
 table(df_gestantes2014$s411g, exclude = NULL)
@@ -897,14 +902,18 @@ estadocivil <- estadocivil %>% select (HV115, CASEID) %>%
 peso <- read_sav("./Data_endes/2013/RECH5.sav")%>% unite("CASEID", HHID, HA0, sep = "  ",remove = FALSE) #HHID
 peso <- peso %>% select(HHID,CASEID, HA2, HA3, HA40) %>%
   clean_names()
-hogar2 <- read_sav("./Data_endes/2013/RECH0.sav")%>% unite("CASEID", HHID, HV003, sep = "  ",remove = FALSE) #HHID
-hogar2 <- hogar2 %>% select(HHID,CASEID, HV001, HV007, longitudx, 
+hogar2 <- read_sav("./Data_endes/2013/RECH0.sav")
+hogar2 <- hogar2 %>% select(HHID, HV001, HV007, longitudx, 
                             latitudy, HV022, HV005) %>%
   clean_names()
 
+dfprogsociales13 <- salud %>% 
+  left_join(hogar2, by = "hhid")
+table(is.na(dfprogsociales13$latitudy))
+
 df_gestantes2013<-
   prenatal2 %>% 
-  left_join(salud, by = "caseid") %>% 
+  left_join(dfprogsociales13, by = "caseid") %>% 
   left_join(gestacion1, by = "caseid") %>% 
   left_join(pareja, by = "caseid") %>%
   left_join(sexualidad, by = "caseid") %>% 
@@ -917,7 +926,6 @@ df_gestantes2013<-
   left_join(sociodemo, by = "caseid") %>%
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
-  left_join(hogar2, by = "caseid") %>%
   mutate(year = "2013")
 
 table(df_gestantes2013$s411g, exclude = NULL)
@@ -989,9 +997,10 @@ estadocivil <- estadocivil %>% select (HV115, CASEID) %>%
 peso <- read_sav("./Data_endes/2012/RECH5.sav")%>% unite("CASEID", HHID, HA0, sep = "  ",remove = FALSE) #HHID
 peso <- peso %>% select(HHID,CASEID, HA2, HA3, HA40) %>%
   clean_names()
-hogar2 <- read_sav("./Data_endes/2012/RECH0.sav")%>% unite("CASEID", HHID, HV003, sep = "  ",remove = FALSE) #HHID
-hogar2 <- hogar2 %>% select(HHID,CASEID, HV001, HV007,  longitudx, 
-                            latitudy, HV022, HV005) %>%
+hogar12 <- read_sav("./Data_endes/2012/RECH0.sav") %>%
+  select(HHID, HV001, HV007,  longitudx, 
+          latitudy, HV022, HV005) %>%
+  mutate(year = "2012")%>%
   clean_names()
 
 
@@ -1009,7 +1018,6 @@ df_gestantes2012<-
   left_join(sociodemo, by = "caseid") %>%
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
-  left_join(hogar2, by = "caseid") %>%
   mutate(year = "2012")
 
 table(df_gestantes2012$s411g, exclude = NULL)
@@ -1087,9 +1095,10 @@ estadocivil <- estadocivil %>% select (HV115, CASEID) %>%
 peso <- read_sav("./Data_endes/2011/RECH5.sav")%>% unite("CASEID", HHID, HA0, sep = "  ",remove = FALSE) #HHID
 peso <- peso %>% select(HHID,CASEID, HA2, HA3, HA40) %>%
   clean_names()
-hogar2 <- read_sav("./Data_endes/2011/RECH0.sav")%>% unite("CASEID", HHID, HV003, sep = "  ",remove = FALSE) #HHID
-hogar2 <- hogar2 %>% select(HHID,CASEID, HV001, HV007, longitudx, 
-                            latitudy, HV022, HV005) %>%
+hogar11 <- read_sav("./Data_endes/2011/RECH0.sav") %>% 
+  select(HHID, HV001, HV007, longitudx, 
+  latitudy, HV022, HV005) %>%
+  mutate(year="2011")%>%
   clean_names()
 
 df_gestantes2011<-
@@ -1106,7 +1115,6 @@ df_gestantes2011<-
   left_join(sociodemo, by = "caseid") %>%
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
-  left_join(hogar2, by = "caseid") %>%
   mutate(year = "2011")
 
 table(df_gestantes2011$s411g, exclude = NULL)
@@ -1182,9 +1190,10 @@ estadocivil <- estadocivil %>% select (HV115, CASEID) %>%
 peso <- read_sav("./Data_endes/2010/RECH5.sav")%>% unite("CASEID", HHID, HA0, sep = "  ",remove = FALSE) #HHID
 peso <- peso %>% select(HHID,CASEID, HA2, HA3, HA40) %>%
   clean_names()
-hogar2 <- read_sav("./Data_endes/2010/RECH0.sav")%>% unite("CASEID", HHID, HV003, sep = "  ",remove = FALSE) #HHID
-hogar2 <- hogar2 %>% select(HHID,CASEID, HV001, HV007, longitudx, 
-                            latitudy, HV022, HV005) %>%
+hogar10 <- read_sav("./Data_endes/2010/RECH0.sav") %>% 
+  select(HHID, HV001, HV007, longitudx, 
+  latitudy, HV022, HV005) %>%
+  mutate(year="2010") %>%
   clean_names()
 
 df_gestantes2010<-
@@ -1201,7 +1210,6 @@ df_gestantes2010<-
   left_join(sociodemo, by = "caseid") %>%
   left_join(estadocivil, by = "caseid") %>%
   left_join(peso, by = "caseid") %>%
-  left_join(hogar2, by = "caseid") %>%
   mutate(year = "2010")
 
 table(df_gestantes2010$s411g, exclude = NULL)
@@ -1216,5 +1224,8 @@ list <- bind_rows(df_gestantes2010,df_gestantes2011,df_gestantes2012,
             df_gestantes2016,df_gestantes2017,df_gestantes2018,
             df_gestantes2019,df_gestantes2020, df_gestantes2021)
 
-
+location <- bind_rows(hogar10,hogar11,hogar12,dfprogsociales13,dfprogsociales14,
+                      dfprogsociales15,dfprogsociales16,dfprogsociales17,
+                      dfprogsociales18,dfprogsociales19,dfprogsociales20,dfprogsociales21)
+table(is.na(location$longitudx))
 
