@@ -85,7 +85,7 @@ prenatal2 <- read_sav("./Data_endes/2021/REC94.sav")
 prenatal2 <- prenatal2 %>% select(ID1, CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                 S411CA, S411DA, S411EA, S426FA,QI411_M,
                                 QI411F) %>%
-  clean_names() %>% #VD
+  clean_names() %>% 
   mutate(hhid = as.double(str_sub(caseid,-12,-4 )))
 
 sociodemo <- read_sav("./Data_endes/2021/REC0111.sav")
@@ -149,13 +149,17 @@ salud <- salud %>% select(ID1,
                           QS29A,
                           QS601A,
                           QS603) %>%
-  clean_names()
+  clean_names() %>% 
+  mutate(hhid = as.double(str_sub(hhid,-9)))
+
 progsociales <- read_sav("./Data_endes/2020/programassociales.sav") #No identificador individual
 progsociales <- progsociales %>% select(ID1,
                                         HHID,
                                         QH95,
                                         QH106) %>%
-  clean_names()
+  clean_names() %>% 
+  mutate(hhid = as.double(str_sub(hhid,-9)))
+
 gestacion1 <- read_sav("./Data_endes/2020/RE223132.sav")
 gestacion1 <- gestacion1 %>% select(ID1, CASEID, V201, V206, V207, V208, V213
                                     ,V218, V219, V225, V228, V233, V238, V302, V313) %>%
@@ -202,7 +206,9 @@ prenatal2 <- read_sav("./Data_endes/2020/REC94.sav")
 prenatal2 <- prenatal2 %>% select(ID1, CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA, S426FA,QI411_M,
                                   QI411F) %>%
-  clean_names() #VD
+  clean_names() %>% 
+  mutate(hhid = as.double(str_sub(caseid,-12,-4 )))
+
 sociodemo <- read_sav("./Data_endes/2020/REC0111.sav")
 sociodemo <- sociodemo %>% select(ID1, CASEID, V190) %>%
   clean_names()
@@ -215,15 +221,19 @@ peso <- peso %>% select(ID1, HHID,CASEID, HA2, HA3, HA40) %>%
 hogar2 <- read_sav("./Data_endes/2020/RECH0.sav")
 hogar2 <- hogar2 %>% select(ID1, HHID, HV001, HV007, UBIGEO, longitudx, 
                             latitudy, HV022, HV005) %>%
-  clean_names()
+  clean_names() %>% 
+  mutate(hhid = as.double(str_sub(hhid,-9)))
 
 #Se une SALUD y PROGSOCIALES por HHID
 dfprogsociales20 <- salud %>% left_join(progsociales, by = "hhid") %>%
-  left_join(hogar2, by ="hhid") 
+  left_join(hogar2, by ="hhid")  %>% 
+  select(-c(id1, id1.x, id1.y, caseid))
+prenatal2 <- prenatal2 %>% left_join(dfprogsociales20, by = "hhid")
+
+table(is.na(prenatal2$latitudy))
 
 df_gestantes2020<-
   prenatal2 %>% 
-  left_join(dfprogsociales20, by = "caseid") %>% 
   left_join(gestacion1, by = "caseid") %>% 
   left_join(pareja, by = "caseid") %>%
   left_join(sexualidad, by = "caseid") %>% 
@@ -246,6 +256,7 @@ df_gestantes2020<-
 table(df_gestantes2020$s411g, exclude = NULL)
 dim(df_gestantes2020)  
 
+table(is.na(df_gestantes2020$latitudy))
 
 ## Gestantes 2019
 salud <- read_sav("./Data_endes/2019/CSALUD01.sav") %>% unite("CASEID", HHID, QSNUMERO, sep = "  ",remove = FALSE) #HHID
