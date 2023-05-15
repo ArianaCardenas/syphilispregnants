@@ -26,13 +26,17 @@ salud <- salud %>% select(ID1,QHCLUSTER,
                           QS29A,
                           QS601A,
                           QS603) %>%
-  clean_names()
+  clean_names() %>% 
+  mutate(hhid = as.double(str_sub(hhid,-9)))
+
 progsociales <- read_sav("./Data_endes/2021/programassociales.sav") #No identificador individual
 progsociales <- progsociales %>% select(ID1,QHCLUSTER,
                           HHID,
                           QH95,
                           QH106) %>%
-  clean_names()
+  clean_names() %>% 
+  mutate(hhid = as.double(str_sub(hhid,-9)))
+
 gestacion1 <- read_sav("./Data_endes/2021/RE223132.sav") %>%
   #separate(CASEID, c(NA, "QSNUMERO"),remove = FALSE,extra = "merge", fill = "right") %>%
   #separate(QSNUMERO, c("HHID", "QSNUMERO"),remove = TRUE,extra = "merge", fill = "right") %>%
@@ -81,7 +85,9 @@ prenatal2 <- read_sav("./Data_endes/2021/REC94.sav")
 prenatal2 <- prenatal2 %>% select(ID1, CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
                                 S411CA, S411DA, S411EA, S426FA,QI411_M,
                                 QI411F) %>%
-  clean_names() #VD
+  clean_names() %>% #VD
+  mutate(hhid = as.double(str_sub(caseid,-12,-4 )))
+
 sociodemo <- read_sav("./Data_endes/2021/REC0111.sav")
 sociodemo <- sociodemo %>% select(ID1, CASEID, V190) %>%
   clean_names()
@@ -94,23 +100,27 @@ peso <- peso %>% select(ID1, HHID,CASEID, HA2, HA3, HA40) %>%
 hogar2 <- read_sav("./Data_endes/2021/RECH0.sav")
 hogar2 <- hogar2 %>% select(ID1, HHID,HV001, HV007, UBIGEO, longitudx, 
                             latitudy, HV022, HV005) %>%
-  clean_names()
+  clean_names() %>% 
+  mutate(hhid = as.double(str_sub(hhid,-9)))
 
 #Se une SALUD, PROGSOCIALES y HOGAR por HHID
 dfprogsociales21 <- salud %>% left_join(progsociales, by = "hhid") %>%
-  left_join(hogar2, by ="hhid") 
+  left_join(hogar2, by ="hhid") %>% 
+  select(-c(id1, id1.x, id1.y, qhcluster.x, caseid, qhcluster.y))
   #separate(caseid, c(NA, "QSNUMERO"),remove = FALSE,extra = "merge", fill = "right") %>%
   #separate(QSNUMERO, c("hhid", "qsnumero"),remove = TRUE,extra = "merge", fill = "right") %>%
   #clean_names()
+
+prenatal2 <- prenatal2 %>% left_join(dfprogsociales21, by = "hhid")
+
 table(is.na(dfprogsociales21$latitudy))
 
 df_gestantes2021<-
   prenatal2%>% 
-  left_join(dfprogsociales21, by = "caseid") %>% 
+  left_join(hogar, by = "caseid") %>%
   left_join(gestacion1, by = "caseid") %>% 
   left_join(pareja, by = "caseid") %>%
   left_join(sexualidad, by = "caseid") %>% 
-  left_join(hogar, by = "caseid") %>%
   left_join(salud2, by = "caseid") %>% 
   left_join(prenatal, by = "caseid") %>%
   left_join(violence, by = "caseid") %>% 
@@ -1224,8 +1234,28 @@ list <- bind_rows(df_gestantes2010,df_gestantes2011,df_gestantes2012,
             df_gestantes2016,df_gestantes2017,df_gestantes2018,
             df_gestantes2019,df_gestantes2020, df_gestantes2021)
 
+list2<- list %>% 
+  select(-c(hv001, hv007, hhid, longitudx, latitudy, hv022, hv005, qs29a, qs601a, qs603, id1.x, qs25bb, id1.y, qh95, qh106, id1, ubigeo, qhcluster.x, qhcluster.y, id1.x.x:id1.y.y.y.y.y.y.y.y, hhid.x, hhid.y))
+
+list2 <- list2 %>% 
+  mutate(
+    hhid = as.numeric(str_sub(caseid,start=7,end=10))
+  )
+
+table(is.na(list2$hhid))
+
 location <- bind_rows(hogar10,hogar11,hogar12,dfprogsociales13,dfprogsociales14,
                       dfprogsociales15,dfprogsociales16,dfprogsociales17,
                       dfprogsociales18,dfprogsociales19,dfprogsociales20,dfprogsociales21)
 table(is.na(location$longitudx))
+
+location <- location %>% 
+  select(-c(caseid))
+
+##Unir con data de location
+list2 <- list2 %>% 
+  left_join(location, by = c("hhid"))
+
+table(is.na(list2$longitudx.x))
+
 
