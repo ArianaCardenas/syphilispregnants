@@ -273,5 +273,5 @@ INS_final_long <- INS_final_long %>% select(
                                     )
 INS_final_wide <- INS_final_long %>% pivot_wider(names_from = rango_edad, values_from = c (test_number, tamizaje_reactivo))
 
-
-
+write.csv(INS_final_long,"./data_final/ins_final_long.csv", row.names = F)
+write.csv(INS_final_wide,"./data_final/ins_final_wide.csv", row.names = F)

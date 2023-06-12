@@ -12,8 +12,7 @@ datafinal <- list %>%
          v001,
          v005,
          v022,
-         v190.x,
-         v190.y,
+         v190,
          sregion,
          #sprovincia,
          sdistri,
@@ -228,7 +227,7 @@ datafinal <- list %>%
                                             (v150==3)~ "Daugther",
                                             TRUE     ~ "Other"),
     
-    wealth_index = factor(v190.x, levels = c(1:5), labels = c("Poorest","Poor","Middle","Rich","Richest")),
+    wealth_index = factor(v190, levels = c(1:5), labels = c("Poorest","Poor","Middle","Rich","Richest")),
     
     natural_region = factor(sregion, levels = c(1:4), labels = c("Lima Metropolitan","Rest of Coast","Highland","Jungle")),
     
@@ -581,5 +580,13 @@ df_syphilis<- datafinal %>%
   
   ungroup()
 
-write.csv(df_gestantes,"./data/datatest.csv", row.names = F)
+write.csv(df_syphilis,"./data_final/data_syphilis.csv", row.names = F)
+
+## Data de longitud y latitud
+
+df_ubigeo <- df_syphilis %>% 
+  select(caseid, year, departament, longitudx, latitudy)
+
+write.csv(df_ubigeo,"./data_final/data_ubigeo.csv", row.names = F)
+
 
