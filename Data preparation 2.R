@@ -294,10 +294,14 @@ datafinal <- list %>%
     last_prenatal_visit = factor(s410b, levels = c(0,1,2,3,4,5,6,7,8,9)),
     
     syphilis_screening = case_when(is.na(s411g) ~ NA,
-                                   (s411g==0) ~ "No",
-                                   (s411g==1) ~ "Yes",
-                                   (s411g==8) ~ "Don't know"),
-    
+                                   ((s411g==0) |  (s411g==8)) ~ "No",
+                                   (s411g==1) ~ "Yes"),
+                                   
+   syphilis_screening_completo = case_when(is.na(s411g) ~ NA,
+                                  (s411g==0) ~ "No",
+                                  (s411g==1) ~ "Yes",                              
+                                  (s411g==8) ~ "Don´t know"),
+                                  
     hiv_screening = case_when(is.na(s411h) ~ NA,
                               (s411h==0) ~ "No",
                               (s411h==1) ~ "Yes",
@@ -580,21 +584,21 @@ df_syphilis<- datafinal %>%
   
   ungroup()
 
-write.csv(df_syphilis,"./data_final/data_syphilis.csv", row.names = F)
+#write.csv(df_syphilis,"./data_final/data_syphilis.csv", row.names = F)
 
 ## Data de longitud y latitud
 
 df_ubigeo <- df_syphilis %>% 
   select(caseid, year, departament, longitudx, latitudy)
 
-write.csv(df_ubigeo,"./data_final/data_ubigeo.csv", row.names = F)
+#write.csv(df_ubigeo,"./data_final/data_ubigeo.csv", row.names = F)
 
 ### Uniendo con los datos de ubicación*
-
+data_ubigeo <- read_csv("Data_final/data_ubigeo.csv")
 data_ubigeo <- data_ubigeo_2017 %>% 
   select(caseid, year, NOMBDEP, NOMBPROV, NOMBDIST, CAPITAL, UBIGEO, DESCRIPCIO)
 
-data_syphilis <- data_syphilis %>% 
+data_syphilis <- df_syphilis %>% 
   left_join(data_ubigeo, by = c("caseid","year"))
 
 write.csv(data_syphilis,"./data_final/data_syphilis.csv", row.names = F)

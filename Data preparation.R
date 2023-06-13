@@ -629,7 +629,7 @@ sexualidad <- sexualidad %>% select(CASEID, V750, V761, V761B, V763A,
 hogar<- read_sav("./Data_endes/2016/REC0111.sav")
 hogar <- hogar %>% select(V012, V131, CASEID, V002, V003, V007, V040, V025, V024,
                           V101, V102, V103, V136, V150, AWFACTW,
-                          V001,  V022) %>%
+                          V001,  V022, v005) %>%
   clean_names() 
 nino <- read_sav("./Data_endes/2016/REC21.sav")
 nino <- nino  %>% group_by(CASEID) %>% filter(BORD == max(BORD)) %>% 
@@ -839,7 +839,7 @@ sexualidad <- sexualidad %>% select(CASEID, V750, V761, V761B, V763A,
   clean_names()
 hogar<- read_sav("./Data_endes/2014/REC0111.sav")
 hogar <- hogar %>% select(V012, V131, CASEID, V002, V003, V007, V040, V025, V024,
-                          V101, V102, V103, V136, V150, AWFACTW, V001, V022) %>%
+                          V101, V102, V103, V136, V150, AWFACTW, V001, V022, v005) %>%
   clean_names()
 nino <- read_sav("./Data_endes/2014/REC21.sav")
 nino <- nino  %>% group_by(CASEID) %>% filter(BORD == max(BORD)) %>% 
