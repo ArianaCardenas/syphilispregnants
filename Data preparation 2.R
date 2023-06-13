@@ -596,3 +596,5 @@ data_ubigeo <- data_ubigeo_2017 %>%
 
 data_syphilis <- data_syphilis %>% 
   left_join(data_ubigeo, by = c("caseid","year"))
+
+write.csv(data_syphilis,"./data_final/data_syphilis.csv", row.names = F)
