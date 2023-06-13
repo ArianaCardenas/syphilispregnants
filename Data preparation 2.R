@@ -589,4 +589,10 @@ df_ubigeo <- df_syphilis %>%
 
 write.csv(df_ubigeo,"./data_final/data_ubigeo.csv", row.names = F)
 
+### Uniendo con los datos de ubicación*
 
+data_ubigeo <- data_ubigeo_2017 %>% 
+  select(caseid, year, NOMBDEP, NOMBPROV, NOMBDIST, CAPITAL, UBIGEO, DESCRIPCIO)
+
+data_syphilis <- data_syphilis %>% 
+  left_join(data_ubigeo, by = c("caseid","year"))
