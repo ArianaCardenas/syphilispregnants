@@ -15,6 +15,129 @@ library(purrr)
 # He unido los archivos de cada modulo para tener una sola base por anio. Algunas encuestas son dirigidas a la mujer en edad fertil/madre, otras nivel hogar. Como veran, solo la base de programas sociales es a nivel hogar (de las que he usado), por eso es la unica que el join es por HHID. Las demas, son dirigidas a la madre/MEF. 
 getwd()
 
+##Gestantes 2022
+
+salud <- read_sav("./Data_endes/2022/CSALUD01.sav") %>% unite("CASEID", HHID, QSNUMERO, sep = "  ",remove = FALSE) #HHID
+
+salud <- salud %>% select(ID1,QHCLUSTER,
+                          HHID,
+                          CASEID,
+                          QS25BB,
+                          QS29A,
+                          QS601A,
+                          QS603) %>%
+  clean_names() %>% 
+  mutate(hhid = as.double(str_sub(hhid,-9)))
+
+progsociales <- read_sav("./Data_endes/2022/programassociales.sav") #No identificador individual
+progsociales <- progsociales %>% select(QHCLUSTER,
+                                        HHID,
+                                        QH95,
+                                        QH106) %>%
+  clean_names() %>% 
+  mutate(hhid = as.double(str_sub(hhid,-9)))
+
+gestacion1 <- read_sav("./Data_endes/2022/RE223132.sav") %>%
+  #separate(CASEID, c(NA, "QSNUMERO"),remove = FALSE,extra = "merge", fill = "right") %>%
+  #separate(QSNUMERO, c("HHID", "QSNUMERO"),remove = TRUE,extra = "merge", fill = "right") %>%
+  select(CASEID,V201, V206, V207, V208, V213
+         ,V218, V219, V225, V228, V233, V238, V302, V313) %>%
+  clean_names()
+pareja <- read_sav("./Data_endes/2022/RE516171.sav")
+pareja <- pareja %>% select(CASEID,
+                            V531,
+                            V532,
+                            V701,
+                            V730) %>%
+  clean_names()
+sexualidad <- read_sav("./Data_endes/2022/RE758081.sav")
+sexualidad <- sexualidad %>% select(CASEID, V750, V761, V761B, V763A,
+                                    V763B, V763C, V766B, V768A, V769, V770, V785,
+                                    V830, V835A, V836) %>%
+  clean_names()
+hogar<- read_sav("./Data_endes/2022/REC0111.sav")
+hogar <- hogar %>% select(V012, V131, CASEID, V002, V003, V007, V040, V025, V024,
+                          V101, V102, V103, V136, V150, AWFACTW, HHID, UBIGEO,
+                          V001, V005, V022) %>%
+  clean_names()
+nino <- read_sav("./Data_endes/2022/REC21.sav")
+nino <- nino %>% group_by(CASEID) %>% filter(BORD == max(BORD)) %>%
+  select(CASEID, BIDX, B0, BD, B1, B2, B4, B11, B16, Q220A) %>%
+  clean_names()
+prenatal <- read_sav("./Data_endes/2022/REC41.sav") %>% rename(IDX94 = MIDX) %>%
+  clean_names()
+salud2 <- read_sav("./Data_endes/2022/REC42.sav")
+salud2 <- salud2 %>% select(CASEID, V437, V438, V445, V453, V454, V456,
+                            V457, V463A, V464, V481)%>%
+  clean_names()
+violence <- read_sav("./Data_endes/2022/REC84DV.sav")
+violence <- violence %>% select(CASEID, D104, D106, D107, D108, D115Y,
+                                D116, D118A, D118Y, D119Y) %>%
+  clean_names()
+ITS <- read_sav("./Data_endes/2022/REC91.sav")
+ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI, S119D, 
+                      S815AA, S815AB, S815AC, S815AD, S815AE, S815AX, S815AZ,
+                      S816AA, S816AB, S816AC, S816AD, S816AE, S816AF, S816AG,
+                      S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
+  clean_names() 
+prenatal2 <- read_sav("./Data_endes/2022/REC94.sav")
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
+                                  S411CA, S411DA, S411EA, S426FA,QI411_M,
+                                  QI411F) %>%
+  clean_names() %>% 
+  mutate(hhid = as.double(str_sub(caseid,-12,-4 )))
+
+sociodemo <- read_sav("./Data_endes/2022/REC0111.sav")
+sociodemo <- sociodemo %>% select(CASEID, V190) %>%
+  clean_names()
+estadocivil <- read_sav("./Data_endes/2022/RECH1.sav") %>% unite("CASEID", HHID:HVIDX, sep = "  ",remove = FALSE) #HHID
+estadocivil <- estadocivil %>% select (HV115, CASEID) %>%
+  clean_names()
+peso <- read_sav("./Data_endes/2022/RECH5.sav")%>% unite("CASEID", HHID, HA0, sep = "  ",remove = FALSE) #HHID
+peso <- peso %>% select(HHID,CASEID, HA2, HA3, HA40) %>%
+  clean_names()
+hogar2 <- read_sav("./Data_endes/2022/RECH0.sav")
+hogar2 <- hogar2 %>% select(HHID,HV001, HV007, UBIGEO, LONGITUDX, 
+                            LATITUDY, HV022, HV005) %>%
+  clean_names() %>% 
+  mutate(hhid = as.double(str_sub(hhid,-9)))
+
+#Se une SALUD, PROGSOCIALES y HOGAR por HHID
+dfprogsociales22 <- salud %>% left_join(progsociales, by = "hhid") %>%
+  left_join(hogar2, by ="hhid") %>% 
+  select(-c(id1, qhcluster.x, caseid, qhcluster.y))
+#separate(caseid, c(NA, "QSNUMERO"),remove = FALSE,extra = "merge", fill = "right") %>%
+#separate(QSNUMERO, c("hhid", "qsnumero"),remove = TRUE,extra = "merge", fill = "right") %>%
+#clean_names()
+
+prenatal2 <- prenatal2 %>% left_join(dfprogsociales22, by = "hhid")
+
+table(is.na(dfprogsociales22$latitudy))
+
+df_gestantes2022<-
+  prenatal2%>% 
+  left_join(hogar, by = "caseid") %>%
+  left_join(gestacion1, by = "caseid") %>% 
+  left_join(pareja, by = "caseid") %>%
+  left_join(sexualidad, by = "caseid") %>% 
+  left_join(salud2, by = "caseid") %>% 
+  left_join(prenatal, by = "caseid") %>%
+  left_join(violence, by = "caseid") %>% 
+  left_join(ITS, by = "caseid") %>%
+  left_join(sociodemo, by = "caseid") %>%
+  left_join(estadocivil, by = "caseid") %>%
+  left_join(peso, by = "caseid") %>%
+  inner_join(nino, by = "caseid") %>%
+  mutate(year = "2022",
+         v131 = case_when((v131==3 | v131==4 | v131==5 | v131==6 | v131==7 | v131==8 | v131==9) ~ 4,
+                          (v131==2) ~ 3,
+                          (v131==1) ~ 2,
+                          (v131==10) ~ 1,
+                          (v131==11 | v131==12) ~ 5))
+
+table(df_gestantes2022$s411g, exclude = NULL)
+table(is.na(df_gestantes2022$latitudy))
+
 ##Gestantes 2021
 
 salud <- read_sav("./Data_endes/2021/CSALUD01.sav") %>% unite("CASEID", HHID, QSNUMERO, sep = "  ",remove = FALSE) #HHID
@@ -1325,6 +1448,6 @@ table(is.na(df_gestantes2010$latitudy))
 list <- bind_rows(df_gestantes2010,df_gestantes2011,df_gestantes2012,
             df_gestantes2013,df_gestantes2014,df_gestantes2015,
             df_gestantes2016,df_gestantes2017,df_gestantes2018,
-            df_gestantes2019,df_gestantes2020, df_gestantes2021)
+            df_gestantes2019,df_gestantes2020, df_gestantes2021,df_gestantes2022)
 
 
