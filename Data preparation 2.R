@@ -591,10 +591,10 @@ df_syphilis<- datafinal %>%
 df_ubigeo <- df_syphilis %>% 
   select(caseid, year, departament, longitudx, latitudy)
 
-#write.csv(df_ubigeo,"./data_final/data_ubigeo.csv", row.names = F)
+write.csv(df_ubigeo,"./data_final/data_ubigeo_2022.csv", row.names = F)
 
 ### Uniendo con los datos de ubicación*
-data_ubigeo <- read_csv("Data_final/data_ubigeo.csv")
+data_ubigeo_2017 <- read_csv("./data_ubigeo_2017.csv")
 data_ubigeo <- data_ubigeo_2017 %>% 
   select(caseid, year, NOMBDEP, NOMBPROV, NOMBDIST, CAPITAL, UBIGEO, DESCRIPCIO)
 
