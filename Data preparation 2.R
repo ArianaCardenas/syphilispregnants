@@ -97,6 +97,7 @@ datafinal <- list %>%
          b4,
          b11,
          b16,
+         m10,
          m18,
          m19,
          m19a,
@@ -349,11 +350,11 @@ datafinal <- list %>%
                                                ifelse(v012>=35,"35 more",NA))))),
     
     ethnicity = case_when(is.na(v131) ~ NA,
-                          (v131==10) ~ "Spanish",
-                          (v131==1) ~ "Quechua",
-                          (v131==2) ~ "Aimara",
-                          (v131==11 | v131==12) ~ "Foreigner",
-                          TRUE ~ "Other indigenous"),
+                          (v131==1) ~ "Spanish",
+                          (v131==2) ~ "Quechua",
+                          (v131==3) ~ "Aimara",
+                          (v131==4) ~ "Other indigenous",
+                          TRUE ~ "Foreigner"),
     
     
     marital_status = ifelse(hv115==0,"Single", 
@@ -474,9 +475,10 @@ datafinal <- list %>%
                                    v225==0 ~ "Yes, at the moment",
                                    v225==1 ~ "No, wanted to wait more",
                                    v225==2 ~ "Did not want more children"),
+   
+    intended_pregnancy_2 = factor(m10, levels = c(1,2,3), labels = c("Yes, at the moment","No, wanted to wait more","Did not want more children")),
     
     abortion_stillbirth = factor(v228, levels = c(0,1), labels = c("No", "Yes")),
-    
     
     abortion_stillbirth_months = factor(v233, levels = c (0,1,2,3,4,5,6,7,8,9)),
     
@@ -591,14 +593,22 @@ df_syphilis<- datafinal %>%
 df_ubigeo <- df_syphilis %>% 
   select(caseid, year, departament, longitudx, latitudy)
 
-write.csv(df_ubigeo,"./data_final/data_ubigeo_2022.csv", row.names = F)
+#write.csv(df_ubigeo,"./data_final/data_ubigeo.csv", row.names = F)
+
+#### Data de longitud y latitud (solo año 2022)
+
+df_ubigeo_2022 <- df_syphilis %>% 
+  filter(year==2022) %>% 
+  select(caseid, year, departament, longitudx, latitudy)
+
+#write.csv(df_ubigeo_2022,"./data_final/data_ubigeo_2022.csv", row.names = F)
 
 ### Uniendo con los datos de ubicación*
-data_ubigeo_2017 <- read_csv("./data_ubigeo_2017.csv")
-data_ubigeo <- data_ubigeo_2017 %>% 
+data_ubigeo_innovalab_2021 <- read_csv("./data_final/data_ubigeo_innovalab.csv")
+data_ubigeo_2021 <- data_ubigeo_innovalab_2021 %>% 
   select(caseid, year, NOMBDEP, NOMBPROV, NOMBDIST, CAPITAL, UBIGEO, DESCRIPCIO)
 
-data_syphilis <- df_syphilis %>% 
-  left_join(data_ubigeo, by = c("caseid","year"))
+data_syphilis <- data_syphilis%>% 
+  left_join(data_ubigeo_2021, by = c("caseid","year"))
 
-write.csv(data_syphilis,"./data_final/data_syphilis.csv", row.names = F)
+#write.csv(data_syphilis,"./data_final/data_syphilis.csv", row.names = F)
