@@ -586,9 +586,10 @@ df_syphilis<- datafinal %>%
   
   ungroup()
 
-#write.csv(df_syphilis,"./data_final/data_syphilis.csv", row.names = F)
+write.csv(df_syphilis,"./data_final/data_syphilis.csv", row.names = F)
 
 ## Data de longitud y latitud
+df_syphilis <- read_csv("./data_final/data_syphilis.csv")
 
 df_ubigeo <- df_syphilis %>% 
   select(caseid, year, departament, longitudx, latitudy)
