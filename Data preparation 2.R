@@ -586,11 +586,9 @@ df_syphilis<- datafinal %>%
   
   ungroup()
 
-write.csv(df_syphilis,"./data_final/data_syphilis.csv", row.names = F)
+#write.csv(df_syphilis,"./data_final/data_syphilis.csv", row.names = F)
 
 ## Data de longitud y latitud
-df_syphilis <- read_csv("./data_final/data_syphilis.csv")
-
 df_ubigeo <- df_syphilis %>% 
   select(caseid, year, departament, longitudx, latitudy)
 
@@ -609,7 +607,7 @@ data_ubigeo_innovalab_2021 <- read_csv("./data_final/data_ubigeo_innovalab.csv")
 data_ubigeo_2021 <- data_ubigeo_innovalab_2021 %>% 
   select(caseid, year, NOMBDEP, NOMBPROV, NOMBDIST, CAPITAL, UBIGEO, DESCRIPCIO)
 
-data_syphilis <- data_syphilis%>% 
+data_syphilis_final <- data_syphilis%>% 
   left_join(data_ubigeo_2021, by = c("caseid","year"))
 
-#write.csv(data_syphilis,"./data_final/data_syphilis.csv", row.names = F)
+#write.csv(data_syphilis_final,"./data_final/data_syphilis.csv", row.names = F)
