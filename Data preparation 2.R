@@ -298,7 +298,7 @@ datafinal <- list %>%
                                    ((s411g==0) |  (s411g==8)) ~ "No",
                                    (s411g==1) ~ "Yes"),
                                    
-   syphilis_screening_completo = case_when(is.na(s411g) ~ NA,
+    syphilis_screening_completo = case_when(is.na(s411g) ~ NA,
                                   (s411g==0) ~ "No",
                                   (s411g==1) ~ "Yes",                              
                                   (s411g==8) ~ "Don´t know"),
@@ -539,7 +539,7 @@ datafinal <- list %>%
                                                  (v835a==1 | v835a==2) ~ "Only one of them",
                                                  TRUE ~ "Both"),
     
-    prenancy_duration = factor(q220a, levels = c (0,1,2,3,4,5,6,7,8,9)),
+    pregnancy_duration = factor(q220a, levels = c (0,1,2,3,4,5,6,7,8,9)),
     
     weight_1 = v437/10,
     
