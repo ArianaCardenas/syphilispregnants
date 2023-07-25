@@ -182,3 +182,7 @@ resultados_educ_2022 = porcentaje_educ_2022(data, grupos_educ, year_)
 rm(porcentaje_educ_2022,year_)
 ```
 
+```{r}
+rm(grupos_educ,resultados_educ,resultados_educ_2010,resultados_educ_2016, resultados_educ_2022)
+```
+
