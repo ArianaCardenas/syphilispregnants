@@ -1,0 +1,184 @@
+---
+title: "Exploración I"
+output: html_document
+date: "2023-07-21"
+---
+#Exploración (porcentajes e ic y mapas)
+
+```{r}
+library(readr)
+library(tidyverse)
+data <- read_csv("Data_final/data_syphilis.csv")
+```
+
+Variable: v012
+```{r}
+# EDAD TOTAL
+# Agrupar los datos por rango de edad
+age_total <- data %>%
+  dplyr::group_by(rango_age = cut(v012, breaks = c(0, 15, 18, 30, Inf), labels = c("-15","15-17", "18-29", "30+"))) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(data) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[2] * 100,1))
+
+# EDAD 2010
+sub_age_2010 <- subset(data, year == 2010)
+
+# Agrupar los datos por rango de edad
+age_2010 <- sub_age_2010  %>%
+  dplyr::group_by(rango_age = cut(v012, breaks = c(0, 15, 18, 30, Inf), labels = c("-15","15-17", "18-29", "30+"))) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_age_2010) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_age_2010), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_age_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_age_2010)
+
+# EDAD 2016
+sub_age_2016 <- subset(data, year == 2016)
+
+# Agrupar los datos por rango de edad
+age_2016 <- sub_age_2016  %>%
+  dplyr::group_by(rango_age = cut(v012, breaks = c(0, 15, 18, 30, Inf), labels = c("-15","15-17", "18-29", "30+"))) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_age_2016) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_age_2016), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_age_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_age_2016)
+
+# EDAD 2022
+sub_age_2022 <- subset(data, year == 2022)
+
+# Agrupar los datos por rango de edad
+age_2022 <- sub_age_2022  %>%
+  dplyr::group_by(rango_age = cut(v012, breaks = c(0, 15, 18, 30, Inf), labels = c("-15","15-17", "18-29", "30+"))) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_age_2022) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_age_2022), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_age_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_age_2022)
+```
+
+```{r}
+rm(age_total, age_2010, age_2016, age_2022)
+```
+
+variable:s108n
+```{r}
+#EDUC grupos
+
+grupos_educ <- list(None_Primary = c(0:1), Sec = c(2), Higher = c(3:6))
+
+# EDUC TOTAL
+
+# Función para calcular el porcentaje y el intervalo de confianza para cada grupo 
+porcentaje_educ <- function(data, grupos, conf_level = 0.95) {
+  resultados_total <- data %>%
+    mutate(grupo_educ = case_when(
+      s108n %in% grupos[["None_Primary"]] ~ "None/Preschool/Primary",
+      s108n %in% grupos[["Sec"]] ~ "Secondary",
+      s108n %in% grupos[["Higher"]] ~ "Higher",
+      TRUE ~ NA
+    )) %>%
+     group_by(grupo_educ) %>%
+    summarise(total = n(),
+               porcentaje = round(total / nrow(data) * 100,1),
+               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
+              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+  
+  return(resultados_total)
+}
+
+# Llamamos a la función con nuestros datos y grupos 
+resultados_educ <- porcentaje_educ(data, grupos_educ)
+
+rm(porcentaje_educ)
+
+# EDUC 2010 
+
+porcentaje_educ_2010 <- function(data, grupos, year_,conf_level = 0.95) {
+  datos_filtrados <- filter(data, year == year_)
+  total_general <- nrow(datos_filtrados)
+  
+  resultados_2010 <- datos_filtrados %>%
+    mutate(grupo_educ = case_when(
+      s108n %in% grupos[["None_Primary"]] ~ "None/Preschool/Primary",
+      s108n %in% grupos[["Sec"]] ~ "Secondary",
+      s108n %in% grupos[["Higher"]] ~ "Higher",
+      TRUE ~ NA
+    )) %>%
+     group_by(grupo_educ) %>%
+    summarise(total = n(),
+               porcentaje = round(total / total_general * 100,1),
+               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
+              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+  
+  return(resultados_2010)
+}
+
+# Llamamos a la función con nuestros datos y grupos
+year_ = 2010
+resultados_educ_2010 = porcentaje_educ_2010(data, grupos_educ, year_)
+
+rm(porcentaje_educ_2010,year_)
+
+# EDUC 2016
+
+porcentaje_educ_2016 <- function(data, grupos, year_,conf_level = 0.95) {
+  datos_filtrados <- filter(data, year == year_)
+  total_general <- nrow(datos_filtrados)
+  
+  resultados_2016 <- datos_filtrados %>%
+    mutate(grupo_educ = case_when(
+      s108n %in% grupos[["None_Primary"]] ~ "None/Preschool/Primary",
+      s108n %in% grupos[["Sec"]] ~ "Secondary",
+      s108n %in% grupos[["Higher"]] ~ "Higher",
+      TRUE ~ NA
+    )) %>%
+     group_by(grupo_educ) %>%
+    summarise(total = n(),
+               porcentaje = round(total / total_general * 100,1),
+               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
+              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+  
+  return(resultados_2016)
+}
+
+# Llamamos a la función con nuestros datos y grupos
+year_ = 2016
+resultados_educ_2016 = porcentaje_educ_2016(data, grupos_educ, year_)
+
+rm(porcentaje_educ_2016,year_)
+
+# EDUC 2023 
+
+porcentaje_educ_2022 <- function(data, grupos, year_,conf_level = 0.95) {
+  datos_filtrados <- filter(data, year == year_)
+  total_general <- nrow(datos_filtrados)
+  
+  resultados_2022 <- datos_filtrados %>%
+    mutate(grupo_educ = case_when(
+      s108n %in% grupos[["None_Primary"]] ~ "None/Preschool/Primary",
+      s108n %in% grupos[["Sec"]] ~ "Secondary",
+      s108n %in% grupos[["Higher"]] ~ "Higher",
+      TRUE ~ NA
+    )) %>%
+     group_by(grupo_educ) %>%
+    summarise(total = n(),
+               porcentaje = round(total / total_general * 100,1),
+               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
+              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+  
+  return(resultados_2022)
+}
+
+# Llamamos a la función con nuestros datos y grupos
+year_ = 2022
+resultados_educ_2022 = porcentaje_educ_2022(data, grupos_educ, year_)
+
+rm(porcentaje_educ_2022,year_)
+```
+
