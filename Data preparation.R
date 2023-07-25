@@ -979,7 +979,7 @@ violence <- violence %>% select(CASEID, D104, D106, D107, D108, D115Y,
                                 D116, D118A, D118Y, D119Y) %>%
   clean_names()
 ITS <- read_sav("./Data_endes/2014/REC91.sav")
-ITS <- ITS %>% select(CASEID, S108N, SPROVIN, SDISTRI,  
+ITS <- ITS %>% select(CASEID, S108N, sregion, SPROVIN, SDISTRI,  
                       S815AA, S815AB, S815AC, S815AD, S815AE, S815AX, S815AZ,
                       S816AA, S816AB, S816AC, S816AD, S816AE, S816AF, S816AG,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
@@ -1064,7 +1064,7 @@ sexualidad <- sexualidad %>% select(CASEID, V750, V761, V761B, V763A,
 hogar<- read_sav("./Data_endes/2013/REC0111.sav")
 hogar <- hogar %>% select(V131, CASEID, V002, V003, V007, V040, V025, V024,
                           V101, V102, V103, V136, V150, AWFACTW, 
-                          V001, V005, V022) %>%
+                          V001, V005, V022, V012) %>%
   clean_names()
 
 nino <- read_sav("./Data_endes/2013/REC21.sav")
