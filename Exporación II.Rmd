@@ -1,0 +1,225 @@
+---
+title: "Home, prenatal care"
+author: "Jazmín Qquellon"
+date: "2023-07-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+library(readr)
+library(tidyverse)
+data <- read_csv("Data_final/data_syphilis.csv")
+```
+
+
+```{r}
+#Type of residence
+
+#Total
+residence_total <- data %>%
+   dplyr::group_by(type_residence) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(data) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[2] * 100,1))
+  
+# 2010
+sub_residence_2010 <- subset(data, year == 2010)
+
+# Agrupar los datos
+residence_2010 <- sub_residence_2010  %>%
+  dplyr::group_by(type_residence) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_residence_2010) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_residence_2010), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_residence_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_residence_2010)
+
+# 2016
+sub_residence_2016 <- subset(data, year == 2016)
+
+# Agrupar los datos 
+residence_2016 <- sub_residence_2016  %>%
+  dplyr::group_by(type_residence) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_residence_2016) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_residence_2016), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_residence_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_residence_2016)
+
+# 2022
+sub_residence_2022 <- subset(data, year == 2022)
+
+# Agrupar los datos
+residence_2022 <- sub_residence_2022  %>%
+  dplyr::group_by(type_residence) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_residence_2022) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_residence_2022), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_residence_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_residence_2022)
+
+```
+
+```{r}
+#Natural region
+
+#Total
+region_total <- data %>%
+   dplyr::group_by(natural_region) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(data) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[2] * 100,1))
+  
+# 2010
+sub_region_2010 <- subset(data, year == 2010)
+
+# Agrupar los datos
+region_2010 <- sub_region_2010  %>%
+  dplyr::group_by(natural_region) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_region_2010) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_region_2010), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_region_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_region_2010)
+
+# 2016
+sub_region_2016 <- subset(data, year == 2016)
+
+# Agrupar los datos
+region_2016 <- sub_region_2016  %>%
+  dplyr::group_by(natural_region) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_region_2016) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_region_2016), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_region_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_region_2016)
+
+# 2022
+sub_region_2022 <- subset(data, year == 2022)
+
+# Agrupar los datos
+region_2022 <- sub_region_2022  %>%
+  dplyr::group_by(natural_region) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_region_2022) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_region_2022), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_region_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_region_2022)
+```
+
+```{r}
+#Wealth index
+
+#Total
+wealth_total <- data %>%
+   dplyr::group_by(wealth_index) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(data) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[2] * 100,1))
+  
+# 2010
+sub_wealth_2010 <- subset(data, year == 2010)
+
+# Agrupar los datos
+wealth_2010 <- sub_wealth_2010  %>%
+  dplyr::group_by(wealth_index) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_wealth_2010) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_wealth_2010), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_wealth_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_wealth_2010)
+
+# 2016
+sub_wealth_2016 <- subset(data, year == 2016)
+
+# Agrupar los datos 
+wealth_2016 <- sub_wealth_2016  %>%
+  dplyr::group_by(wealth_index) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_wealth_2016) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_wealth_2016), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_wealth_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_wealth_2016)
+
+# 2022
+sub_wealth_2022 <- subset(data, year == 2022)
+
+# Agrupar los datos 
+wealth_2022 <- sub_wealth_2022  %>%
+  dplyr::group_by(wealth_index) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_wealth_2022) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_wealth_2022), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_wealth_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_wealth_2022)
+```
+
+```{r}
+#Relationship with household head
+
+#Total
+household_total <- data %>%
+   dplyr::group_by(relationship_household_head) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(data) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[2] * 100,1))
+  
+# 2010
+sub_household_2010 <- subset(data, year == 2010)
+
+# Agrupar los datos 
+household_2010 <- sub_household_2010  %>%
+  dplyr::group_by(relationship_household_head) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_household_2010) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_household_2010), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_household_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_household_2010)
+
+# 2016
+sub_household_2016 <- subset(data, year == 2016)
+
+# Agrupar los datos 
+household_2016 <- sub_household_2016  %>%
+  dplyr::group_by(relationship_household_head) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_household_2016) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_household_2016), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_household_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_household_2016)
+
+# 2022
+sub_household_2022 <- subset(data, year == 2022)
+
+# Agrupar los datos
+household_2022 <- sub_household_2022  %>%
+  dplyr::group_by(relationship_household_head) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_household_2022) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_household_2022), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_household_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_household_2022)
+```
+
