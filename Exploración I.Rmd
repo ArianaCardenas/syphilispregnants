@@ -969,6 +969,8 @@ rm(year_,datos_filtrados)
 rm(syphilis2_total,syphilis2_2010,syphilis2_2016,syphilis2_2022)
 ```
 
+#Extra 
+
 Variable: know_other_sti
 ```{r}
 #OTHER STI TOTAL
