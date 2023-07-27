@@ -456,7 +456,7 @@ Variable: intended_pregnancy
 conf_level=0.95
 
 preg_total <- data %>%
-     group_by(intended_pregnancy) %>%
+     group_by(intended_pregnancy_2) %>%
     summarise(total = n(),
                porcentaje = round(total / nrow(data) * 100,1),
                intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
@@ -468,7 +468,7 @@ datos_filtrados <- filter(data, year == year_)
 total_general <- nrow(datos_filtrados)
   
 preg_2010 <- datos_filtrados %>%
-     group_by(intended_pregnancy) %>%
+     group_by(intended_pregnancy_2) %>%
     summarise(total = n(),
                porcentaje = round(total / total_general * 100,1),
                intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
@@ -482,7 +482,7 @@ datos_filtrados <- filter(data, year == year_)
 total_general <- nrow(datos_filtrados)
   
 preg_2016 <- datos_filtrados %>%
-     group_by(intended_pregnancy) %>%
+     group_by(intended_pregnancy_2) %>%
     summarise(total = n(),
                porcentaje = round(total / total_general * 100,1),
                intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
@@ -496,7 +496,7 @@ datos_filtrados <- filter(data, year == year_)
 total_general <- nrow(datos_filtrados)
   
 preg_2022 <- datos_filtrados %>%
-     group_by(intended_pregnancy) %>%
+     group_by(intended_pregnancy_2) %>%
     summarise(total = n(),
                porcentaje = round(total / total_general * 100,1),
                intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
