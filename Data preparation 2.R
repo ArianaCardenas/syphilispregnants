@@ -488,7 +488,7 @@ datafinal <- list %>%
                                           v302==2 ~ "Traditional",
                                           TRUE ~ "Modern"),
     
-    contraceptive_method_ever = case_when(is.na(v313) ~ NA,
+    contraceptive_method_currently = case_when(is.na(v313) ~ NA,
                                           v313==0 ~ "Never",
                                           v313==1 ~ "Folkloric",
                                           v313==2 ~ "Traditional",

@@ -576,9 +576,8 @@ conf_level=0.95
 physical_total <- data %>%
      group_by(emotional_violence) %>%
   mutate(grupo = case_when(
-      minor_physical_violence=="Yes"&severe_physical_violence=="Yes" ~ "Yes",
-      minor_physical_violence=="Yes"&severe_physical_violence=="No" ~ "Yes",
-      minor_physical_violence=="No"&severe_physical_violence=="Yes" ~ "Yes",
+      minor_physical_violence=="Yes"|severe_physical_violence=="No" ~ "Yes",
+      minor_physical_violence=="No"|severe_physical_violence=="Yes" ~ "Yes",
       minor_physical_violence=="No"&severe_physical_violence=="No" ~ "No"
     )) %>%
     group_by(grupo) %>%
@@ -595,9 +594,8 @@ total_general <- nrow(datos_filtrados)
 physical_2010 <- datos_filtrados %>%
   group_by(emotional_violence) %>%
   mutate(grupo = case_when(
-      minor_physical_violence=="Yes"&severe_physical_violence=="Yes" ~ "Yes",
-      minor_physical_violence=="Yes"&severe_physical_violence=="No" ~ "Yes",
-      minor_physical_violence=="No"&severe_physical_violence=="Yes" ~ "Yes",
+      minor_physical_violence=="Yes"|severe_physical_violence=="No" ~ "Yes",
+      minor_physical_violence=="No"|severe_physical_violence=="Yes" ~ "Yes",
       minor_physical_violence=="No"&severe_physical_violence=="No" ~ "No"
   )) %>%
     summarise(total = n(),
@@ -614,9 +612,8 @@ total_general <- nrow(datos_filtrados)
   
 physical_2016 <- datos_filtrados %>%
   mutate(grupo = case_when(
-      minor_physical_violence=="Yes"&severe_physical_violence=="Yes" ~ "Yes",
-      minor_physical_violence=="Yes"&severe_physical_violence=="No" ~ "Yes",
-      minor_physical_violence=="No"&severe_physical_violence=="Yes" ~ "Yes",
+      minor_physical_violence=="Yes"|severe_physical_violence=="No" ~ "Yes",
+      minor_physical_violence=="No"|severe_physical_violence=="Yes" ~ "Yes",
       minor_physical_violence=="No"&severe_physical_violence=="No" ~ "No"
   )) %>%
     summarise(total = n(),
@@ -633,9 +630,8 @@ total_general <- nrow(datos_filtrados)
   
 physical_2022 <- datos_filtrados %>%
   mutate(grupo = case_when(
-      minor_physical_violence=="Yes"&severe_physical_violence=="Yes" ~ "Yes",
-      minor_physical_violence=="Yes"&severe_physical_violence=="No" ~ "Yes",
-      minor_physical_violence=="No"&severe_physical_violence=="Yes" ~ "Yes",
+      minor_physical_violence=="Yes"|severe_physical_violence=="No" ~ "Yes",
+      minor_physical_violence=="No"|severe_physical_violence=="Yes" ~ "Yes",
       minor_physical_violence=="No"&severe_physical_violence=="No" ~ "No"
   )) %>%
     summarise(total = n(),
@@ -1035,8 +1031,8 @@ Variable: age_first_sexual_intercourse
 #AGE FIRST SEXUAL INTERCOURSE TOTAL
 age_inter_total <- data %>%
   summarise(mediana = median(age_first_sexual_intercourse, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(age_first_sexual_intercourse, 0.025, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(age_first_sexual_intercourse, 0.975, na.rm = TRUE))
+         Intervalo_Confianza_Inf = quantile(age_first_sexual_intercourse, 0.25, na.rm = TRUE),
+            Intervalo_Confianza_Sup = quantile(age_first_sexual_intercourse, 0.75, na.rm = TRUE))
 
 #AGE FIRST SEXUAL INTERCOURSE 2010
 year_ = 2010
@@ -1045,8 +1041,8 @@ total_general <- nrow(datos_filtrados)
 
 age_inter_2010 <- datos_filtrados %>%
   summarise(mediana = median(age_first_sexual_intercourse, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(age_first_sexual_intercourse, 0.025, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(age_first_sexual_intercourse, 0.975, na.rm = TRUE))
+         Intervalo_Confianza_Inf = quantile(age_first_sexual_intercourse, 0.25, na.rm = TRUE),
+            Intervalo_Confianza_Sup = quantile(age_first_sexual_intercourse, 0.75, na.rm = TRUE))
 
 rm(year_,datos_filtrados)
 
@@ -1057,8 +1053,8 @@ total_general <- nrow(datos_filtrados)
 
 age_inter_2016 <- datos_filtrados %>%
   summarise(mediana = median(age_first_sexual_intercourse, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(age_first_sexual_intercourse, 0.025, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(age_first_sexual_intercourse, 0.975, na.rm = TRUE))
+         Intervalo_Confianza_Inf = quantile(age_first_sexual_intercourse, 0.25, na.rm = TRUE),
+            Intervalo_Confianza_Sup = quantile(age_first_sexual_intercourse, 0.75, na.rm = TRUE))
 
 rm(year_,datos_filtrados)
 
@@ -1069,8 +1065,8 @@ total_general <- nrow(datos_filtrados)
 
 age_inter_2022 <- datos_filtrados %>%
   summarise(mediana = median(age_first_sexual_intercourse, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(age_first_sexual_intercourse, 0.025, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(age_first_sexual_intercourse, 0.975, na.rm = TRUE))
+         Intervalo_Confianza_Inf = quantile(age_first_sexual_intercourse, 0.25, na.rm = TRUE),
+            Intervalo_Confianza_Sup = quantile(age_first_sexual_intercourse, 0.75, na.rm = TRUE))
 
 rm(year_,datos_filtrados)
 ```
@@ -1079,13 +1075,13 @@ rm(year_,datos_filtrados)
 rm(age_inter_total,age_inter_2010,age_inter_2016,age_inter_2022)
 ```
 
-Variable: contraceptive_method_ever
+Variable: contraceptive_method_currently
 ```{r}
 #CONTRACEPTIVE METHOD TOTAL
 conf_level=0.95
 
 contraceptive_total <- data %>%
-     group_by(contraceptive_method_ever) %>%
+     group_by(contraceptive_method_currently) %>%
     summarise(total = n(),
                porcentaje = round(total / nrow(data) * 100,1),
                intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
@@ -1097,7 +1093,7 @@ datos_filtrados <- filter(data, year == year_)
 total_general <- nrow(datos_filtrados)
   
 contraceptive_2010 <- datos_filtrados %>%
-     group_by(contraceptive_method_ever) %>%
+     group_by(contraceptive_method_currently) %>%
     summarise(total = n(),
                porcentaje = round(total / total_general * 100,1),
                intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
@@ -1111,7 +1107,7 @@ datos_filtrados <- filter(data, year == year_)
 total_general <- nrow(datos_filtrados)
   
 contraceptive_2016 <- datos_filtrados %>%
-     group_by(contraceptive_method_ever) %>%
+     group_by(contraceptive_method_currently) %>%
     summarise(total = n(),
                porcentaje = round(total / total_general * 100,1),
                intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
@@ -1125,7 +1121,7 @@ datos_filtrados <- filter(data, year == year_)
 total_general <- nrow(datos_filtrados)
 
 contraceptive_2022 <- datos_filtrados %>%
-     group_by(contraceptive_method_ever) %>%
+     group_by(contraceptive_method_currently) %>%
     summarise(total = n(),
                porcentaje = round(total / total_general * 100,1),
                intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
