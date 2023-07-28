@@ -223,3 +223,438 @@ household_2022 <- sub_household_2022  %>%
 rm(sub_household_2022)
 ```
 
+```{r}
+#Total members household
+
+#Total
+members_total <- data %>%
+   dplyr::group_by(members_household) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(data) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[2] * 100,1))
+  
+# 2010
+sub_members_2010 <- subset(data, year == 2010)
+
+# Agrupar los datos 
+members_2010 <- sub_members_2010  %>%
+  dplyr::group_by(members_household) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_members_2010) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_members_2010), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_members_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_members_2010)
+
+# 2016
+sub_members_2016 <- subset(data, year == 2016)
+
+# Agrupar los datos 
+members_2016 <- sub_members_2016  %>%
+  dplyr::group_by(members_household) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_members_2016) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_members_2016), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_members_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_members_2016)
+
+# 2022
+sub_members_2022 <- subset(data, year == 2022)
+
+# Agrupar los datos
+members_2022 <- sub_members_2022  %>%
+  dplyr::group_by(members_household) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_members_2022) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_members_2022), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_members_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_members_2022)
+```
+
+```{r}
+#Social programs: Juntos
+
+#Total
+sub_juntos_total <- subset(data, year== 2014 | year==2015 | year==2016 | year==2017 | year==2018 | year==2019 | year==2020 | year==2021 | year==2022)
+
+juntos_total <- sub_juntos_total %>%
+   dplyr::group_by(juntos) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_juntos_total) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_juntos_total), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_juntos_total), conf.level = 0.95)$conf.int[2] * 100,1))
+  
+# 2010
+sub_juntos_2010 <- subset(data, year == 2010)
+
+# Agrupar los datos 
+juntos_2010 <- sub_juntos_2010  %>%
+  dplyr::group_by(juntos) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_juntos_2010) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_juntos_2010), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_juntos_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_juntos_2010)
+
+# 2016
+sub_juntos_2016 <- subset(data, year == 2016)
+
+# Agrupar los datos 
+juntos_2016 <- sub_juntos_2016  %>%
+  dplyr::group_by(juntos) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_juntos_2016) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_juntos_2016), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_juntos_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_juntos_2016)
+
+# 2022
+sub_juntos_2022 <- subset(data, year == 2022)
+
+# Agrupar los datos
+juntos_2022 <- sub_juntos_2022  %>%
+  dplyr::group_by(juntos) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_juntos_2022) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_juntos_2022), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_juntos_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_juntos_2022)
+```
+
+```{r}
+#Social programs: Wawa wasi
+
+sub_wawa_total <- subset(data, year== 2014 | year==2015 | year==2016 | year==2017 | year==2018 | year==2019 | year==2020 | year==2021 | year==2022)
+#Total
+wawa_total <- sub_wawa_total %>%
+   dplyr::group_by(wawa_wasi) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_wawa_total) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_wawa_total), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_wawa_total), conf.level = 0.95)$conf.int[2] * 100,1))
+  
+# 2010
+sub_wawa_2010 <- subset(data, year == 2010)
+
+# Agrupar los datos 
+wawa_2010 <- sub_wawa_2010  %>%
+  dplyr::group_by(wawa_wasi) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_wawa_2010) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_wawa_2010), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_wawa_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_wawa_2010)
+
+# 2016
+sub_wawa_2016 <- subset(data, year == 2016)
+
+# Agrupar los datos 
+wawa_2016 <- sub_wawa_2016  %>%
+  dplyr::group_by(wawa_wasi) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_wawa_2016) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_wawa_2016), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_wawa_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_wawa_2016)
+
+# 2022
+sub_wawa_2022 <- subset(data, year == 2022)
+
+# Agrupar los datos
+wawa_2022 <- sub_wawa_2022  %>%
+  dplyr::group_by(wawa_wasi) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_wawa_2022) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_wawa_2022), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_wawa_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_wawa_2022)
+```
+
+```{r}
+#Health insurance
+
+#Total
+insurance_total <- data %>%
+   dplyr::group_by(health_insurance) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(data) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[2] * 100,1))
+  
+# 2010
+sub_insurance_2010 <- subset(data, year == 2010)
+
+# Agrupar los datos 
+insurance_2010 <- sub_insurance_2010  %>%
+  dplyr::group_by(health_insurance) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_insurance_2010) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_insurance_2010), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_insurance_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_insurance_2010)
+
+# 2016
+sub_insurance_2016 <- subset(data, year == 2016)
+
+# Agrupar los datos 
+insurance_2016 <- sub_insurance_2016  %>%
+  dplyr::group_by(health_insurance) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_insurance_2016) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_insurance_2016), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_insurance_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_insurance_2016)
+
+# 2022
+sub_insurance_2022 <- subset(data, year == 2022)
+
+# Agrupar los datos
+insurance_2022 <- sub_insurance_2022  %>%
+  dplyr::group_by(health_insurance) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_insurance_2022) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_insurance_2022), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_insurance_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_insurance_2022)
+```
+
+```{r}
+#place of prenatal care
+
+#Total
+place_total <- data %>%
+   dplyr::group_by(place_prenatal_care) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(data) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[2] * 100,1))
+  
+# 2010
+sub_place_2010 <- subset(data, year == 2010)
+
+# Agrupar los datos 
+place_2010 <- sub_place_2010  %>%
+  dplyr::group_by(place_prenatal_care) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_place_2010) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_place_2010), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_place_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_place_2010)
+
+# 2016
+sub_place_2016 <- subset(data, year == 2016)
+
+# Agrupar los datos 
+place_2016 <- sub_place_2016  %>%
+  dplyr::group_by(place_prenatal_care) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_place_2016) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_place_2016), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_place_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_place_2016)
+
+# 2022
+sub_place_2022 <- subset(data, year == 2022)
+
+# Agrupar los datos
+place_2022 <- sub_place_2022  %>%
+  dplyr::group_by(place_prenatal_care) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_place_2022) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_place_2022), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_place_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_place_2022)
+```
+
+```{r}
+#professional level of prenatal care
+
+#Total
+provider_total <- data %>%
+   dplyr::group_by(prenatal_care_provider) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(data) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[2] * 100,1))
+  
+# 2010
+sub_provider_2010 <- subset(data, year == 2010)
+
+# Agrupar los datos 
+provider_2010 <- sub_provider_2010  %>%
+  dplyr::group_by(prenatal_care_provider) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_provider_2010) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_provider_2010), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_provider_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_provider_2010)
+
+# 2016
+sub_provider_2016 <- subset(data, year == 2016)
+
+# Agrupar los datos 
+provider_2016 <- sub_provider_2016  %>%
+  dplyr::group_by(prenatal_care_provider) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_provider_2016) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_provider_2016), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_provider_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_provider_2016)
+
+# 2022
+sub_provider_2022 <- subset(data, year == 2022)
+
+# Agrupar los datos
+provider_2022 <- sub_provider_2022  %>%
+  dplyr::group_by(prenatal_care_provider) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_provider_2022) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_provider_2022), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_provider_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_provider_2022)
+```
+
+```{r}
+#Size of child at birth
+
+#Total
+size_total <- data %>%
+   mutate(size_final = case_when(
+      size_birth == "large"| size_birth == "very large"  ~ "large/very large",
+      size_birth == "normal" ~ "normal",
+      size_birth == "small"| size_birth == "very_small"  ~ "small/very small",
+      TRUE ~ NA
+    )) %>%
+   dplyr::group_by(size_final) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(data) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[2] * 100,1))
+  
+# 2010
+sub_size_2010 <- subset(data, year == 2010)
+
+# Agrupar los datos 
+size_2010 <- sub_size_2010  %>%
+     mutate(size_final = case_when(
+      size_birth == "large"| size_birth == "very large"  ~ "large/very large",
+      size_birth == "normal" ~ "normal",
+      size_birth == "small"| size_birth == "very_small"  ~ "small/very small",
+      TRUE ~ NA
+    )) %>%
+  dplyr::group_by(size_final) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_size_2010) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_size_2010), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_size_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_size_2010)
+
+# 2016
+sub_size_2016 <- subset(data, year == 2016)
+
+# Agrupar los datos 
+size_2016 <- sub_size_2016  %>%
+     mutate(size_final = case_when(
+      size_birth == "large"| size_birth == "very large"  ~ "large/very large",
+      size_birth == "normal" ~ "normal",
+      size_birth == "small"| size_birth == "very_small"  ~ "small/very small",
+      TRUE ~ NA
+    )) %>%
+  dplyr::group_by(size_final) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_size_2016) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_size_2016), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_size_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_size_2016)
+
+# 2022
+sub_size_2022 <- subset(data, year == 2022)
+
+# Agrupar los datos
+size_2022 <- sub_size_2022  %>%
+     mutate(size_final = case_when(
+      size_birth == "large"| size_birth == "very large"  ~ "large/very large",
+      size_birth == "normal" ~ "normal",
+      size_birth == "small"| size_birth == "very_small"  ~ "small/very small",
+      TRUE ~ NA
+    )) %>%
+  dplyr::group_by(size_final) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_size_2022) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_size_2022), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_size_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_size_2022)
+```
+
+```{r}
+#Weight of child at birth
+
+#Total
+weight_total <- data %>%
+  dplyr::group_by(weight_birth) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(data) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[2] * 100,1))
+  
+# 2010
+sub_weight_2010 <- subset(data, year == 2010)
+
+# Agrupar los datos 
+weight_2010 <- sub_weight_2010  %>%
+  dplyr::group_by(weight_birth) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_weight_2010) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_weight_2010), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_weight_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_weight_2010)
+
+# 2016
+sub_weight_2016 <- subset(data, year == 2016)
+
+# Agrupar los datos 
+weight_2016 <- sub_weight_2016  %>%
+  dplyr::group_by(weight_birth) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_weight_2016) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_weight_2016), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_weight_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_weight_2016)
+
+# 2022
+sub_weight_2022 <- subset(data, year == 2022)
+
+# Agrupar los datos
+weight_2022 <- sub_weight_2022  %>%
+  dplyr::group_by(weight_birth) %>%
+  dplyr::summarise(total_observaciones = n(),
+            porcentaje = round(total_observaciones / nrow(sub_weight_2022) * 100,1),
+            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_weight_2022), conf.level = 0.95)$conf.int[1] * 100,1),
+            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_weight_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+
+rm(sub_weight_2022)
+```
+
