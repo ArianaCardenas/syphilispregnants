@@ -1,0 +1,59 @@
+---
+title: "Mapas I"
+output: html_document
+date: "2023-07-28"
+---
+
+```{r}
+library(sf)
+library(purrr)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+library(readr)
+```
+
+```{r}
+data_ubigeo <- read_csv("Data_final/data_ubigeo_innovalab.csv")
+provincias <- read_sf("Límites - mapas/PROVINCIAS_inei_geogpsperu_suyopomalia.shp")
+data_syphilis <- read_csv("Data_final/data_syphilis.csv")
+```
+
+```{r}
+data_ubigeo_macroregion = data_ubigeo %>%
+mutate(
+  Macrozona = ifelse(NOMBDEP=="TUMBES"|NOMBDEP=="PIURA"|NOMBDEP=="LAMBAYEQUE"|NOMBDEP=="LA LIBERTAD"|NOMBDEP=="ANCASH"| NOMBDEP=="CAJAMARCA"&NOMBPROV!="SAN IGNACIO"|NOMBDEP=="CAJAMARCA"&NOMBPROV!="JAEN"| NOMBDEP=="AMAZONAS"&NOMBPROV=="LUYA"|NOMBDEP=="AMAZONAS"&NOMBPROV=="CHACHAPOYAS", "Norte", ifelse(NOMBDEP=="LORETO"|NOMBDEP=="UCAYALI"|NOMBDEP=="SAN MARTIN"|NOMBDEP=="MADRE DE DIOS"|NOMBDEP=="CAJAMARCA"&NOMBPROV=="SAN IGNACIO"|NOMBDEP=="CAJAMARCA"&NOMBPROV=="JAEN"| NOMBDEP=="AMAZONAS"&NOMBPROV!="LUYA"|NOMBDEP=="AMAZONAS"&NOMBPROV!="CHACHAPOYAS"|NOMBDEP=="HUANUCO"&NOMBPROV=="MARAÑON"|NOMBDEP=="HUANUCO"&NOMBPROV=="LEONCIO PRADO"|NOMBDEP=="HUANUCO"&NOMBPROV=="PUERTO INCA"|NOMBDEP=="PASCO"&NOMBPROV=="OXAPAMPA"|NOMBDEP=="JUNIN"&NOMBPROV=="CHANCHAMAYO"|NOMBDEP=="JUNIN"&NOMBPROV=="SATIPO"|NOMBDEP=="CUSCO"&NOMBPROV==" LA CONVECION","Selva", ifelse(NOMBDEP=="HUANCAVELICA"|NOMBDEP=="LIMA"&NOMBPROV!="LIMA"|NOMBDEP=="HUANUCO"&NOMBPROV!="MARAÑON"|NOMBDEP=="HUANUCO"&NOMBPROV!="LEONCIO PRADO"|NOMBDEP=="HUANUCO"&NOMBPROV!="PUERTO INCA"|NOMBDEP=="PASCO"&NOMBPROV!="OXAPAMPA"|NOMBDEP=="JUNIN"&NOMBPROV!="CHANCHAMAYO"|NOMBDEP=="JUNIN"&NOMBPROV!="SATIPO","Centro", ifelse(NOMBDEP=="LIMA"&NOMBPROV=="LIMA"|NOMBDEP=="CALLAO","Lima Metropolitana",         ifelse(NOMBDEP=="ICA"|NOMBDEP=="AYACUCHO"|NOMBDEP=="AREQUIPA"|NOMBDEP=="MOQUEGUA"|NOMBDEP=="TACNA"|NOMBDEP=="PUNO"|NOMBDEP=="APURIMAC"|NOMBDEP=="CUSCO"&NOMBPROV!=" LA CONVENCION","Sur","Por definir"))))))
+```
+
+```{r}
+#write.csv(data_ubigeo_macroregion,"./Data_final/data_ubigeo_macroregion.csv", row.names = F)
+```
+
+```{r}
+data_mapas <- data_syphilis%>% 
+  left_join(data_ubigeo_macroregion, by = c("caseid","year"))
+
+data_mapas <- data_mapas %>%
+  left_join(provincias, by = c("CCPP","CCDD","NOMBDEP","NOMBPROV"))
+
+rm(data_ubigeo,data_syphilis,data_ubigeo_macroregion,provincias)
+```
+
+```{r}
+datos_filtrados <- data_mapas %>%
+  filter(syphilis_screening == "Yes", !is.na(Macrozona), year == 2010) %>%
+  group_by(Macrozona, year, geometry) %>%
+  mutate(
+    sum_syphilis_screening = ifelse(syphilis_screening=="Yes",1,0),
+  ) %>%
+  summarise(
+    sum_syphilis_screening = sum(sum_syphilis_screening)
+  )
+```
+
+```{r}
+ggplot(datos_filtrados) +
+  geom_sf(aes(geometry = geometry, fill = sum_syphilis_screening)) 
+```
+
+
