@@ -773,9 +773,9 @@ conf_level=0.95
 
 child_total <- data %>%
  mutate(grupo_child = case_when(
-      total_children_born == "0"|total_children_born == "1"  ~ "0-1",
-      total_children_born == "2"|total_children_born == "3"  ~ "2-3",
-      total_children_born == "4"|total_children_born == "More than 4"  ~ "More than 3",
+      v219 <= 1  ~ "0-1",
+      v219 == 2 | v219 == 3  ~ "2-3",
+      v219 >= 4  ~ "More than 3",
       TRUE ~ NA
     )) %>%
      group_by(grupo_child) %>%
@@ -791,9 +791,9 @@ total_general <- nrow(datos_filtrados)
   
 child_2010 <- datos_filtrados %>%
  mutate(grupo_child = case_when(
-      total_children_born == "0"|total_children_born == "1"  ~ "0-1",
-      total_children_born == "2"|total_children_born == "3"  ~ "2-3",
-      total_children_born == "4"|total_children_born == "More than 4"  ~ "More than 3",
+      v219 <= 1  ~ "0-1",
+      v219 == 2 | v219 == 3  ~ "2-3",
+      v219 >= 4  ~ "More than 3",
       TRUE ~ NA
     )) %>%
      group_by(grupo_child) %>%
@@ -811,9 +811,9 @@ total_general <- nrow(datos_filtrados)
   
 child_2016 <- datos_filtrados %>%
  mutate(grupo_child = case_when(
-      total_children_born == "0"|total_children_born == "1"  ~ "0-1",
-      total_children_born == "2"|total_children_born == "3"  ~ "2-3",
-      total_children_born == "4"|total_children_born == "More than 4"  ~ "More than 3",
+      v219 <= 1  ~ "0-1",
+      v219 == 2 | v219 == 3  ~ "2-3",
+      v219 >= 4  ~ "More than 3",
       TRUE ~ NA
     )) %>%
      group_by(grupo_child) %>%
@@ -831,9 +831,9 @@ total_general <- nrow(datos_filtrados)
   
 child_2022 <- datos_filtrados %>%
  mutate(grupo_child = case_when(
-      total_children_born == "0"|total_children_born == "1"  ~ "0-1",
-      total_children_born == "2"|total_children_born == "3"  ~ "2-3",
-      total_children_born == "4"|total_children_born == "More than 4"  ~ "More than 3",
+      v219 <= 1  ~ "0-1",
+      v219 == 2 | v219 == 3  ~ "2-3",
+      v219 >= 4  ~ "More than 3",
       TRUE ~ NA
     )) %>%
      group_by(grupo_child) %>%
