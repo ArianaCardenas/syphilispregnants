@@ -16,6 +16,7 @@ library(readr)
 ```{r}
 data_ubigeo <- read_csv("Data_final/data_ubigeo_innovalab.csv")
 provincias <- read_sf("Límites - mapas/PROVINCIAS_inei_geogpsperu_suyopomalia.shp")
+departamentos <- read_sf("Límites - mapas/DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp")
 data_syphilis <- read_csv("Data_final/data_syphilis.csv")
 ```
 
@@ -34,15 +35,17 @@ data_mapas <- data_syphilis%>%
   left_join(data_ubigeo_macroregion, by = c("caseid","year"))
 
 data_mapas <- data_mapas %>%
-  left_join(provincias, by = c("CCPP","CCDD","NOMBDEP","NOMBPROV"))
+  left_join(departamentos, by = c("CCDD","NOMBDEP"))
+  #left_join(provincias, by = c("CCPP","CCDD","NOMBDEP","NOMBPROV"))
 
-rm(data_ubigeo,data_syphilis,data_ubigeo_macroregion,provincias)
+rm(data_ubigeo,data_syphilis,data_ubigeo_macroregion,provincias,departamentos)
 ```
 
 ```{r}
 datos_filtrados <- data_mapas %>%
-  filter(syphilis_screening == "Yes", !is.na(Macrozona), year == 2010) %>%
-  group_by(Macrozona, year, geometry) %>%
+  filter(syphilis_screening == "Yes", year == 2010) %>%
+  #filter(syphilis_screening == "Yes", !is.na(Macrozona), year == 2010) %>%
+  group_by(NOMBDEP, year, geometry) %>%
   mutate(
     sum_syphilis_screening = ifelse(syphilis_screening=="Yes",1,0),
   ) %>%
