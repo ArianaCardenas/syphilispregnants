@@ -71,6 +71,10 @@ rm(sub_residence_2022)
 ```
 
 ```{r}
+rm(residence_total,residence_2010, residence_2016, residence_2022)
+```
+
+```{r}
 #Natural region
 
 #Total
@@ -119,6 +123,10 @@ region_2022 <- sub_region_2022  %>%
             intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_region_2022), conf.level = 0.95)$conf.int[2] * 100,1))
 
 rm(sub_region_2022)
+```
+
+```{r}
+rm(region_total,region_2010, region_2016, region_2022)
 ```
 
 ```{r}
@@ -173,6 +181,10 @@ rm(sub_wealth_2022)
 ```
 
 ```{r}
+rm(wealth_total,wealth_2010, wealth_2016, wealth_2022)
+```
+
+```{r}
 #Relationship with household head
 
 #Total
@@ -221,6 +233,10 @@ household_2022 <- sub_household_2022  %>%
             intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_household_2022), conf.level = 0.95)$conf.int[2] * 100,1))
 
 rm(sub_household_2022)
+```
+
+```{r}
+rm(household_total,household_2010, household_2016, household_2022)
 ```
 
 ```{r}
@@ -275,6 +291,10 @@ rm(sub_members_2022)
 ```
 
 ```{r}
+rm(members_total,members_2010, members_2016, members_2022)
+```
+
+```{r}
 #Social programs: Juntos
 
 #Total
@@ -286,7 +306,9 @@ juntos_total <- sub_juntos_total %>%
             porcentaje = round(total_observaciones / nrow(sub_juntos_total) * 100,1),
             intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_juntos_total), conf.level = 0.95)$conf.int[1] * 100,1),
             intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_juntos_total), conf.level = 0.95)$conf.int[2] * 100,1))
-  
+
+rm(sub_juntos_total)
+   
 # 2010
 sub_juntos_2010 <- subset(data, year == 2010)
 
@@ -328,6 +350,10 @@ rm(sub_juntos_2022)
 ```
 
 ```{r}
+rm(juntos_total,juntos_2010, juntos_2016, juntos_2022)
+```
+
+```{r}
 #Social programs: Wawa wasi
 
 sub_wawa_total <- subset(data, year== 2014 | year==2015 | year==2016 | year==2017 | year==2018 | year==2019 | year==2020 | year==2021 | year==2022)
@@ -339,6 +365,8 @@ wawa_total <- sub_wawa_total %>%
             intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_wawa_total), conf.level = 0.95)$conf.int[1] * 100,1),
             intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_wawa_total), conf.level = 0.95)$conf.int[2] * 100,1))
   
+rm(sub_wawa_total)
+
 # 2010
 sub_wawa_2010 <- subset(data, year == 2010)
 
@@ -377,6 +405,10 @@ wawa_2022 <- sub_wawa_2022  %>%
             intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_wawa_2022), conf.level = 0.95)$conf.int[2] * 100,1))
 
 rm(sub_wawa_2022)
+```
+
+```{r}
+rm(wawa_total,wawa_2010, wawa_2016, wawa_2022)
 ```
 
 ```{r}
@@ -431,6 +463,10 @@ rm(sub_insurance_2022)
 ```
 
 ```{r}
+rm(insurance_total,insurance_2010, insurance_2016, insurance_2022)
+```
+
+```{r}
 #place of prenatal care
 
 #Total
@@ -482,6 +518,10 @@ rm(sub_place_2022)
 ```
 
 ```{r}
+rm(place_total,place_2010, place_2016, place_2022)
+```
+
+```{r}
 #professional level of prenatal care
 
 #Total
@@ -530,6 +570,10 @@ provider_2022 <- sub_provider_2022  %>%
             intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_provider_2022), conf.level = 0.95)$conf.int[2] * 100,1))
 
 rm(sub_provider_2022)
+```
+
+```{r}
+rm(provider_total, provider_2010, provider_2016, provider_2022)
 ```
 
 ```{r}
@@ -608,6 +652,10 @@ rm(sub_size_2022)
 ```
 
 ```{r}
+rm(size_total, size_2010, size_2016, size_2022)
+```
+
+```{r}
 #Weight of child at birth
 
 #Total
@@ -656,5 +704,105 @@ weight_2022 <- sub_weight_2022  %>%
             intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_weight_2022), conf.level = 0.95)$conf.int[2] * 100,1))
 
 rm(sub_weight_2022)
+```
+
+```{r}
+rm(weight_total, weight_2010, weight_2016, weight_2022)
+```
+
+```{r}
+#MONTHS OF THE FIRST PRENATAL VISIT
+month_total <- data %>%
+  summarise(mediana = median(first_prenatal_visit_1, na.rm=TRUE),
+         Intervalo_Confianza_Inf = quantile(first_prenatal_visit_1, 0.25, na.rm = TRUE),
+            Intervalo_Confianza_Sup = quantile(first_prenatal_visit_1, 0.75, na.rm = TRUE))
+
+#AGE FIRST SEXUAL INTERCOURSE 2010
+year_ = 2010
+datos_filtrados <- filter(data, year == year_)
+total_general <- nrow(datos_filtrados)
+
+month_2010 <- datos_filtrados %>%
+  summarise(mediana = median(first_prenatal_visit_1, na.rm=TRUE),
+         Intervalo_Confianza_Inf = quantile(first_prenatal_visit_1, 0.25, na.rm = TRUE),
+            Intervalo_Confianza_Sup = quantile(first_prenatal_visit_1, 0.75, na.rm = TRUE))
+
+rm(year_,datos_filtrados)
+
+#AGE FIRST SEXUAL INTERCOURSE 2016
+year_ = 2016
+datos_filtrados <- filter(data, year == year_)
+total_general <- nrow(datos_filtrados)
+
+month_2016 <- datos_filtrados %>%
+  summarise(mediana = median(first_prenatal_visit_1, na.rm=TRUE),
+         Intervalo_Confianza_Inf = quantile(first_prenatal_visit_1, 0.25, na.rm = TRUE),
+            Intervalo_Confianza_Sup = quantile(first_prenatal_visit_1, 0.75, na.rm = TRUE))
+
+rm(year_,datos_filtrados)
+
+#AGE FIRST SEXUAL INTERCOURSE 2022
+year_ = 2022
+datos_filtrados <- filter(data, year == year_)
+total_general <- nrow(datos_filtrados)
+
+month_2022 <- datos_filtrados %>%
+  summarise(mediana = median(first_prenatal_visit_1, na.rm=TRUE),
+         Intervalo_Confianza_Inf = quantile(first_prenatal_visit_1, 0.25, na.rm = TRUE),
+            Intervalo_Confianza_Sup = quantile(first_prenatal_visit_1, 0.75, na.rm = TRUE))
+
+rm(year_,datos_filtrados)
+```
+
+```{r}
+rm(month_total,month_2010, month_2016, month_2022)
+```
+
+```{r}
+#NUMBER OF THE PRENATAL VISITS
+number_total <- data %>%
+  summarise(mediana = median(number_prenatal_visits_1, na.rm=TRUE),
+         Intervalo_Confianza_Inf = quantile(number_prenatal_visits_1, 0.25, na.rm = TRUE),
+            Intervalo_Confianza_Sup = quantile(number_prenatal_visits_1, 0.75, na.rm = TRUE))
+
+#AGE FIRST SEXUAL INTERCOURSE 2010
+year_ = 2010
+datos_filtrados <- filter(data, year == year_)
+total_general <- nrow(datos_filtrados)
+
+number_2010 <- datos_filtrados %>%
+  summarise(mediana = median(number_prenatal_visits_1, na.rm=TRUE),
+         Intervalo_Confianza_Inf = quantile(number_prenatal_visits_1, 0.25, na.rm = TRUE),
+            Intervalo_Confianza_Sup = quantile(number_prenatal_visits_1, 0.75, na.rm = TRUE))
+
+rm(year_,datos_filtrados)
+
+#AGE FIRST SEXUAL INTERCOURSE 2016
+year_ = 2016
+datos_filtrados <- filter(data, year == year_)
+total_general <- nrow(datos_filtrados)
+
+number_2016 <- datos_filtrados %>%
+  summarise(mediana = median(number_prenatal_visits_1, na.rm=TRUE),
+         Intervalo_Confianza_Inf = quantile(number_prenatal_visits_1, 0.25, na.rm = TRUE),
+            Intervalo_Confianza_Sup = quantile(number_prenatal_visits_1, 0.75, na.rm = TRUE))
+
+rm(year_,datos_filtrados)
+
+#AGE FIRST SEXUAL INTERCOURSE 2022
+year_ = 2022
+datos_filtrados <- filter(data, year == year_)
+total_general <- nrow(datos_filtrados)
+
+number_2022 <- datos_filtrados %>%
+  summarise(mediana = median(number_prenatal_visits_1, na.rm=TRUE),
+         Intervalo_Confianza_Inf = quantile(number_prenatal_visits_1, 0.25, na.rm = TRUE),
+            Intervalo_Confianza_Sup = quantile(number_prenatal_visits_1, 0.75, na.rm = TRUE))
+
+rm(year_,datos_filtrados)
+```
+
+```{r}
+rm(number_total,number_2010, number_2016, number_2022)
 ```
 
