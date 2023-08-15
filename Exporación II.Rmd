@@ -14,14 +14,35 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(readr)
 library(tidyverse)
+library(survey)
+library(dplyr)
 data <- read_csv("Data_final/data_syphilis.csv")
 ```
 
+```{r}
+design <- svydesign(id = ~v001,
+                       strata = ~v022,
+                       weights = ~v005,
+                       nest = TRUE,
+                       data = data)
+
+options(survey.lonely.psu="adjust")
+```
+
+```{r}
+residence_total <- svymean(~type_residence, design = mi_diseño, na.rm = TRUE)
+print(residence_total)
+
+conf_interval <- confint(residence_total, level = 0.95)
+print(conf_interval)
+
+```
 
 ```{r}
 #Type of residence
 
 #Total
+
 residence_total <- data %>%
    dplyr::group_by(type_residence) %>%
   dplyr::summarise(total_observaciones = n(),
