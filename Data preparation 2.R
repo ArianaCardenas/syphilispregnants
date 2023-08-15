@@ -605,9 +605,28 @@ df_ubigeo_2022 <- df_syphilis %>%
 ### Uniendo con los datos de ubicación*
 data_ubigeo_innovalab_2021 <- read_csv("./data_final/data_ubigeo_innovalab.csv")
 data_ubigeo_2021 <- data_ubigeo_innovalab_2021 %>% 
-  select(caseid, year, NOMBDEP, NOMBPROV, NOMBDIST, CAPITAL, UBIGEO, DESCRIPCIO)
+  rename(
+    DEPARTAMEN = NOMBDEP,
+    PROVINCIA = NOMBPROV,
+    DISTRITO = NOMBDIST
+  ) %>% 
+  select(caseid, year, DEPARTAMEN, PROVINCIA, DISTRITO)
+    
+data_ubigeo_2022 <- read_csv("./data_final/data_ubigeo_2022_innova.csv") %>% 
+  select(caseid, year, DEPARTAMEN, PROVINCIA, DISTRITO)
+  
+data_ubigeos_final <- rbind(data_ubigeo_2021, data_ubigeo_2022) %>% 
+  clean_names() %>% 
+  rename(department_ubigeo = departamen)
+ 
+### Uniendo con los datos de ubicación para obtener la ultima versión:
 
-data_syphilis_final <- data_syphilis%>% 
-  left_join(data_ubigeo_2021, by = c("caseid","year"))
+data_syphilis_final <- data_syphilis %>% 
+  left_join(data_ubigeos_final, by = c("caseid", "year"))
 
 #write.csv(data_syphilis_final,"./data_final/data_syphilis.csv", row.names = F)
+
+
+
+
+
