@@ -314,5 +314,5 @@ ggplot() +
 ```
 
 ```{r}
-rm(data_grafico_2022)
+rm(data_grafico_2022, data_grafico_year)
 ```
