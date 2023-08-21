@@ -8,147 +8,148 @@ date: "2023-07-21"
 ```{r}
 library(readr)
 library(tidyverse)
+library(survey)
 data <- read_csv("Data_final/data_syphilis.csv")
 ```
 
 #Tabla 1. Individual-level charateristic of women
 
+```{r}
+data = data %>%
+    mutate(
+      education_level_reco = case_when(education_level == "None/Preschool"|education_level == "Primary"  ~ "None/Preschool/Primary",
+      education_level == "Secondary" ~ "Secondary",
+      education_level == "Higher"  ~ "Higher",
+      TRUE ~ NA),
+      violence_physical = case_when(
+      minor_physical_violence=="Yes"&severe_physical_violence=="No" ~ "Yes",
+      minor_physical_violence=="Yes"&severe_physical_violence=="Yes" ~ "Yes",
+      minor_physical_violence=="No"&severe_physical_violence=="Yes" ~ "Yes",
+      minor_physical_violence=="No"&severe_physical_violence=="No" ~ "No",
+      TRUE ~ NA),
+      children_born = case_when(
+      v219 <= 1  ~ "0-1",
+      v219 == 2 | v219 == 3  ~ "2-3",
+      v219 >= 4  ~ "More than 3",
+      TRUE ~ NA)) 
+      
+# Crear el diseño de muestreo estratificado y anidado
+design_total <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data)
+
+options(survey.lonely.psu="adjust")
+
+#2010
+data_filtered_2010 <- data %>%
+  filter(year==2010)
+
+# Crear el diseño de muestreo estratificado y anidado
+design_2010 <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_filtered_2010)
+
+options(survey.lonely.psu="adjust")
+
+#2016
+data_filtered_2016 <- data %>%
+  filter(year==2016)
+
+# Crear el diseño de muestreo estratificado y anidado
+design_2016 <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_filtered_2016)
+
+options(survey.lonely.psu="adjust")
+
+#2022
+data_filtered_2022 <- data %>%
+  filter(year==2022)
+
+# Crear el diseño de muestreo estratificado y anidado
+design_2022 <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_filtered_2022)
+
+options(survey.lonely.psu="adjust")
+```
+
+```{r}
+rm(data_filtered_2010,data_filtered_2016,data_filtered_2022)
+```
+
 Variable: age_mother
 ```{r}
 #AGE TOTAL
-conf_level=0.95
+age_mother_total = svymean(~age_mother, design_total,na.rm=TRUE)
 
-age_total <- data %>%
-     group_by(age_mother) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+age_mother_total_1 = age_mother_total*100
+age_mother_total_2 = confint(age_mother_total*100)
+
+age_mother_total = data.frame(age_mother_total_1,age_mother_total_2)
+rm(age_mother_total_1,age_mother_total_2)
 
 #AGE 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-age_2010 <- datos_filtrados %>%
-     group_by(age_mother) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+age_mother_2010 <- svymean(~age_mother, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+age_mother_2010_1 = age_mother_2010*100
+age_mother_2010_2 = confint(age_mother_2010*100)
 
-#AGE 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-age_2016 <- datos_filtrados %>%
-     group_by(age_mother) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+age_mother_2010 = data.frame(age_mother_2010_1,age_mother_2010_2)
+rm(age_mother_2010_1,age_mother_2010_2)
 
-rm(year_,datos_filtrados)
+#AGE 2016 
+age_mother_2016 <- svymean(~age_mother, design_2016,na.rm=TRUE)
+
+age_mother_2016_1 = age_mother_2016*100
+age_mother_2016_2 = confint(age_mother_2016*100)
+
+age_mother_2016 = data.frame(age_mother_2016_1,age_mother_2016_2)
+rm(age_mother_2016_1,age_mother_2016_2)
 
 #AGE 2022
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-age_2022 <- datos_filtrados %>%
-     group_by(age_mother) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+age_mother_2022 <- svymean(~age_mother, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+age_mother_2022_1 = age_mother_2022*100
+age_mother_2022_2 = confint(age_mother_2022*100)
+
+age_mother_2022 = data.frame(age_mother_2022_1,age_mother_2022_2)
+rm(age_mother_2022_1,age_mother_2022_2)
 ```
 
 ```{r}
-rm(age_total,age_2010,age_2016,age_2022)
+rm(age_mother_total,age_mother_2010,age_mother_2016,age_mother_2022)
 ```
 
-variable: education_level
+variable: education_level (education_level_reco)
 ```{r}
 #EDUC TOTAL
-conf_level=0.95
+educ_total = svymean(~education_level_reco, design_total,na.rm=TRUE)
 
-educ_total <- data %>%
-    mutate(grupo_educ = case_when(
-      education_level == "None/Preschool"|education_level == "Primary"  ~ "None/Preschool/Primary",
-      education_level == "Secondary" ~ "Secondary",
-      education_level == "Higher"  ~ "Higher",
-      TRUE ~ NA
-    )) %>%
-     group_by(grupo_educ) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
-  
+educ_total_1 = educ_total*100
+educ_total_2 = confint(educ_total*100)
+
+educ_total = data.frame(educ_total_1,educ_total_2)
+rm(educ_total_1,educ_total_2)
+
 #EDUC 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-educ_2010 <- datos_filtrados %>%
- mutate(grupo_educ = case_when(
-      education_level == "None/Preschool"|education_level == "Primary"  ~ "None/Preschool/Primary",
-      education_level == "Secondary" ~ "Secondary",
-      education_level == "Higher"  ~ "Higher",
-      TRUE ~ NA
-    )) %>%
-     group_by(grupo_educ) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+educ_2010 = svymean(~education_level_reco, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+educ_2010_1 = educ_2010*100
+educ_2010_2 = confint(educ_2010*100)
+
+educ_2010 = data.frame(educ_2010_1,educ_2010_2)
+rm(educ_2010_1,educ_2010_2)
 
 #EDUC 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-educ_2016 <- datos_filtrados %>%
- mutate(grupo_educ = case_when(
-      education_level == "None/Preschool"|education_level == "Primary"  ~ "None/Preschool/Primary",
-      education_level == "Secondary" ~ "Secondary",
-      education_level == "Higher"  ~ "Higher",
-      TRUE ~ NA
-    )) %>%
-     group_by(grupo_educ) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+educ_2016 = svymean(~education_level_reco, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+educ_2016_1 = educ_2016*100
+educ_2016_2 = confint(educ_2016*100)
+
+educ_2016 = data.frame(educ_2016_1,educ_2016_2)
+rm(educ_2016_1,educ_2016_2)
 
 #EDUC 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-educ_2022 <- datos_filtrados %>%
- mutate(grupo_educ = case_when(
-      education_level == "None/Preschool"|education_level == "Primary"  ~ "None/Preschool/Primary",
-      education_level == "Secondary" ~ "Secondary",
-      education_level == "Higher"  ~ "Higher",
-      TRUE ~ NA
-    )) %>%
-     group_by(grupo_educ) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+educ_2022 = svymean(~education_level_reco, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+educ_2022_1 = educ_2022*100
+educ_2022_2 = confint(educ_2022*100)
+
+educ_2022 = data.frame(educ_2022_1,educ_2022_2)
+rm(educ_2022_1,educ_2022_2)
 ```
 
 ```{r}
@@ -158,56 +159,40 @@ rm(educ_total,educ_2010,educ_2016,educ_2022)
 variable: marital_status
 ```{r}
 #STATUS TOTAL
-conf_level=0.95
+status_total = svymean(~marital_status, design_total,na.rm=TRUE)
 
-status_total <- data %>%
-     group_by(marital_status) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+status_total_1 = status_total*100
+status_total_2 = confint(status_total*100)
+
+status_total = data.frame(status_total_1,status_total_2)
+rm(status_total_1,status_total_2)
 
 #STATUS 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-status_2010 <- datos_filtrados %>%
-     group_by(marital_status) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+status_2010 = svymean(~marital_status, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+status_2010_1 = status_2010*100
+status_2010_2 = confint(status_2010*100)
+
+status_2010 = data.frame(status_2010_1,status_2010_2)
+rm(status_2010_1,status_2010_2)
 
 #STATUS 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-status_2016 <- datos_filtrados %>%
-     group_by(marital_status) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+status_2016 = svymean(~marital_status, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+status_2016_1 = status_2016*100
+status_2016_2 = confint(status_2016*100)
+
+status_2016 = data.frame(status_2016_1,status_2016_2)
+rm(status_2016_1,status_2016_2)
 
 #STATUS 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-status_2022 <- datos_filtrados %>%
-     group_by(marital_status) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+status_2022 = svymean(~marital_status, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+status_2022_1 = status_2022*100
+status_2022_2 = confint(status_2022*100)
+
+status_2022 = data.frame(status_2022_1,status_2022_2)
+rm(status_2022_1,status_2022_2)
 ```
 
 ```{r}
@@ -217,56 +202,40 @@ rm(status_total,status_2010,status_2016,status_2022)
 variable: ethnicity
 ```{r}
 #ETHNICITY TOTAL
-conf_level=0.95
+et_total = svymean(~ethnicity, design_total,na.rm=TRUE)
 
-et_total <- data %>%
-     group_by(ethnicity) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+et_total_1 = et_total*100
+et_total_2 = confint(et_total*100)
+
+et_total = data.frame(et_total_1,et_total_2)
+rm(et_total_1,et_total_2)
   
 #ETHNICITY 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-et_2010 <- datos_filtrados %>%
-     group_by(ethnicity) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+et_2010 = svymean(~ethnicity, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+et_2010_1 = et_2010*100
+et_2010_2 = confint(et_2010*100)
+
+et_2010 = data.frame(et_2010_1,et_2010_2)
+rm(et_2010_1,et_2010_2)
 
 #ETHNICITY 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-et_2016 <- datos_filtrados %>%
-     group_by(ethnicity) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+et_2016 = svymean(~ethnicity, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+et_2016_1 = et_2016*100
+et_2016_2 = confint(et_2016*100)
+
+et_2016 = data.frame(et_2016_1,et_2016_2)
+rm(et_2016_1,et_2016_2)
 
 #ETHNICITY 2022
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-et_2022 <- datos_filtrados %>%
-     group_by(ethnicity) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+et_2022 = svymean(~ethnicity, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+et_2022_1 = et_2022*100
+et_2022_2 = confint(et_2022*100)
+
+et_2022 = data.frame(et_2022_1,et_2022_2)
+rm(et_2022_1,et_2022_2)
 ```
 
 ```{r}
@@ -276,56 +245,40 @@ rm(et_total,et_2010,et_2016,et_2022)
 variable: know_syphilis
 ```{r}
 #KNOW SYPHILIS TOTAL
-conf_level=0.95
+syphilis_total = svymean(~know_syphilis, design_total,na.rm=TRUE)
 
-syphilis_total <- data %>%
-     group_by(know_syphilis) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+syphilis_total_1 = syphilis_total*100
+syphilis_total_2 = confint(syphilis_total*100)
+
+syphilis_total = data.frame(syphilis_total_1,syphilis_total_2)
+rm(syphilis_total_1,syphilis_total_2)
   
 #KNOW SYPHILIS 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-syphilis_2010 <- datos_filtrados %>%
-     group_by(know_syphilis) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+syphilis_2010 = svymean(~know_syphilis, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+syphilis_2010_1 = syphilis_2010*100
+syphilis_2010_2 = confint(syphilis_2010*100)
+
+syphilis_2010 = data.frame(syphilis_2010_1,syphilis_2010_2)
+rm(syphilis_2010_1,syphilis_2010_2)
 
 #KNOW SYPHILIS 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-syphilis_2016 <- datos_filtrados %>%
-     group_by(know_syphilis) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+syphilis_2016 = svymean(~know_syphilis, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+syphilis_2016_1 = syphilis_2016*100
+syphilis_2016_2 = confint(syphilis_2016*100)
+
+syphilis_2016 = data.frame(syphilis_2016_1,syphilis_2016_2)
+rm(syphilis_2016_1,syphilis_2016_2)
 
 #KNOW SYPHILIS 2022
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-syphilis_2022 <- datos_filtrados %>%
-     group_by(know_syphilis) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+syphilis_2022 = svymean(~know_syphilis, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+syphilis_2022_1 = syphilis_2022*100
+syphilis_2022_2 = confint(syphilis_2022*100)
+
+syphilis_2022 = data.frame(syphilis_2022_1,syphilis_2022_2)
+rm(syphilis_2022_1,syphilis_2022_2)
 ```
 
 ```{r}
@@ -335,56 +288,40 @@ rm(syphilis_total,syphilis_2010,syphilis_2016,syphilis_2022)
 variable: know_sti_symptoms
 ```{r}
 #KNOW SYPHILIS TOTAL
-conf_level=0.95
+sti1_total = svymean(~know_sti_symptoms, design_total,na.rm=TRUE)
 
-sti1_total <- data %>%
-     group_by(know_sti_symptoms) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+sti1_total_1 = sti1_total*100
+sti1_total_2 = confint(sti1_total*100)
+
+sti1_total = data.frame(sti1_total_1,sti1_total_2)
+rm(sti1_total_1,sti1_total_2)
 
 #KNOW SYPHILIS 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-sti1_2010 <- datos_filtrados %>%
-     group_by(know_sti_symptoms) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sti1_2010 = svymean(~know_sti_symptoms, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+sti1_2010_1 = sti1_2010*100
+sti1_2010_2 = confint(sti1_2010*100)
+
+sti1_2010 = data.frame(sti1_2010_1,sti1_2010_2)
+rm(sti1_2010_1,sti1_2010_2)
 
 #KNOW SYPHILIS 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-sti1_2016 <- datos_filtrados %>%
-     group_by(know_sti_symptoms) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sti1_2016 = svymean(~know_sti_symptoms, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+sti1_2016_1 = sti1_2016*100
+sti1_2016_2 = confint(sti1_2016*100)
+
+sti1_2016 = data.frame(sti1_2016_1,sti1_2016_2)
+rm(sti1_2016_1,sti1_2016_2)
 
 #KNOW SYPHILIS 2022
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-sti1_2022 <- datos_filtrados %>%
-     group_by(know_sti_symptoms) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sti1_2022 = svymean(~know_sti_symptoms, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+sti1_2022_1 = sti1_2022*100
+sti1_2022_2 = confint(sti1_2022*100)
+
+sti1_2022 = data.frame(sti1_2022_1,sti1_2022_2)
+rm(sti1_2022_1,sti1_2022_2)
 ```
 
 ```{r}
@@ -394,56 +331,40 @@ rm(sti1_total,sti1_2010,sti1_2016,sti1_2022)
 Variable: have_sti_symptoms
 ```{r}
 #HAVE STI SYMPTOMS TOTAL
-conf_level=0.95
+sti2_total = svymean(~have_sti_symptoms, design_total,na.rm=TRUE)
 
-sti2_total <- data %>%
-     group_by(have_sti_symptoms) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+sti2_total_1 = sti2_total*100
+sti2_total_2 = confint(sti2_total*100)
+
+sti2_total = data.frame(sti2_total_1,sti2_total_2)
+rm(sti2_total_1,sti2_total_2)
 
 #HAVE STI SYMPTOMS 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-sti2_2010 <- datos_filtrados %>%
-     group_by(have_sti_symptoms) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sti2_2010 = svymean(~have_sti_symptoms, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+sti2_2010_1 = sti2_2010*100
+sti2_2010_2 = confint(sti2_2010*100)
+
+sti2_2010 = data.frame(sti2_2010_2,sti2_2010_2)
+rm(sti2_2010_1,sti2_2010_2)
 
 #HAVE STI SYMPTOMS 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-sti2_2016 <- datos_filtrados %>%
-     group_by(have_sti_symptoms) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sti2_2016 = svymean(~have_sti_symptoms, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+sti2_2016_1 = sti2_2016*100
+sti2_2016_2 = confint(sti2_2016*100)
+
+sti2_2016 = data.frame(sti2_2016_2,sti2_2016_2)
+rm(sti2_2016_1,sti2_2016_2)
 
 #HAVE STI SYMPTOMS 2022
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-sti2_2022 <- datos_filtrados %>%
-     group_by(have_sti_symptoms) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sti2_2022 = svymean(~have_sti_symptoms, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+sti2_2022_1 = sti2_2022*100
+sti2_2022_2 = confint(sti2_2022*100)
+
+sti2_2022 = data.frame(sti2_2022_2,sti2_2022_2)
+rm(sti2_2022_1,sti2_2022_2)
 ```
 
 ```{r}
@@ -453,56 +374,40 @@ rm(sti2_total,sti2_2010,sti2_2016,sti2_2022)
 Variable: intended_pregnancy
 ```{r}
 #INTENDED PREGNANCY TOTAL
-conf_level=0.95
+preg_total = svymean(~intended_pregnancy, design_total,na.rm=TRUE)
 
-preg_total <- data %>%
-     group_by(intended_pregnancy_2) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+preg_total_1 = preg_total*100
+preg_total_2 = confint(preg_total*100)
+
+preg_total = data.frame(preg_total_1,preg_total_2)
+rm(preg_total_1,preg_total_2)
 
 #INTENDED PREGNANCY 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-preg_2010 <- datos_filtrados %>%
-     group_by(intended_pregnancy_2) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+preg_2010 = svymean(~intended_pregnancy, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+preg_2010_1 = preg_2010*100
+preg_2010_2 = confint(preg_2010*100)
+
+preg_2010 = data.frame(preg_2010_2,preg_2010_2)
+rm(preg_2010_1,preg_2010_2)
 
 #INTENDED PREGNANCY 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-preg_2016 <- datos_filtrados %>%
-     group_by(intended_pregnancy_2) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+preg_2016 = svymean(~intended_pregnancy, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+preg_2016_1 = preg_2016*100
+preg_2016_2 = confint(preg_2016*100)
+
+preg_2016 = data.frame(preg_2016_2,preg_2016_2)
+rm(preg_2016_1,preg_2016_2)
 
 #INTENDED PREGNANCY 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-preg_2022 <- datos_filtrados %>%
-     group_by(intended_pregnancy_2) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+preg_2022 = svymean(~intended_pregnancy, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+preg_2022_1 = preg_2022*100
+preg_2022_2 = confint(preg_2022*100)
+
+preg_2022 = data.frame(preg_2022_2,preg_2022_2)
+rm(preg_2022_1,preg_2022_2)
 ```
 
 ```{r}
@@ -512,136 +417,83 @@ rm(preg_total,preg_2010,preg_2016,preg_2022)
 Variable: emotional_violence
 ```{r}
 #EMOCIONAL VIOLENCE TOTAL
-conf_level=0.95
+emocional_total = svymean(~emotional_violence, design_total,na.rm=TRUE)
 
-emocional_total <- data %>%
-     group_by(emotional_violence) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+emocional_total_1 = emocional_total*100
+emocional_total_2 = confint(emocional_total*100)
+
+emocional_total = data.frame(emocional_total_1,emocional_total_2)
+rm(emocional_total_1,emocional_total_2)
 
 #EMOCIONAL VIOLENCE 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-emocional_2010 <- datos_filtrados %>%
-     group_by(emotional_violence) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+emocional_2010 = svymean(~emotional_violence, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+emocional_2010_1 = emocional_2010*100
+emocional_2010_2 = confint(emocional_2010*100)
+
+emocional_2010 = data.frame(emocional_2010_1,emocional_2010_2)
+rm(emocional_2010_1,emocional_2010_2)
 
 #EMOCIONAL VIOLENCE 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-emocional_2016 <- datos_filtrados %>%
-     group_by(emotional_violence) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+emocional_2016 = svymean(~emotional_violence, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+emocional_2016_1 = emocional_2016*100
+emocional_2016_2 = confint(emocional_2016*100)
+
+emocional_2016 = data.frame(emocional_2016_1,emocional_2016_2)
+rm(emocional_2016_1,emocional_2016_2)
 
 #EMOCIONAL VIOLENCE 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-emocional_2022 <- datos_filtrados %>%
-     group_by(emotional_violence) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+emocional_2022 = svymean(~emotional_violence, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+emocional_2022_1 = emocional_2022*100
+emocional_2022_2 = confint(emocional_2022*100)
+
+emocional_2022 = data.frame(emocional_2022_1,emocional_2022_2)
+rm(emocional_2022_1,emocional_2022_2)
 ```
 
 ```{r}
 rm(emocional_total,emocional_2010,emocional_2016,emocional_2022)
 ```
 
-Variable: minor_physical_violence and severe_physical_violence 
+Variable: minor_physical_violence and severe_physical_violence (violence_physical)
 ```{r}
 #PHYSICAL VIOLENCE TOTAL
-conf_level=0.95
+physical_total = svymean(~violence_physical, design_total,na.rm=TRUE)
 
-physical_total <- data %>%
-  mutate(grupo = case_when(
-      minor_physical_violence=="Yes"|severe_physical_violence=="No" ~ "Yes",
-      minor_physical_violence=="No"|severe_physical_violence=="Yes" ~ "Yes",
-      minor_physical_violence=="No"&severe_physical_violence=="No" ~ "No"
-    )) %>%
-    group_by(grupo) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+physical_total_1 = physical_total*100
+physical_total_2 = confint(physical_total*100)
+
+physical_total = data.frame(physical_total_1,physical_total_2)
+rm(physical_total_1,physical_total_2)
 
 #PHYSICAL VIOLENCE 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-physical_2010 <- datos_filtrados %>%
-  group_by(emotional_violence) %>%
-  mutate(grupo = case_when(
-      minor_physical_violence=="Yes"|severe_physical_violence=="No" ~ "Yes",
-      minor_physical_violence=="No"|severe_physical_violence=="Yes" ~ "Yes",
-      minor_physical_violence=="No"&severe_physical_violence=="No" ~ "No"
-  )) %>%
-  group_by(grupo) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+physical_2010 = svymean(~violence_physical, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+physical_2010_1 = physical_2010*100
+physical_2010_2 = confint(physical_2010*100)
+
+physical_2010 = data.frame(physical_2010_1,physical_2010_2)
+rm(physical_2010_1,physical_2010_2)
 
 #PHYSICAL VIOLENCE 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-physical_2016 <- datos_filtrados %>%
-  mutate(grupo = case_when(
-      minor_physical_violence=="Yes"|severe_physical_violence=="No" ~ "Yes",
-      minor_physical_violence=="No"|severe_physical_violence=="Yes" ~ "Yes",
-      minor_physical_violence=="No"&severe_physical_violence=="No" ~ "No"
-  )) %>%
-  group_by(grupo) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,2),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+physical_2016 = svymean(~violence_physical, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+physical_2016_1 = physical_2016*100
+physical_2016_2 = confint(physical_2016*100)
+
+physical_2016 = data.frame(physical_2016_1,physical_2016_2)
+rm(physical_2016_1,physical_2016_2)
 
 #PHYSICAL VIOLENCE 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-physical_2022 <- datos_filtrados %>%
-  mutate(grupo = case_when(
-      minor_physical_violence=="Yes"|severe_physical_violence=="No" ~ "Yes",
-      minor_physical_violence=="No"|severe_physical_violence=="Yes" ~ "Yes",
-      minor_physical_violence=="No"&severe_physical_violence=="No" ~ "No"
-  )) %>%
-  group_by(grupo) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+physical_2022 = svymean(~violence_physical, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+physical_2022_1 = physical_2022*100
+physical_2022_2 = confint(physical_2022*100)
+
+physical_2022 = data.frame(physical_2022_1,physical_2022_2)
+rm(physical_2022_1,physical_2022_2)
 ```
 
 ```{r}
@@ -651,56 +503,40 @@ rm(physical_total,physical_2010,physical_2016,physical_2022)
 Variable: sexual_physical_violence 
 ```{r}
 #SEXUAL VIOLENCE TOTAL
-conf_level=0.95
+sexual_total = svymean(~sexual_physical_violence, design_total,na.rm=TRUE)
 
-sexual_total <- data %>%
-     group_by(sexual_physical_violence) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+sexual_total_1 = sexual_total*100
+sexual_total_2 = confint(sexual_total*100)
+
+sexual_total = data.frame(sexual_total_1,sexual_total_2)
+rm(sexual_total_1,sexual_total_2)
 
 #SEXUAL VIOLENCE 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-sexual_2010 <- datos_filtrados %>%
-     group_by(sexual_physical_violence) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sexual_2010 = svymean(~sexual_physical_violence, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+sexual_2010_1 = sexual_2010*100
+sexual_2010_2 = confint(sexual_2010*100)
+
+sexual_2010 = data.frame(sexual_2010_1,sexual_2010_2)
+rm(sexual_2010_1,sexual_2010_2)
 
 #SEXUAL VIOLENCE 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-sexual_2016 <- datos_filtrados %>%
-     group_by(sexual_physical_violence) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sexual_2016 = svymean(~sexual_physical_violence, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+sexual_2016_1 = sexual_2016*100
+sexual_2016_2 = confint(sexual_2016*100)
+
+sexual_2016 = data.frame(sexual_2016_1,sexual_2016_2)
+rm(sexual_2016_1,sexual_2016_2)
 
 #SEXUAL VIOLENCE 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-sexual_2022 <- datos_filtrados %>%
-     group_by(sexual_physical_violence) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sexual_2022 = svymean(~sexual_physical_violence, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+sexual_2022_1 = sexual_2022*100
+sexual_2022_2 = confint(sexual_2022*100)
+
+sexual_2022 = data.frame(sexual_2022_1,sexual_2022_2)
+rm(sexual_2022_1,sexual_2022_2)
 ```
 
 ```{r}
@@ -710,139 +546,83 @@ rm(sexual_total,sexual_2010,sexual_2016,sexual_2022)
 Variable: physical_violence_pregnancy
 ```{r}
 #DURING PREGNANCY VIOLENCE TOTAL
-conf_level=0.95
+preg_violence_total = svymean(~physical_violence_pregnancy, design_total,na.rm=TRUE)
 
-preg_violence_total <- data %>%
-     group_by(physical_violence_pregnancy) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+preg_violence_total_1 = preg_violence_total*100
+preg_violence_total_2 = confint(preg_violence_total*100)
+
+preg_violence_total = data.frame(preg_violence_total_1,preg_violence_total_2)
+rm(preg_violence_total_1,preg_violence_total_2)
 
 #DURING PREGNANCY VIOLENCE 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-preg_violence_2010 <- datos_filtrados %>%
-     group_by(physical_violence_pregnancy) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+preg_violence_2010 = svymean(~physical_violence_pregnancy, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+preg_violence_2010_1 = preg_violence_2010*100
+preg_violence_2010_2 = confint(preg_violence_2010*100)
+
+preg_violence_2010 = data.frame(preg_violence_2010_1,preg_violence_2010_2)
+rm(preg_violence_2010_1,preg_violence_2010_2)
 
 #DURING PREGNANCY VIOLENCE 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-preg_violence_2016 <- datos_filtrados %>%
-     group_by(physical_violence_pregnancy) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+preg_violence_2016 = svymean(~physical_violence_pregnancy, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+preg_violence_2016_1 = preg_violence_2016*100
+preg_violence_2016_2 = confint(preg_violence_2016*100)
+
+preg_violence_2016 = data.frame(preg_violence_2016_1,preg_violence_2016_2)
+rm(preg_violence_2016_1,preg_violence_2016_2)
 
 #DURING PREGNANCY VIOLENCE 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-preg_violence_2022 <- datos_filtrados %>%
-     group_by(physical_violence_pregnancy) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+preg_violence_2022 = svymean(~physical_violence_pregnancy, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+preg_violence_2022_1 = preg_violence_2022*100
+preg_violence_2022_2 = confint(preg_violence_2022*100)
+
+preg_violence_2022 = data.frame(preg_violence_2022_1,preg_violence_2022_2)
+rm(preg_violence_2022_1,preg_violence_2022_2)
 ```
 
 ```{r}
 rm(preg_violence_total,preg_violence_2010,preg_violence_2016,preg_violence_2022)
 ```
 
-Variable: total_children_born
+Variable: total_children_born (children_born)
 ```{r}
 #CHILDREN TOTAL
-conf_level=0.95
+child_total = svymean(~children_born, design_total,na.rm=TRUE)
 
-child_total <- data %>%
- mutate(grupo_child = case_when(
-      v219 <= 1  ~ "0-1",
-      v219 == 2 | v219 == 3  ~ "2-3",
-      v219 >= 4  ~ "More than 3",
-      TRUE ~ NA
-    )) %>%
-     group_by(grupo_child) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+child_total_1 = child_total*100
+child_total_2 = confint(child_total*100)
+
+child_total = data.frame(child_total_1,child_total_2)
+rm(child_total_1,child_total_2)
 
 #CHILDREN 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-child_2010 <- datos_filtrados %>%
- mutate(grupo_child = case_when(
-      v219 <= 1  ~ "0-1",
-      v219 == 2 | v219 == 3  ~ "2-3",
-      v219 >= 4  ~ "More than 3",
-      TRUE ~ NA
-    )) %>%
-     group_by(grupo_child) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+child_2010 = svymean(~children_born, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+child_2010_1 = child_2010*100
+child_2010_2 = confint(child_2010*100)
+
+child_2010 = data.frame(child_2010_1,child_2010_2)
+rm(child_2010_1,child_2010_2)
 
 #CHILDREN 2016 
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-child_2016 <- datos_filtrados %>%
- mutate(grupo_child = case_when(
-      v219 <= 1  ~ "0-1",
-      v219 == 2 | v219 == 3  ~ "2-3",
-      v219 >= 4  ~ "More than 3",
-      TRUE ~ NA
-    )) %>%
-     group_by(grupo_child) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+child_2016 = svymean(~children_born, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+child_2016_1 = child_2016*100
+child_2016_2 = confint(child_2016*100)
+
+child_2016 = data.frame(child_2016_1,child_2016_2)
+rm(child_2016_1,child_2016_2)
 
 #CHILDREN 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-child_2022 <- datos_filtrados %>%
- mutate(grupo_child = case_when(
-      v219 <= 1  ~ "0-1",
-      v219 == 2 | v219 == 3  ~ "2-3",
-      v219 >= 4  ~ "More than 3",
-      TRUE ~ NA
-    )) %>%
-     group_by(grupo_child) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+child_2022 = svymean(~children_born, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+child_2022_1 = child_2022*100
+child_2022_2 = confint(child_2022*100)
+
+child_2022 = data.frame(child_2022_1,child_2022_2)
+rm(child_2022_1,child_2022_2)
 ```
 
 ```{r}
@@ -852,56 +632,40 @@ rm(child_total,child_2010,child_2016,child_2022)
 Variable: abortion_stillbirth 
 ```{r}
 #ABORTION TOTAL
-conf_level=0.95
+abo_total = svymean(~abortion_stillbirth, design_total,na.rm=TRUE)
 
-abo_total <- data %>%
-     group_by(abortion_stillbirth) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+abo_total_1 = abo_total*100
+abo_total_2 = confint(abo_total*100)
+
+abo_total = data.frame(abo_total_1,abo_total_2)
+rm(abo_total_1,abo_total_2)
 
 #ABORTION 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-abo_2010 <- datos_filtrados %>%
-     group_by(abortion_stillbirth) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+abo_2010 = svymean(~abortion_stillbirth, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+abo_2010_1 = abo_2010*100
+abo_2010_2 = confint(abo_2010*100)
+
+abo_2010 = data.frame(abo_2010_1,abo_2010_2)
+rm(abo_2010_1,abo_2010_2)
 
 #ABORTION 2016 
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-abo_2016 <- datos_filtrados %>%
-     group_by(abortion_stillbirth) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+abo_2016 = svymean(~abortion_stillbirth, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+abo_2016_1 = abo_2016*100
+abo_2016_2 = confint(abo_2016*100)
+
+abo_2016 = data.frame(abo_2016_1,abo_2016_2)
+rm(abo_2016_1,abo_2016_2)
 
 #ABORTION 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-abo_2022 <- datos_filtrados %>%
-     group_by(abortion_stillbirth) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+abo_2022 = svymean(~abortion_stillbirth, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+abo_2022_1 = abo_2022*100
+abo_2022_2 = confint(abo_2022*100)
+
+abo_2022 = data.frame(abo_2022_1,abo_2022_2)
+rm(abo_2022_1,abo_2022_2)
 ```
 
 ```{r}
@@ -911,56 +675,40 @@ rm(abo_total,abo_2010,abo_2016,abo_2022)
 Variable: syphilis_screening
 ```{r}
 #SYPHILIS SCREENING TOTAL
-conf_level=0.95
+syphilis2_total = svymean(~syphilis_screening, design_total,na.rm=TRUE)
 
-syphilis2_total <- data %>%
-     group_by(syphilis_screening) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+syphilis2_total_1 = syphilis2_total*100
+syphilis2_total_2 = confint(syphilis2_total*100)
+
+syphilis2_total = data.frame(syphilis2_total_1,syphilis2_total_2)
+rm(syphilis2_total_1,syphilis2_total_2)
 
 #SYPHILIS SCREENING 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-syphilis2_2010 <- datos_filtrados %>%
-     group_by(syphilis_screening) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+syphilis2_2010 = svymean(~syphilis_screening, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+syphilis2_2010_1 = syphilis2_2010*100
+syphilis2_2010_2 = confint(syphilis2_2010*100)
+
+syphilis2_2010 = data.frame(syphilis2_2010_1,syphilis2_2010_2)
+rm(syphilis2_2010_1,syphilis2_2010_2)
 
 #SYPHILIS SCREENING 2016 
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-syphilis2_2016 <- datos_filtrados %>%
-     group_by(syphilis_screening) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+syphilis2_2016 = svymean(~syphilis_screening, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+syphilis2_2016_1 = syphilis2_2016*100
+syphilis2_2016_2 = confint(syphilis2_2016*100)
+
+syphilis2_2016 = data.frame(syphilis2_2016_1,syphilis2_2016_2)
+rm(syphilis2_2016_1,syphilis2_2016_2)
 
 #SYPHILIS SCREENING 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-syphilis2_2022 <- datos_filtrados %>%
-     group_by(syphilis_screening) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+syphilis2_2022 = svymean(~syphilis_screening, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+syphilis2_2022_1 = syphilis2_2022*100
+syphilis2_2022_2 = confint(syphilis2_2022*100)
+
+syphilis2_2022 = data.frame(syphilis2_2022_1,syphilis2_2022_2)
+rm(syphilis2_2022_1,syphilis2_2022_2)
 ```
 
 ```{r}
@@ -972,56 +720,40 @@ rm(syphilis2_total,syphilis2_2010,syphilis2_2016,syphilis2_2022)
 Variable: know_other_sti
 ```{r}
 #OTHER STI TOTAL
-conf_level=0.95
+other_sti_total = svymean(~know_other_sti, design_total,na.rm=TRUE)
 
-other_sti_total <- data %>%
-     group_by(know_other_sti) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+other_sti_total_1 = other_sti_total*100
+other_sti_total_2 = confint(other_sti_total*100)
+
+other_sti_total = data.frame(other_sti_total_1,other_sti_total_2)
+rm(other_sti_total_1,other_sti_total_2)
 
 #OTHER STI 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-other_sti_2010 <- datos_filtrados %>%
-     group_by(know_other_sti) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+other_sti_2010 = svymean(~know_other_sti, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+other_sti_2010_1 = other_sti_2010*100
+other_sti_2010_2 = confint(other_sti_2010*100)
+
+other_sti_2010 = data.frame(other_sti_2010_1,other_sti_2010_2)
+rm(other_sti_2010_1,other_sti_2010_2)
 
 #OTHER STI 2016 
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-other_sti_2016 <- datos_filtrados %>%
-     group_by(know_other_sti) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+other_sti_2016 = svymean(~know_other_sti, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+other_sti_2016_1 = other_sti_2016*100
+other_sti_2016_2 = confint(other_sti_2016*100)
+
+other_sti_2016 = data.frame(other_sti_2016_1,other_sti_2016_2)
+rm(other_sti_2016_1,other_sti_2016_2)
 
 #OTHER STI 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-other_sti_2022 <- datos_filtrados %>%
-     group_by(know_other_sti) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+other_sti_2022 = svymean(~know_other_sti, design_2022,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+other_sti_2022_1 = other_sti_2022*100
+other_sti_2022_2 = confint(other_sti_2022*100)
+
+other_sti_2022 = data.frame(other_sti_2022_1,other_sti_2022_2)
+rm(other_sti_2022_1,other_sti_2022_2)
 ```
 
 ```{r}
@@ -1031,46 +763,40 @@ rm(other_sti_total,other_sti_2010,other_sti_2016,other_sti_2022)
 Variable: age_first_sexual_intercourse
 ```{r}
 #AGE FIRST SEXUAL INTERCOURSE TOTAL
-age_inter_total <- data %>%
-  summarise(mediana = median(age_first_sexual_intercourse, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(age_first_sexual_intercourse, 0.25, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(age_first_sexual_intercourse, 0.75, na.rm = TRUE))
+age_inter_total = svymean(~age_first_sexual_intercourse, design_total,na.rm=TRUE)
+
+age_inter_total_1 = age_inter_total
+age_inter_total_2 = confint(age_inter_total)
+
+age_inter_total = data.frame(age_inter_total_1,age_inter_total_2)
+rm(age_inter_total_1,age_inter_total_2)
 
 #AGE FIRST SEXUAL INTERCOURSE 2010
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
+age_inter_2010 = svymean(~age_first_sexual_intercourse, design_2010,na.rm=TRUE)
 
-age_inter_2010 <- datos_filtrados %>%
-  summarise(mediana = median(age_first_sexual_intercourse, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(age_first_sexual_intercourse, 0.25, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(age_first_sexual_intercourse, 0.75, na.rm = TRUE))
+age_inter_2010_1 = age_inter_2010
+age_inter_2010_2 = confint(age_inter_2010)
 
-rm(year_,datos_filtrados)
+age_inter_2010 = data.frame(age_inter_2010_1,age_inter_2010_2)
+rm(age_inter_2010_1,age_inter_2010_2)
 
 #AGE FIRST SEXUAL INTERCOURSE 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
+age_inter_2016 = svymean(~age_first_sexual_intercourse, design_2016,na.rm=TRUE)
 
-age_inter_2016 <- datos_filtrados %>%
-  summarise(mediana = median(age_first_sexual_intercourse, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(age_first_sexual_intercourse, 0.25, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(age_first_sexual_intercourse, 0.75, na.rm = TRUE))
+age_inter_2016_1 = age_inter_2016
+age_inter_2016_2 = confint(age_inter_2016)
 
-rm(year_,datos_filtrados)
+age_inter_2016 = data.frame(age_inter_2016_1,age_inter_2016_2)
+rm(age_inter_2016_1,age_inter_2016_2)
 
 #AGE FIRST SEXUAL INTERCOURSE 2022
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
+age_inter_2022 = svymean(~age_first_sexual_intercourse, design_2022,na.rm=TRUE)
 
-age_inter_2022 <- datos_filtrados %>%
-  summarise(mediana = median(age_first_sexual_intercourse, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(age_first_sexual_intercourse, 0.25, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(age_first_sexual_intercourse, 0.75, na.rm = TRUE))
+age_inter_2022_1 = age_inter_2022
+age_inter_2022_2 = confint(age_inter_2022)
 
-rm(year_,datos_filtrados)
+age_inter_2022 = data.frame(age_inter_2022_1,age_inter_2022_2)
+rm(age_inter_2022_1,age_inter_2022_2)
 ```
 
 ```{r}
@@ -1080,56 +806,40 @@ rm(age_inter_total,age_inter_2010,age_inter_2016,age_inter_2022)
 Variable: contraceptive_method_currently
 ```{r}
 #CONTRACEPTIVE METHOD TOTAL
-conf_level=0.95
+contraceptive_total = svymean(~contraceptive_method_currently, design_total,na.rm=TRUE)
 
-contraceptive_total <- data %>%
-     group_by(contraceptive_method_currently) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+contraceptive_total_1 = contraceptive_total*100
+contraceptive_total_2 = confint(contraceptive_total*100)
+
+contraceptive_total = data.frame(contraceptive_total_1,contraceptive_total_2)
+rm(contraceptive_total_1,contraceptive_total_2)
 
 #CONTRACEPTIVE METHOD 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-contraceptive_2010 <- datos_filtrados %>%
-     group_by(contraceptive_method_currently) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+contraceptive_2010 = svymean(~contraceptive_method_currently, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+contraceptive_2010_1 = contraceptive_2010*100
+contraceptive_2010_2 = confint(contraceptive_2010*100)
+
+contraceptive_2010 = data.frame(contraceptive_2010_1,contraceptive_2010_2)
+rm(contraceptive_2010_1,contraceptive_2010_2)
 
 #CONTRACEPTIVE METHOD 2016 
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-contraceptive_2016 <- datos_filtrados %>%
-     group_by(contraceptive_method_currently) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+contraceptive_2016 = svymean(~contraceptive_method_currently, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+contraceptive_2016_1 = contraceptive_2016*100
+contraceptive_2016_2 = confint(contraceptive_2016*100)
+
+contraceptive_2016 = data.frame(contraceptive_2016_1,contraceptive_2016_2)
+rm(contraceptive_2016_1,contraceptive_2016_2)
 
 #CONTRACEPTIVE METHOD 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
+contraceptive_2022 = svymean(~contraceptive_method_currently, design_2022,na.rm=TRUE)
 
-contraceptive_2022 <- datos_filtrados %>%
-     group_by(contraceptive_method_currently) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+contraceptive_2022_1 = contraceptive_2022*100
+contraceptive_2022_2 = confint(contraceptive_2022*100)
 
-rm(year_,datos_filtrados)
+contraceptive_2022 = data.frame(contraceptive_2022_1,contraceptive_2022_2)
+rm(contraceptive_2022_1,contraceptive_2022_2)
 ```
 
 ```{r}
@@ -1139,56 +849,40 @@ rm(contraceptive_total,contraceptive_2010,contraceptive_2016,contraceptive_2022)
 Variable: sexual_partner_2
 ```{r}
 #SEXUAL PARTNER TOTAL
-conf_level=0.95
+sexual_par_total = svymean(~sexual_partner_2, design_total,na.rm=TRUE)
 
-sexual_par_total <- data %>%
-     group_by(sexual_partner_2) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+sexual_par_total_1 = sexual_par_total*100
+sexual_par_total_2 = confint(sexual_par_total*100)
+
+sexual_par_total = data.frame(sexual_par_total_1,sexual_par_total_2)
+rm(sexual_par_total_1,sexual_par_total_2)
 
 #SEXUAL PARTNER 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-sexual_par_2010 <- datos_filtrados %>%
-     group_by(sexual_partner_2) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sexual_par_2010 = svymean(~sexual_partner_2, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+sexual_par_2010_1 = sexual_par_2010*100
+sexual_par_2010_2 = confint(sexual_par_2010*100)
+
+sexual_par_2010 = data.frame(sexual_par_2010_1,sexual_par_2010_2)
+rm(sexual_par_2010_1,sexual_par_2010_2)
 
 #SEXUAL PARTNER 2016 
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-sexual_par_2016 <- datos_filtrados %>%
-     group_by(sexual_partner_2) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sexual_par_2016 = svymean(~sexual_partner_2, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+sexual_par_2016_1 = sexual_par_2016*100
+sexual_par_2016_2 = confint(sexual_par_2016*100)
+
+sexual_par_2016 = data.frame(sexual_par_2016_1,sexual_par_2016_2)
+rm(sexual_par_2016_1,sexual_par_2016_2)
 
 #SEXUAL PARTNER 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
+sexual_par_2022 = svymean(~sexual_partner_2, design_2022,na.rm=TRUE)
 
-sexual_par_2022 <- datos_filtrados %>%
-     group_by(sexual_partner_2) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sexual_par_2022_1 = sexual_par_2022*100
+sexual_par_2022_2 = confint(sexual_par_2022*100)
 
-rm(year_,datos_filtrados)
+sexual_par_2022 = data.frame(sexual_par_2022_1,sexual_par_2022_2)
+rm(sexual_par_2022_1,sexual_par_2022_2)
 ```
 
 ```{r}
@@ -1198,56 +892,40 @@ rm(sexual_par_total,sexual_par_2010,sexual_par_2016,sexual_par_2022)
 Variable: condon_use_last_partner
 ```{r}
 #CONDON USE LAST PARTNER TOTAL
-conf_level=0.95
+condon_use_total = svymean(~condon_use_last_partner, design_total,na.rm=TRUE)
 
-condon_use_total <- data %>%
-     group_by(condon_use_last_partner) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+condon_use_total_1 = condon_use_total*100
+condon_use_total_2 = confint(condon_use_total*100)
+
+condon_use_total = data.frame(condon_use_total_1,condon_use_total_2)
+rm(condon_use_total_1,condon_use_total_2)
 
 #CONDON USE LAST PARTNER 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-condon_use_2010 <- datos_filtrados %>%
-     group_by(condon_use_last_partner) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+condon_use_2010 = svymean(~condon_use_last_partner, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+condon_use_2010_1 = condon_use_2010*100
+condon_use_2010_2 = confint(condon_use_2010*100)
+
+condon_use_2010 = data.frame(condon_use_2010_1,condon_use_2010_2)
+rm(condon_use_2010_1,condon_use_2010_2)
 
 #CONDON USE LAST PARTNER 2016 
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-condon_use_2016 <- datos_filtrados %>%
-     group_by(condon_use_last_partner) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+condon_use_2016 = svymean(~condon_use_last_partner, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+condon_use_2016_1 = condon_use_2016*100
+condon_use_2016_2 = confint(condon_use_2016*100)
+
+condon_use_2016 = data.frame(condon_use_2016_1,condon_use_2016_2)
+rm(condon_use_2016_1,condon_use_2016_2)
 
 #CONDON USE LAST PARTNER 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
+condon_use_2022 = svymean(~condon_use_last_partner, design_2022,na.rm=TRUE)
 
-condon_use_2022 <- datos_filtrados %>%
-     group_by(condon_use_last_partner) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+condon_use_2022_1 = condon_use_2022*100
+condon_use_2022_2 = confint(condon_use_2022*100)
 
-rm(year_,datos_filtrados)
+condon_use_2022 = data.frame(condon_use_2022_1,condon_use_2022_2)
+rm(condon_use_2022_1,condon_use_2022_2)
 ```
 
 ```{r}
@@ -1257,56 +935,40 @@ rm(condon_use_total,condon_use_2010,condon_use_2016,condon_use_2022)
 Variable: alcohol_prior_sexual_intercourse
 ```{r}
 #ALCOHOL PRIOR SEXUAL INTERCOURSE TOTAL
-conf_level=0.95
+alcohol_total = svymean(~alcohol_prior_sexual_intercourse, design_total,na.rm=TRUE)
 
-alcohol_total <- data %>%
-     group_by(alcohol_prior_sexual_intercourse) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+alcohol_total_1 = alcohol_total*100
+alcohol_total_2 = confint(alcohol_total*100)
+
+alcohol_total = data.frame(alcohol_total_1,alcohol_total_2)
+rm(alcohol_total_1,alcohol_total_2)
 
 #ALCOHOL PRIOR SEXUAL INTERCOURSE 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-alcohol_2010 <- datos_filtrados %>%
-     group_by(alcohol_prior_sexual_intercourse) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+alcohol_2010 = svymean(~alcohol_prior_sexual_intercourse, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+alcohol_2010_1 = alcohol_2010*100
+alcohol_2010_2 = confint(alcohol_2010*100)
+
+alcohol_2010 = data.frame(alcohol_2010_1,alcohol_2010_2)
+rm(alcohol_2010_1,alcohol_2010_2)
 
 #ALCOHOL PRIOR SEXUAL INTERCOURSE 2016 
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-alcohol_2016 <- datos_filtrados %>%
-     group_by(alcohol_prior_sexual_intercourse) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+alcohol_2016 = svymean(~alcohol_prior_sexual_intercourse, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+alcohol_2016_1 = alcohol_2016*100
+alcohol_2016_2 = confint(alcohol_2016*100)
+
+alcohol_2016 = data.frame(alcohol_2016_1,alcohol_2016_2)
+rm(alcohol_2016_1,alcohol_2016_2)
 
 #ALCOHOL PRIOR SEXUAL INTERCOURSE 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
+alcohol_2022 = svymean(~alcohol_prior_sexual_intercourse, design_2022,na.rm=TRUE)
 
-alcohol_2022 <- datos_filtrados %>%
-     group_by(alcohol_prior_sexual_intercourse) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+alcohol_2022_1 = alcohol_2022*100
+alcohol_2022_2 = confint(alcohol_2022*100)
 
-rm(year_,datos_filtrados)
+alcohol_2022 = data.frame(alcohol_2022_1,alcohol_2022_2)
+rm(alcohol_2022_1,alcohol_2022_2)
 ```
 
 ```{r}
@@ -1316,56 +978,40 @@ rm(alcohol_total,alcohol_2010,alcohol_2016,alcohol_2022)
 Variable: diagnosted_sti_12months
 ```{r}
 #DIAGNOSTED STI TOTAL
-conf_level=0.95
+sti2_total = svymean(~diagnosted_sti_12months, design_total,na.rm=TRUE)
 
-sti2_total <- data %>%
-     group_by(diagnosted_sti_12months) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+sti2_total_1 = sti2_total*100
+sti2_total_2 = confint(sti2_total*100)
+
+sti2_total = data.frame(sti2_total_1,sti2_total_2)
+rm(sti2_total_1,sti2_total_2)
 
 #DIAGNOSTED STI 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-sti2_2010 <- datos_filtrados %>%
-     group_by(diagnosted_sti_12months) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sti2_2010 = svymean(~diagnosted_sti_12months, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+sti2_2010_1 = sti2_2010*100
+sti2_2010_2 = confint(sti2_2010*100)
+
+sti2_2010 = data.frame(sti2_2010_1,sti2_2010_2)
+rm(sti2_2010_1,sti2_2010_2)
 
 #DIAGNOSTED STI 2016 
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-sti2_2016 <- datos_filtrados %>%
-     group_by(diagnosted_sti_12months) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sti2_2016 = svymean(~diagnosted_sti_12months, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+sti2_2016_1 = sti2_2016*100
+sti2_2016_2 = confint(sti2_2016*100)
+
+sti2_2016 = data.frame(sti2_2016_1,sti2_2016_2)
+rm(sti2_2016_1,sti2_2016_2)
 
 #DIAGNOSTED STI 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
+sti2_2022 = svymean(~diagnosted_sti_12months, design_2022,na.rm=TRUE)
 
-sti2_2022 <- datos_filtrados %>%
-     group_by(diagnosted_sti_12months) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+sti2_2022_1 = sti2_2022*100
+sti2_2022_2 = confint(sti2_2022*100)
 
-rm(year_,datos_filtrados)
+sti2_2022 = data.frame(sti2_2022_1,sti2_2022_2)
+rm(sti2_2022_1,sti2_2022_2)
 ```
 
 ```{r}
@@ -1375,56 +1021,40 @@ rm(sti2_total,sti2_2010,sti2_2016,sti2_2022)
 Variable: can_get_condoms 
 ```{r}
 #CAN GET CONDOMS TOTAL
-conf_level=0.95
+get_condon_total = svymean(~can_get_condoms, design_total,na.rm=TRUE)
 
-get_condon_total <- data %>%
-     group_by(can_get_condoms) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+get_condon_total_1 = get_condon_total*100
+get_condon_total_2 = confint(get_condon_total*100)
+
+get_condon_total = data.frame(get_condon_total_1,get_condon_total_2)
+rm(get_condon_total_1,get_condon_total_2)
 
 #CAN GET CONDOMS 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-get_condon_2010 <- datos_filtrados %>%
-     group_by(can_get_condoms) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+get_condon_2010 = svymean(~can_get_condoms, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+get_condon_2010_1 = get_condon_2010*100
+get_condon_2010_2 = confint(get_condon_2010*100)
+
+get_condon_2010 = data.frame(get_condon_2010_1,get_condon_2010_2)
+rm(get_condon_2010_1,get_condon_2010_2)
 
 #CAN GET CONDOMS 2016 
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-get_condon_2016 <- datos_filtrados %>%
-     group_by(can_get_condoms) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+get_condon_2016 = svymean(~can_get_condoms, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+get_condon_2016_1 = get_condon_2016*100
+get_condon_2016_2 = confint(get_condon_2016*100)
+
+get_condon_2016 = data.frame(get_condon_2016_1,get_condon_2016_2)
+rm(get_condon_2016_1,get_condon_2016_2)
 
 #CAN GET CONDOMS 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
+get_condon_2022 = svymean(~can_get_condoms, design_2022,na.rm=TRUE)
 
-get_condon_2022 <- datos_filtrados %>%
-     group_by(can_get_condoms) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+get_condon_2022_1 = get_condon_2022*100
+get_condon_2022_2 = confint(get_condon_2022*100)
 
-rm(year_,datos_filtrados)
+get_condon_2022 = data.frame(get_condon_2022_1,get_condon_2022_2)
+rm(get_condon_2022_1,get_condon_2022_2)
 ```
 
 ```{r}
@@ -1434,56 +1064,40 @@ rm(get_condon_total,get_condon_2010,get_condon_2016,get_condon_2022)
 Variable: hiv_screening
 ```{r}
 #HIV SCREENING TOTAL
-conf_level=0.95
+hiv_screening_total = svymean(~hiv_screening, design_total,na.rm=TRUE)
 
-hiv_screening_total <- data %>%
-     group_by(hiv_screening) %>%
-    summarise(total = n(),
-               porcentaje = round(total / nrow(data) * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, nrow(data), conf.level = conf_level)$conf.int[2] * 100,1))
+hiv_screening_total_1 = hiv_screening_total*100
+hiv_screening_total_2 = confint(hiv_screening_total*100)
+
+hiv_screening_total = data.frame(hiv_screening_total_1,hiv_screening_total_2)
+rm(hiv_screening_total_1,hiv_screening_total_2)
 
 #HIV SCREENING 2010 
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-hiv_screening_2010 <- datos_filtrados %>%
-     group_by(hiv_screening) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+hiv_screening_2010 = svymean(~hiv_screening, design_2010,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+hiv_screening_2010_1 = hiv_screening_2010*100
+hiv_screening_2010_2 = confint(hiv_screening_2010*100)
+
+hiv_screening_2010 = data.frame(hiv_screening_2010_1,hiv_screening_2010_2)
+rm(hiv_screening_2010_1,hiv_screening_2010_2)
 
 #HIV SCREENING 2016 
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-  
-hiv_screening_2016 <- datos_filtrados %>%
-     group_by(hiv_screening) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+hiv_screening_2016 = svymean(~hiv_screening, design_2016,na.rm=TRUE)
 
-rm(year_,datos_filtrados)
+hiv_screening_2016_1 = hiv_screening_2016*100
+hiv_screening_2016_2 = confint(hiv_screening_2016*100)
+
+hiv_screening_2016 = data.frame(hiv_screening_2016_1,hiv_screening_2016_2)
+rm(hiv_screening_2016_1,hiv_screening_2016_2)
 
 #HIV SCREENING 2022 
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
+hiv_screening_2022 = svymean(~hiv_screening, design_2022,na.rm=TRUE)
 
-hiv_screening_2022 <- datos_filtrados %>%
-     group_by(hiv_screening) %>%
-    summarise(total = n(),
-               porcentaje = round(total / total_general * 100,1),
-               intervalo_confianza_inf = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[1] * 100,1),
-              intervalo_confianza_sup = round(prop.test(total, total_general, conf.level = conf_level)$conf.int[2] * 100,1))
+hiv_screening_2022_1 = hiv_screening_2022*100
+hiv_screening_2022_2 = confint(hiv_screening_2022*100)
 
-rm(year_,datos_filtrados)
+hiv_screening_2022 = data.frame(hiv_screening_2022_1,hiv_screening_2022_2)
+rm(hiv_screening_2022_1,hiv_screening_2022_2)
 ```
 
 ```{r}
