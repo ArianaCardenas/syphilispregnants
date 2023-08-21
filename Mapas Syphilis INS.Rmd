@@ -1,0 +1,1052 @@
+---
+title: "Map Syphilis"
+author: "CardenasA"
+date: "2023-08-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(sf)
+library(purrr)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+library(readr)
+library(survey)
+library(kableExtra)
+library(gt)
+```
+
+# Cargando los dataframe
+
+```{r}
+departamentos <- read_sf("Límites - mapas/DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp")
+data_ins_long <- read_csv("Data_final/ins_final_long.csv")
+data_ins_wide <- read_csv("Data_final/ins_final_wide.csv")
+pobfem <- read_csv("Data_final/pobfem_year.csv")
+```
+
+# Limpiando la data
+
+
+```{r }
+
+data_ins_long = rename(
+  data_ins_long, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
+
+data_ins_wide = rename(
+  data_ins_wide, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
+
+```
+
+Agrupamos la data para tener la suma de tamizajes y tamizajes reactivos por año:
+
+```{r}
+prepplot <- data_ins_long %>%
+  group_by(NOMBDEP, year) %>%
+  summarise(ntest =sum(test_number)) 
+
+prepplot2 <- data_ins_long %>%
+  group_by(NOMBDEP, year) %>%
+  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) 
+
+```
+
+Unimos dataframes y obtenemos el número de casos ajustado por población
+
+```{r}
+data_total_ntest <- prepplot %>%
+  left_join(departamentos, by = c("NOMBDEP")) %>%
+  left_join(pobfem, by = c("NOMBDEP","year")) %>%
+  mutate(rate = (ntest/POBFEM)*10000)
+
+data_total_reactivos <- prepplot2 %>%
+  left_join(departamentos, by = c("NOMBDEP")) %>%
+  left_join(pobfem, by = c("NOMBDEP","year")) %>%
+  mutate(rate = (tamizaje_reactivo/POBFEM)*10000)
+```
+
+```{r}
+rm(prepplot,prepplot2,pobfem,departamentos)
+```
+
+## MAPAS
+
+# Tamizajes de Sífilis por departamento
+
+```{r}
+ggplot() +
+  geom_sf(data = data_total_ntest, aes(geometry = geometry,fill = ntest), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis screening in pregnants, INS data",
+        fill = "Syphilis screening")
+```
+# Tamizajes reactivos de Sífilis por departamentos
+
+```{r}
+ggplot() +
+  geom_sf(data = data_total_reactivos, aes(geometry = geometry,fill = tamizaje_reactivo), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Cases of syphilis in pregnants, INS data",
+        fill = "Syphilis reactive")
+```
+#Tamizajes de Sífilis por departamento, ajustado por población
+
+```{r}
+ggplot() +
+  geom_sf(data = data_total_ntest, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis screening in pregnants, INS data",
+        fill = "Syphilis screening per 10000 hab")
+```
+
+#Sífilis reactivo por departamento, ajustado por población
+
+```{r}
+ggplot() +
+  geom_sf(data = data_total_reactivos, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Cases of syphilis in pregnants, INS data",
+        fill = "Syphilis in pregnants per 10000 hab.")
+```
+## Tamizaje por departamento, todos los años
+
+```{r}
+data_total_ntesttotal <- data_total_ntest %>%
+  select(NOMBDEP, year, ntest, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Syphilis test performed (2011 - 2022)"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_ntesttotal
+
+```
+```{r}
+rm(data_total_ntesttotal)
+```
+
+## TAMIZAJES POR AÑO
+
+2022 
+
+```{r}
+data_total_ntest22 <- data_total_ntest %>%
+  filter(year == "2022")
+
+ggplot() +
+  geom_sf(data = data_total_ntest22, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis screening in pregnants, 2022",
+        fill = "Syphilis screening per 10000 hab")
+```
+```{r}
+data_total_ntest22 <- data_total_ntest22 %>%
+  select(NOMBDEP, year, ntest, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Syphilis test performed in 2022"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_ntest22
+
+```
+
+```{r}
+rm(data_total_ntest22)
+```
+
+2021
+
+```{r}
+data_total_ntest21 <- data_total_ntest %>%
+  filter(year == "2021")
+
+ggplot() +
+  geom_sf(data = data_total_ntest21, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis screening in pregnants, 2021",
+        fill = "Syphilis screening per 10000 hab")
+```
+
+```{r}
+data_total_ntest21 <- data_total_ntest21 %>%
+  select(NOMBDEP, year, ntest, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Syphilis test performed in 2021"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_ntest21
+
+```
+
+```{r}
+rm(data_total_ntest21)
+```
+
+2020
+
+```{r}
+data_total_ntest20 <- data_total_ntest %>%
+  filter(year == "2020")
+
+ggplot() +
+  geom_sf(data = data_total_ntest20, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis screening in pregnants, 2020",
+        fill = "Syphilis screening per 10000 hab")
+```
+
+```{r}
+data_total_ntest20 <- data_total_ntest20 %>%
+  select(NOMBDEP, year, ntest, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Syphilis test performed in 2020"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_ntest20
+
+```
+
+```{r}
+rm(data_total_ntest20)
+```
+
+2019
+
+```{r}
+data_total_ntest19 <- data_total_ntest %>%
+  filter(year == "2019")
+
+ggplot() +
+  geom_sf(data = data_total_ntest19, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis screening in pregnants, 2019",
+        fill = "Syphilis screening per 10000 hab")
+```
+
+```{r}
+data_total_ntest19 <- data_total_ntest19 %>%
+  select(NOMBDEP, year, ntest, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Syphilis test performed in 2019"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_ntest19
+
+```
+
+```{r}
+rm(data_total_ntest19)
+```
+
+2018
+
+```{r}
+data_total_ntest18 <- data_total_ntest %>%
+  filter(year == "2018")
+
+ggplot() +
+  geom_sf(data = data_total_ntest18, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis screening in pregnants, 2018",
+        fill = "Syphilis screening per 10000 hab")
+```
+
+```{r}
+data_total_ntest18 <- data_total_ntest18 %>%
+  select(NOMBDEP, year, ntest, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Syphilis test performed in 2018"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_ntest18
+
+```
+
+```{r}
+rm(data_total_ntest18)
+```
+
+2017
+
+```{r}
+data_total_ntest17 <- data_total_ntest %>%
+  filter(year == "2017")
+
+ggplot() +
+  geom_sf(data = data_total_ntest17, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis screening in pregnants, 2017",
+        fill = "Syphilis screening per 10000 hab")
+```
+
+```{r}
+data_total_ntest17 <- data_total_ntest17 %>%
+  select(NOMBDEP, year, ntest, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Syphilis test performed in 2017"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_ntest17
+
+```
+
+```{r}
+rm(data_total_ntest17)
+```
+
+2016
+
+```{r}
+data_total_ntest16 <- data_total_ntest %>%
+  filter(year == "2016")
+
+ggplot() +
+  geom_sf(data = data_total_ntest16, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis screening in pregnants, 2016",
+        fill = "Syphilis screening per 10000 hab")
+```
+
+```{r}
+data_total_ntest16 <- data_total_ntest16 %>%
+  select(NOMBDEP, year, ntest, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Syphilis test performed in 2016"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_ntest16
+
+```
+
+```{r}
+rm(data_total_ntest16)
+```
+
+2015
+
+```{r}
+data_total_ntest15 <- data_total_ntest %>%
+  filter(year == "2015")
+
+ggplot() +
+  geom_sf(data = data_total_ntest15, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis screening in pregnants, 2015",
+        fill = "Syphilis screening per 10000 hab")
+```
+
+```{r}
+data_total_ntest15 <- data_total_ntest15 %>%
+  select(NOMBDEP, year, ntest, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Syphilis test performed in 2015"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_ntest15
+
+```
+
+```{r}
+rm(data_total_ntest15)
+```
+
+2014
+
+```{r}
+data_total_ntest14 <- data_total_ntest %>%
+  filter(year == "2014")
+
+ggplot() +
+  geom_sf(data = data_total_ntest14, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis screening in pregnants, 2014",
+        fill = "Syphilis screening per 10000 hab")
+```
+
+```{r}
+data_total_ntest14 <- data_total_ntest14 %>%
+  select(NOMBDEP, year, ntest, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Syphilis test performed in 2014"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_ntest14
+
+```
+
+```{r}
+rm(data_total_ntest14)
+```
+
+2013
+
+```{r}
+data_total_ntest13 <- data_total_ntest %>%
+  filter(year == "2013")
+
+ggplot() +
+  geom_sf(data = data_total_ntest13, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis screening in pregnants, 2013",
+        fill = "Syphilis screening per 10000 hab")
+```
+
+```{r}
+data_total_ntest13 <- data_total_ntest13 %>%
+  select(NOMBDEP, year, ntest, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Syphilis test performed in 2013"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_ntest13
+
+```
+
+```{r}
+rm(data_total_ntest13)
+```
+
+2012
+
+```{r}
+data_total_ntest12 <- data_total_ntest %>%
+  filter(year == "2012")
+
+ggplot() +
+  geom_sf(data = data_total_ntest12, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis screening in pregnants, 2012",
+        fill = "Syphilis screening per 10000 hab")
+```
+
+```{r}
+data_total_ntest12 <- data_total_ntest12 %>%
+  select(NOMBDEP, year, ntest, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Syphilis test performed in 2012"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_ntest12
+
+```
+
+```{r}
+rm(data_total_ntest12)
+```
+
+2011
+
+```{r}
+data_total_ntest11 <- data_total_ntest %>%
+  filter(year == "2011")
+
+ggplot() +
+  geom_sf(data = data_total_ntest11, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis screening in pregnants, 2011",
+        fill = "Syphilis screening per 10000 hab")
+```
+
+```{r}
+data_total_ntest11 <- data_total_ntest11 %>%
+  select(NOMBDEP, year, ntest, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Syphilis test performed in 2011"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_ntest11
+
+```
+
+```{r}
+rm(data_total_ntest11)
+```
+
+## Tamizaje reactivo en gestantes por departamento, todos los años
+
+```{r}
+data_reactivos_allyears <- data_total_reactivos %>%
+  select(NOMBDEP, year, tamizaje_reactivo, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Cases of syphilis in pregnants (2011 - 2022)"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_reactivos_allyears
+
+```
+
+```{r}
+rm(data_reactivos_allyears)
+```
+
+## TAMIZAJES POR AÑO
+
+2022 
+
+```{r}
+data_total_reactivo22 <- data_total_reactivos %>%
+  filter(year == "2022")
+
+ggplot() +
+  geom_sf(data = data_total_reactivo22, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis cases in pregnants, 2022",
+        fill = "Cases per 10000 hab")
+```
+
+```{r}
+data_total_reactivo22 <- data_total_reactivo22 %>%
+  select(NOMBDEP, year, tamizaje_reactivo, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Cases of syphilis in pregnants in 2022"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_reactivo22
+
+```
+
+```{r}
+rm(data_total_reactivo22)
+```
+
+2021
+
+```{r}
+data_total_reactivo21 <- data_total_reactivos %>%
+  filter(year == "2021")
+
+ggplot() +
+  geom_sf(data = data_total_reactivo21, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis cases in pregnants, 2021",
+        fill = "Cases per 10000 hab")
+```
+
+```{r}
+data_total_reactivo21 <- data_total_reactivo21 %>%
+  select(NOMBDEP, year, tamizaje_reactivo, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Cases of syphilis in pregnants in 2021"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_reactivo21
+
+```
+
+```{r}
+rm(data_total_reactivo21)
+```
+
+2020
+
+```{r}
+data_total_reactivo20 <- data_total_reactivos %>%
+  filter(year == "2020")
+
+ggplot() +
+  geom_sf(data = data_total_reactivo20, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis cases in pregnants, 2020",
+        fill = "Cases per 10000 hab")
+```
+
+```{r}
+data_total_reactivo20 <- data_total_reactivo20 %>%
+  select(NOMBDEP, year, tamizaje_reactivo, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Cases of syphilis in pregnants in 2020"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_reactivo20
+
+```
+
+```{r}
+rm(data_total_reactivo20)
+```
+
+2019
+
+```{r}
+data_total_reactivo19 <- data_total_reactivos %>%
+  filter(year == "2019")
+
+ggplot() +
+  geom_sf(data = data_total_reactivo19, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis cases in pregnants, 2019",
+        fill = "Cases per 10000 hab")
+```
+
+```{r}
+data_total_reactivo19 <- data_total_reactivo19 %>%
+  select(NOMBDEP, year, tamizaje_reactivo, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Cases of syphilis in pregnants in 2019"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_reactivo19
+
+```
+
+```{r}
+rm(data_total_reactivo19)
+```
+
+2018
+
+```{r}
+data_total_reactivo18 <- data_total_reactivos %>%
+  filter(year == "2018")
+
+ggplot() +
+  geom_sf(data = data_total_reactivo18, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis cases in pregnants, 2018",
+        fill = "Cases per 10000 hab")
+```
+
+```{r}
+data_total_reactivo18 <- data_total_reactivo18 %>%
+  select(NOMBDEP, year, tamizaje_reactivo, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Cases of syphilis in pregnants in 2018"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_reactivo18
+
+```
+
+```{r}
+rm(data_total_reactivo18)
+```
+
+2017
+
+```{r}
+data_total_reactivo17 <- data_total_reactivos %>%
+  filter(year == "2017")
+
+ggplot() +
+  geom_sf(data = data_total_reactivo17, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis cases in pregnants, 2017",
+        fill = "Cases per 10000 hab")
+```
+
+```{r}
+data_total_reactivo17 <- data_total_reactivo17 %>%
+  select(NOMBDEP, year, tamizaje_reactivo, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Cases of syphilis in pregnants in 2017"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_reactivo17
+
+```
+
+```{r}
+rm(data_total_reactivo17)
+```
+
+2016
+
+```{r}
+data_total_reactivo16 <- data_total_reactivos %>%
+  filter(year == "2016")
+
+ggplot() +
+  geom_sf(data = data_total_reactivo16, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis cases in pregnants, 2016",
+        fill = "Cases per 10000 hab")
+```
+
+```{r}
+data_total_reactivo16 <- data_total_reactivo16 %>%
+  select(NOMBDEP, year, tamizaje_reactivo, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Cases of syphilis in pregnants in 2016"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_reactivo16
+
+```
+
+```{r}
+rm(data_total_reactivo16)
+```
+
+2015
+
+```{r}
+data_total_reactivo15 <- data_total_reactivos %>%
+  filter(year == "2015")
+
+ggplot() +
+  geom_sf(data = data_total_reactivo15, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis cases in pregnants, 2015",
+        fill = "Cases per 10000 hab")
+```
+
+```{r}
+data_total_reactivo15 <- data_total_reactivo15 %>%
+  select(NOMBDEP, year, tamizaje_reactivo, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Cases of syphilis in pregnants in 2015"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_reactivo15
+
+```
+
+```{r}
+rm(data_total_reactivo15)
+```
+
+2014
+
+```{r}
+data_total_reactivo14 <- data_total_reactivos %>%
+  filter(year == "2014")
+
+ggplot() +
+  geom_sf(data = data_total_reactivo14, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis cases in pregnants, 2014",
+        fill = "Cases per 10000 hab")
+```
+
+```{r}
+data_total_reactivo14 <- data_total_reactivo14 %>%
+  select(NOMBDEP, year, tamizaje_reactivo, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Cases of syphilis in pregnants in 2014"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_reactivo14
+
+```
+
+```{r}
+rm(data_total_reactivo14)
+```
+
+2013
+
+```{r}
+data_total_reactivo13 <- data_total_reactivos %>%
+  filter(year == "2013")
+
+ggplot() +
+  geom_sf(data = data_total_reactivo13, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis cases in pregnants, 2013",
+        fill = "Cases per 10000 hab")
+```
+
+```{r}
+data_total_reactivo13 <- data_total_reactivo13 %>%
+  select(NOMBDEP, year, tamizaje_reactivo, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Cases of syphilis in pregnants in 2013"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_reactivo13
+
+```
+
+```{r}
+rm(data_total_reactivo13)
+```
+
+2012
+
+```{r}
+data_total_reactivo12 <- data_total_reactivos %>%
+  filter(year == "2012")
+
+ggplot() +
+  geom_sf(data = data_total_reactivo12, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis cases in pregnants, 2012",
+        fill = "Cases per 10000 hab")
+```
+
+```{r}
+data_total_reactivo12 <- data_total_reactivo12 %>%
+  select(NOMBDEP, year, tamizaje_reactivo, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Cases of syphilis in pregnants in 2012"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_reactivo12
+
+```
+
+```{r}
+rm(data_total_reactivo12)
+```
+
+2011
+
+```{r}
+data_total_reactivo11 <- data_total_reactivos %>%
+  filter(year == "2011")
+
+ggplot() +
+  geom_sf(data = data_total_reactivo11, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+   labs(title="Syphilis cases in pregnants, 2011",
+        fill = "Cases per 10000 hab")
+```
+
+```{r}
+data_total_reactivo11 <- data_total_reactivo11 %>%
+  select(NOMBDEP, year, tamizaje_reactivo, POBFEM, rate) %>%
+  arrange(desc(rate)) %>%
+  gt(groupname_col = FALSE) %>%
+  tab_header(
+    title = "Cases of syphilis in pregnants in 2011"
+  ) %>%
+  tab_footnote(
+    footnote = "Population at June 30th",
+    locations = cells_column_labels(columns = POBFEM)
+  ) %>%
+  tab_footnote(
+    footnote = "Rate per 10 000 hab.",
+    locations = cells_column_labels(columns = rate)
+  )
+data_total_reactivo11
+
+```
+
+```{r}
+rm(data_total_reactivo11)
+```
