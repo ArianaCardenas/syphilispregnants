@@ -76,7 +76,9 @@ Variable: age_mother
 age_mother_total = svymean(~age_mother, design_total,na.rm=TRUE)
 
 age_mother_total_1 = age_mother_total*100
-age_mother_total_2 = confint(age_mother_total*100)
+age_mother_total_2 = confint(age_mother_total)
+
+age_mother_total_2 = age_mother_total_2*100
 
 age_mother_total = data.frame(age_mother_total_1,age_mother_total_2)
 rm(age_mother_total_1,age_mother_total_2)
@@ -85,7 +87,9 @@ rm(age_mother_total_1,age_mother_total_2)
 age_mother_2010 <- svymean(~age_mother, design_2010,na.rm=TRUE)
 
 age_mother_2010_1 = age_mother_2010*100
-age_mother_2010_2 = confint(age_mother_2010*100)
+age_mother_2010_2 = confint(age_mother_2010)
+
+age_mother_2010_2 = age_mother_2010_2*100
 
 age_mother_2010 = data.frame(age_mother_2010_1,age_mother_2010_2)
 rm(age_mother_2010_1,age_mother_2010_2)
@@ -94,7 +98,9 @@ rm(age_mother_2010_1,age_mother_2010_2)
 age_mother_2016 <- svymean(~age_mother, design_2016,na.rm=TRUE)
 
 age_mother_2016_1 = age_mother_2016*100
-age_mother_2016_2 = confint(age_mother_2016*100)
+age_mother_2016_2 = confint(age_mother_2016)
+
+age_mother_2016_2 = age_mother_2016_2*100
 
 age_mother_2016 = data.frame(age_mother_2016_1,age_mother_2016_2)
 rm(age_mother_2016_1,age_mother_2016_2)
@@ -103,7 +109,9 @@ rm(age_mother_2016_1,age_mother_2016_2)
 age_mother_2022 <- svymean(~age_mother, design_2022,na.rm=TRUE)
 
 age_mother_2022_1 = age_mother_2022*100
-age_mother_2022_2 = confint(age_mother_2022*100)
+age_mother_2022_2 = confint(age_mother_2022)
+
+age_mother_2022_2 = age_mother_2022_2*100
 
 age_mother_2022 = data.frame(age_mother_2022_1,age_mother_2022_2)
 rm(age_mother_2022_1,age_mother_2022_2)
@@ -119,7 +127,9 @@ variable: education_level (education_level_reco)
 educ_total = svymean(~education_level_reco, design_total,na.rm=TRUE)
 
 educ_total_1 = educ_total*100
-educ_total_2 = confint(educ_total*100)
+educ_total_2 = confint(educ_total)
+
+educ_total_2 = educ_total_2*100
 
 educ_total = data.frame(educ_total_1,educ_total_2)
 rm(educ_total_1,educ_total_2)
@@ -128,7 +138,9 @@ rm(educ_total_1,educ_total_2)
 educ_2010 = svymean(~education_level_reco, design_2010,na.rm=TRUE)
 
 educ_2010_1 = educ_2010*100
-educ_2010_2 = confint(educ_2010*100)
+educ_2010_2 = confint(educ_2010)
+
+educ_2010_2 = educ_2010_2*100
 
 educ_2010 = data.frame(educ_2010_1,educ_2010_2)
 rm(educ_2010_1,educ_2010_2)
@@ -137,7 +149,9 @@ rm(educ_2010_1,educ_2010_2)
 educ_2016 = svymean(~education_level_reco, design_2016,na.rm=TRUE)
 
 educ_2016_1 = educ_2016*100
-educ_2016_2 = confint(educ_2016*100)
+educ_2016_2 = confint(educ_2016)
+
+educ_2016_2 = educ_2016_2*100
 
 educ_2016 = data.frame(educ_2016_1,educ_2016_2)
 rm(educ_2016_1,educ_2016_2)
@@ -146,7 +160,9 @@ rm(educ_2016_1,educ_2016_2)
 educ_2022 = svymean(~education_level_reco, design_2022,na.rm=TRUE)
 
 educ_2022_1 = educ_2022*100
-educ_2022_2 = confint(educ_2022*100)
+educ_2022_2 = confint(educ_2022)
+
+educ_2022_2 = educ_2022_2*100
 
 educ_2022 = data.frame(educ_2022_1,educ_2022_2)
 rm(educ_2022_1,educ_2022_2)
@@ -162,7 +178,9 @@ variable: marital_status
 status_total = svymean(~marital_status, design_total,na.rm=TRUE)
 
 status_total_1 = status_total*100
-status_total_2 = confint(status_total*100)
+status_total_2 = confint(status_total)
+
+status_total_2 = status_total_2*100
 
 status_total = data.frame(status_total_1,status_total_2)
 rm(status_total_1,status_total_2)
@@ -171,7 +189,9 @@ rm(status_total_1,status_total_2)
 status_2010 = svymean(~marital_status, design_2010,na.rm=TRUE)
 
 status_2010_1 = status_2010*100
-status_2010_2 = confint(status_2010*100)
+status_2010_2 = confint(status_2010)
+
+status_2010_2 = status_2010_2*100
 
 status_2010 = data.frame(status_2010_1,status_2010_2)
 rm(status_2010_1,status_2010_2)
@@ -180,7 +200,9 @@ rm(status_2010_1,status_2010_2)
 status_2016 = svymean(~marital_status, design_2016,na.rm=TRUE)
 
 status_2016_1 = status_2016*100
-status_2016_2 = confint(status_2016*100)
+status_2016_2 = confint(status_2016)
+
+status_2016_2 = status_2016_2*100
 
 status_2016 = data.frame(status_2016_1,status_2016_2)
 rm(status_2016_1,status_2016_2)
@@ -189,7 +211,9 @@ rm(status_2016_1,status_2016_2)
 status_2022 = svymean(~marital_status, design_2022,na.rm=TRUE)
 
 status_2022_1 = status_2022*100
-status_2022_2 = confint(status_2022*100)
+status_2022_2 = confint(status_2022)
+
+status_2022_2 = status_2022_2*100
 
 status_2022 = data.frame(status_2022_1,status_2022_2)
 rm(status_2022_1,status_2022_2)
@@ -205,7 +229,9 @@ variable: ethnicity
 et_total = svymean(~ethnicity, design_total,na.rm=TRUE)
 
 et_total_1 = et_total*100
-et_total_2 = confint(et_total*100)
+et_total_2 = confint(et_total)
+
+et_total_2 = et_total_2*100
 
 et_total = data.frame(et_total_1,et_total_2)
 rm(et_total_1,et_total_2)
@@ -214,7 +240,9 @@ rm(et_total_1,et_total_2)
 et_2010 = svymean(~ethnicity, design_2010,na.rm=TRUE)
 
 et_2010_1 = et_2010*100
-et_2010_2 = confint(et_2010*100)
+et_2010_2 = confint(et_2010)
+
+et_2010_2 = et_2010_2*100
 
 et_2010 = data.frame(et_2010_1,et_2010_2)
 rm(et_2010_1,et_2010_2)
@@ -223,7 +251,9 @@ rm(et_2010_1,et_2010_2)
 et_2016 = svymean(~ethnicity, design_2016,na.rm=TRUE)
 
 et_2016_1 = et_2016*100
-et_2016_2 = confint(et_2016*100)
+et_2016_2 = confint(et_2016)
+
+et_2016_2 = et_2016_2*100
 
 et_2016 = data.frame(et_2016_1,et_2016_2)
 rm(et_2016_1,et_2016_2)
@@ -232,7 +262,9 @@ rm(et_2016_1,et_2016_2)
 et_2022 = svymean(~ethnicity, design_2022,na.rm=TRUE)
 
 et_2022_1 = et_2022*100
-et_2022_2 = confint(et_2022*100)
+et_2022_2 = confint(et_2022)
+
+et_2022_2 = et_2022_2*100
 
 et_2022 = data.frame(et_2022_1,et_2022_2)
 rm(et_2022_1,et_2022_2)
@@ -248,7 +280,9 @@ variable: know_syphilis
 syphilis_total = svymean(~know_syphilis, design_total,na.rm=TRUE)
 
 syphilis_total_1 = syphilis_total*100
-syphilis_total_2 = confint(syphilis_total*100)
+syphilis_total_2 = confint(syphilis_total)
+
+syphilis_total_2 = syphilis_total_2*100
 
 syphilis_total = data.frame(syphilis_total_1,syphilis_total_2)
 rm(syphilis_total_1,syphilis_total_2)
@@ -257,7 +291,9 @@ rm(syphilis_total_1,syphilis_total_2)
 syphilis_2010 = svymean(~know_syphilis, design_2010,na.rm=TRUE)
 
 syphilis_2010_1 = syphilis_2010*100
-syphilis_2010_2 = confint(syphilis_2010*100)
+syphilis_2010_2 = confint(syphilis_2010)
+
+syphilis_2010_2 = syphilis_2010_2*100
 
 syphilis_2010 = data.frame(syphilis_2010_1,syphilis_2010_2)
 rm(syphilis_2010_1,syphilis_2010_2)
@@ -266,7 +302,9 @@ rm(syphilis_2010_1,syphilis_2010_2)
 syphilis_2016 = svymean(~know_syphilis, design_2016,na.rm=TRUE)
 
 syphilis_2016_1 = syphilis_2016*100
-syphilis_2016_2 = confint(syphilis_2016*100)
+syphilis_2016_2 = confint(syphilis_2016)
+
+syphilis_2016_2 = syphilis_2016_2*100 
 
 syphilis_2016 = data.frame(syphilis_2016_1,syphilis_2016_2)
 rm(syphilis_2016_1,syphilis_2016_2)
@@ -275,7 +313,9 @@ rm(syphilis_2016_1,syphilis_2016_2)
 syphilis_2022 = svymean(~know_syphilis, design_2022,na.rm=TRUE)
 
 syphilis_2022_1 = syphilis_2022*100
-syphilis_2022_2 = confint(syphilis_2022*100)
+syphilis_2022_2 = confint(syphilis_2022)
+
+syphilis_2022_2 = syphilis_2022_2*100 
 
 syphilis_2022 = data.frame(syphilis_2022_1,syphilis_2022_2)
 rm(syphilis_2022_1,syphilis_2022_2)
@@ -291,7 +331,9 @@ variable: know_sti_symptoms
 sti1_total = svymean(~know_sti_symptoms, design_total,na.rm=TRUE)
 
 sti1_total_1 = sti1_total*100
-sti1_total_2 = confint(sti1_total*100)
+sti1_total_2 = confint(sti1_total)
+
+sti1_total_2 = sti1_total_2*100
 
 sti1_total = data.frame(sti1_total_1,sti1_total_2)
 rm(sti1_total_1,sti1_total_2)
@@ -300,7 +342,9 @@ rm(sti1_total_1,sti1_total_2)
 sti1_2010 = svymean(~know_sti_symptoms, design_2010,na.rm=TRUE)
 
 sti1_2010_1 = sti1_2010*100
-sti1_2010_2 = confint(sti1_2010*100)
+sti1_2010_2 = confint(sti1_2010)
+
+sti1_2010_2 = sti1_2010_2*100
 
 sti1_2010 = data.frame(sti1_2010_1,sti1_2010_2)
 rm(sti1_2010_1,sti1_2010_2)
@@ -309,7 +353,9 @@ rm(sti1_2010_1,sti1_2010_2)
 sti1_2016 = svymean(~know_sti_symptoms, design_2016,na.rm=TRUE)
 
 sti1_2016_1 = sti1_2016*100
-sti1_2016_2 = confint(sti1_2016*100)
+sti1_2016_2 = confint(sti1_2016)
+
+sti1_2016_2 = sti1_2016_2*100
 
 sti1_2016 = data.frame(sti1_2016_1,sti1_2016_2)
 rm(sti1_2016_1,sti1_2016_2)
@@ -318,7 +364,9 @@ rm(sti1_2016_1,sti1_2016_2)
 sti1_2022 = svymean(~know_sti_symptoms, design_2022,na.rm=TRUE)
 
 sti1_2022_1 = sti1_2022*100
-sti1_2022_2 = confint(sti1_2022*100)
+sti1_2022_2 = confint(sti1_2022)
+
+sti1_2022_2 = sti1_2022_2*100
 
 sti1_2022 = data.frame(sti1_2022_1,sti1_2022_2)
 rm(sti1_2022_1,sti1_2022_2)
@@ -334,7 +382,9 @@ Variable: have_sti_symptoms
 sti2_total = svymean(~have_sti_symptoms, design_total,na.rm=TRUE)
 
 sti2_total_1 = sti2_total*100
-sti2_total_2 = confint(sti2_total*100)
+sti2_total_2 = confint(sti2_total)
+
+sti2_total_2 = sti2_total_2*100
 
 sti2_total = data.frame(sti2_total_1,sti2_total_2)
 rm(sti2_total_1,sti2_total_2)
@@ -343,7 +393,9 @@ rm(sti2_total_1,sti2_total_2)
 sti2_2010 = svymean(~have_sti_symptoms, design_2010,na.rm=TRUE)
 
 sti2_2010_1 = sti2_2010*100
-sti2_2010_2 = confint(sti2_2010*100)
+sti2_2010_2 = confint(sti2_2010)
+
+sti2_2010_2 = sti2_2010_2*100
 
 sti2_2010 = data.frame(sti2_2010_2,sti2_2010_2)
 rm(sti2_2010_1,sti2_2010_2)
@@ -352,7 +404,9 @@ rm(sti2_2010_1,sti2_2010_2)
 sti2_2016 = svymean(~have_sti_symptoms, design_2016,na.rm=TRUE)
 
 sti2_2016_1 = sti2_2016*100
-sti2_2016_2 = confint(sti2_2016*100)
+sti2_2016_2 = confint(sti2_2016)
+
+sti2_2016_2 = sti2_2016_2*100
 
 sti2_2016 = data.frame(sti2_2016_2,sti2_2016_2)
 rm(sti2_2016_1,sti2_2016_2)
@@ -361,7 +415,9 @@ rm(sti2_2016_1,sti2_2016_2)
 sti2_2022 = svymean(~have_sti_symptoms, design_2022,na.rm=TRUE)
 
 sti2_2022_1 = sti2_2022*100
-sti2_2022_2 = confint(sti2_2022*100)
+sti2_2022_2 = confint(sti2_2022)
+
+sti2_2022_2 = sti2_2022_2*100
 
 sti2_2022 = data.frame(sti2_2022_2,sti2_2022_2)
 rm(sti2_2022_1,sti2_2022_2)
@@ -377,7 +433,9 @@ Variable: intended_pregnancy
 preg_total = svymean(~intended_pregnancy, design_total,na.rm=TRUE)
 
 preg_total_1 = preg_total*100
-preg_total_2 = confint(preg_total*100)
+preg_total_2 = confint(preg_total)
+
+preg_total_2 = preg_total_2*100
 
 preg_total = data.frame(preg_total_1,preg_total_2)
 rm(preg_total_1,preg_total_2)
@@ -386,7 +444,9 @@ rm(preg_total_1,preg_total_2)
 preg_2010 = svymean(~intended_pregnancy, design_2010,na.rm=TRUE)
 
 preg_2010_1 = preg_2010*100
-preg_2010_2 = confint(preg_2010*100)
+preg_2010_2 = confint(preg_2010)
+
+preg_2010_2 = preg_2010_2*100
 
 preg_2010 = data.frame(preg_2010_2,preg_2010_2)
 rm(preg_2010_1,preg_2010_2)
@@ -395,7 +455,9 @@ rm(preg_2010_1,preg_2010_2)
 preg_2016 = svymean(~intended_pregnancy, design_2016,na.rm=TRUE)
 
 preg_2016_1 = preg_2016*100
-preg_2016_2 = confint(preg_2016*100)
+preg_2016_2 = confint(preg_2016)
+
+preg_2016_2 = preg_2016_2*100
 
 preg_2016 = data.frame(preg_2016_2,preg_2016_2)
 rm(preg_2016_1,preg_2016_2)
@@ -404,7 +466,9 @@ rm(preg_2016_1,preg_2016_2)
 preg_2022 = svymean(~intended_pregnancy, design_2022,na.rm=TRUE)
 
 preg_2022_1 = preg_2022*100
-preg_2022_2 = confint(preg_2022*100)
+preg_2022_2 = confint(preg_2022)
+
+preg_2022_2 = preg_2022_2*100
 
 preg_2022 = data.frame(preg_2022_2,preg_2022_2)
 rm(preg_2022_1,preg_2022_2)
@@ -420,7 +484,9 @@ Variable: emotional_violence
 emocional_total = svymean(~emotional_violence, design_total,na.rm=TRUE)
 
 emocional_total_1 = emocional_total*100
-emocional_total_2 = confint(emocional_total*100)
+emocional_total_2 = confint(emocional_total)
+
+emocional_total_2 = emocional_total_2*100
 
 emocional_total = data.frame(emocional_total_1,emocional_total_2)
 rm(emocional_total_1,emocional_total_2)
@@ -429,7 +495,9 @@ rm(emocional_total_1,emocional_total_2)
 emocional_2010 = svymean(~emotional_violence, design_2010,na.rm=TRUE)
 
 emocional_2010_1 = emocional_2010*100
-emocional_2010_2 = confint(emocional_2010*100)
+emocional_2010_2 = confint(emocional_2010)
+
+emocional_2010_2 = emocional_2010_2*100
 
 emocional_2010 = data.frame(emocional_2010_1,emocional_2010_2)
 rm(emocional_2010_1,emocional_2010_2)
@@ -438,7 +506,9 @@ rm(emocional_2010_1,emocional_2010_2)
 emocional_2016 = svymean(~emotional_violence, design_2016,na.rm=TRUE)
 
 emocional_2016_1 = emocional_2016*100
-emocional_2016_2 = confint(emocional_2016*100)
+emocional_2016_2 = confint(emocional_2016)
+
+emocional_2016_2 = emocional_2016_2*100
 
 emocional_2016 = data.frame(emocional_2016_1,emocional_2016_2)
 rm(emocional_2016_1,emocional_2016_2)
@@ -447,7 +517,9 @@ rm(emocional_2016_1,emocional_2016_2)
 emocional_2022 = svymean(~emotional_violence, design_2022,na.rm=TRUE)
 
 emocional_2022_1 = emocional_2022*100
-emocional_2022_2 = confint(emocional_2022*100)
+emocional_2022_2 = confint(emocional_2022)
+
+emocional_2022_2 = emocional_2022_2*100
 
 emocional_2022 = data.frame(emocional_2022_1,emocional_2022_2)
 rm(emocional_2022_1,emocional_2022_2)
@@ -463,7 +535,9 @@ Variable: minor_physical_violence and severe_physical_violence (violence_physica
 physical_total = svymean(~violence_physical, design_total,na.rm=TRUE)
 
 physical_total_1 = physical_total*100
-physical_total_2 = confint(physical_total*100)
+physical_total_2 = confint(physical_total)
+
+physical_total_2 = physical_total_2*100
 
 physical_total = data.frame(physical_total_1,physical_total_2)
 rm(physical_total_1,physical_total_2)
@@ -472,7 +546,9 @@ rm(physical_total_1,physical_total_2)
 physical_2010 = svymean(~violence_physical, design_2010,na.rm=TRUE)
 
 physical_2010_1 = physical_2010*100
-physical_2010_2 = confint(physical_2010*100)
+physical_2010_2 = confint(physical_2010)
+
+physical_2010_2 = physical_2010_2*100
 
 physical_2010 = data.frame(physical_2010_1,physical_2010_2)
 rm(physical_2010_1,physical_2010_2)
@@ -481,7 +557,9 @@ rm(physical_2010_1,physical_2010_2)
 physical_2016 = svymean(~violence_physical, design_2016,na.rm=TRUE)
 
 physical_2016_1 = physical_2016*100
-physical_2016_2 = confint(physical_2016*100)
+physical_2016_2 = confint(physical_2016)
+
+physical_2016_2 = physical_2016_2*100
 
 physical_2016 = data.frame(physical_2016_1,physical_2016_2)
 rm(physical_2016_1,physical_2016_2)
@@ -490,7 +568,9 @@ rm(physical_2016_1,physical_2016_2)
 physical_2022 = svymean(~violence_physical, design_2022,na.rm=TRUE)
 
 physical_2022_1 = physical_2022*100
-physical_2022_2 = confint(physical_2022*100)
+physical_2022_2 = confint(physical_2022)
+
+physical_2022_2 = physical_2022_2*100
 
 physical_2022 = data.frame(physical_2022_1,physical_2022_2)
 rm(physical_2022_1,physical_2022_2)
@@ -506,7 +586,9 @@ Variable: sexual_physical_violence
 sexual_total = svymean(~sexual_physical_violence, design_total,na.rm=TRUE)
 
 sexual_total_1 = sexual_total*100
-sexual_total_2 = confint(sexual_total*100)
+sexual_total_2 = confint(sexual_total)
+
+sexual_total_2 = sexual_total_2*100
 
 sexual_total = data.frame(sexual_total_1,sexual_total_2)
 rm(sexual_total_1,sexual_total_2)
@@ -515,7 +597,9 @@ rm(sexual_total_1,sexual_total_2)
 sexual_2010 = svymean(~sexual_physical_violence, design_2010,na.rm=TRUE)
 
 sexual_2010_1 = sexual_2010*100
-sexual_2010_2 = confint(sexual_2010*100)
+sexual_2010_2 = confint(sexual_2010)
+
+sexual_2010_2 = sexual_2010_2*100
 
 sexual_2010 = data.frame(sexual_2010_1,sexual_2010_2)
 rm(sexual_2010_1,sexual_2010_2)
@@ -524,7 +608,9 @@ rm(sexual_2010_1,sexual_2010_2)
 sexual_2016 = svymean(~sexual_physical_violence, design_2016,na.rm=TRUE)
 
 sexual_2016_1 = sexual_2016*100
-sexual_2016_2 = confint(sexual_2016*100)
+sexual_2016_2 = confint(sexual_2016)
+
+sexual_2016_2 = sexual_2016_2*100
 
 sexual_2016 = data.frame(sexual_2016_1,sexual_2016_2)
 rm(sexual_2016_1,sexual_2016_2)
@@ -533,7 +619,9 @@ rm(sexual_2016_1,sexual_2016_2)
 sexual_2022 = svymean(~sexual_physical_violence, design_2022,na.rm=TRUE)
 
 sexual_2022_1 = sexual_2022*100
-sexual_2022_2 = confint(sexual_2022*100)
+sexual_2022_2 = confint(sexual_2022)
+
+sexual_2022_2 = sexual_2022_2*100
 
 sexual_2022 = data.frame(sexual_2022_1,sexual_2022_2)
 rm(sexual_2022_1,sexual_2022_2)
@@ -549,7 +637,9 @@ Variable: physical_violence_pregnancy
 preg_violence_total = svymean(~physical_violence_pregnancy, design_total,na.rm=TRUE)
 
 preg_violence_total_1 = preg_violence_total*100
-preg_violence_total_2 = confint(preg_violence_total*100)
+preg_violence_total_2 = confint(preg_violence_total)
+
+preg_violence_total_2 = preg_violence_total_2*100
 
 preg_violence_total = data.frame(preg_violence_total_1,preg_violence_total_2)
 rm(preg_violence_total_1,preg_violence_total_2)
@@ -558,7 +648,9 @@ rm(preg_violence_total_1,preg_violence_total_2)
 preg_violence_2010 = svymean(~physical_violence_pregnancy, design_2010,na.rm=TRUE)
 
 preg_violence_2010_1 = preg_violence_2010*100
-preg_violence_2010_2 = confint(preg_violence_2010*100)
+preg_violence_2010_2 = confint(preg_violence_2010)
+
+preg_violence_2010_2 = preg_violence_2010_2*100
 
 preg_violence_2010 = data.frame(preg_violence_2010_1,preg_violence_2010_2)
 rm(preg_violence_2010_1,preg_violence_2010_2)
@@ -567,7 +659,9 @@ rm(preg_violence_2010_1,preg_violence_2010_2)
 preg_violence_2016 = svymean(~physical_violence_pregnancy, design_2016,na.rm=TRUE)
 
 preg_violence_2016_1 = preg_violence_2016*100
-preg_violence_2016_2 = confint(preg_violence_2016*100)
+preg_violence_2016_2 = confint(preg_violence_2016)
+
+preg_violence_2016_2 = preg_violence_2016_2*100 
 
 preg_violence_2016 = data.frame(preg_violence_2016_1,preg_violence_2016_2)
 rm(preg_violence_2016_1,preg_violence_2016_2)
@@ -576,7 +670,9 @@ rm(preg_violence_2016_1,preg_violence_2016_2)
 preg_violence_2022 = svymean(~physical_violence_pregnancy, design_2022,na.rm=TRUE)
 
 preg_violence_2022_1 = preg_violence_2022*100
-preg_violence_2022_2 = confint(preg_violence_2022*100)
+preg_violence_2022_2 = confint(preg_violence_2022)
+
+preg_violence_2022_2 = preg_violence_2022_2*100
 
 preg_violence_2022 = data.frame(preg_violence_2022_1,preg_violence_2022_2)
 rm(preg_violence_2022_1,preg_violence_2022_2)
@@ -592,7 +688,9 @@ Variable: total_children_born (children_born)
 child_total = svymean(~children_born, design_total,na.rm=TRUE)
 
 child_total_1 = child_total*100
-child_total_2 = confint(child_total*100)
+child_total_2 = confint(child_total)
+
+child_total_2 = child_total_2*100
 
 child_total = data.frame(child_total_1,child_total_2)
 rm(child_total_1,child_total_2)
@@ -601,7 +699,9 @@ rm(child_total_1,child_total_2)
 child_2010 = svymean(~children_born, design_2010,na.rm=TRUE)
 
 child_2010_1 = child_2010*100
-child_2010_2 = confint(child_2010*100)
+child_2010_2 = confint(child_2010)
+
+child_2010_2 = child_2010_2*100
 
 child_2010 = data.frame(child_2010_1,child_2010_2)
 rm(child_2010_1,child_2010_2)
@@ -610,7 +710,9 @@ rm(child_2010_1,child_2010_2)
 child_2016 = svymean(~children_born, design_2016,na.rm=TRUE)
 
 child_2016_1 = child_2016*100
-child_2016_2 = confint(child_2016*100)
+child_2016_2 = confint(child_2016)
+
+child_2016_2 = child_2016_2*100
 
 child_2016 = data.frame(child_2016_1,child_2016_2)
 rm(child_2016_1,child_2016_2)
@@ -619,7 +721,9 @@ rm(child_2016_1,child_2016_2)
 child_2022 = svymean(~children_born, design_2022,na.rm=TRUE)
 
 child_2022_1 = child_2022*100
-child_2022_2 = confint(child_2022*100)
+child_2022_2 = confint(child_2022)
+
+child_2022_2 = child_2022_2*100
 
 child_2022 = data.frame(child_2022_1,child_2022_2)
 rm(child_2022_1,child_2022_2)
@@ -635,7 +739,9 @@ Variable: abortion_stillbirth
 abo_total = svymean(~abortion_stillbirth, design_total,na.rm=TRUE)
 
 abo_total_1 = abo_total*100
-abo_total_2 = confint(abo_total*100)
+abo_total_2 = confint(abo_total)
+
+abo_total_2 = abo_total_2*100
 
 abo_total = data.frame(abo_total_1,abo_total_2)
 rm(abo_total_1,abo_total_2)
@@ -644,7 +750,9 @@ rm(abo_total_1,abo_total_2)
 abo_2010 = svymean(~abortion_stillbirth, design_2010,na.rm=TRUE)
 
 abo_2010_1 = abo_2010*100
-abo_2010_2 = confint(abo_2010*100)
+abo_2010_2 = confint(abo_2010)
+
+abo_2010_2 = abo_2010_2*100
 
 abo_2010 = data.frame(abo_2010_1,abo_2010_2)
 rm(abo_2010_1,abo_2010_2)
@@ -653,7 +761,9 @@ rm(abo_2010_1,abo_2010_2)
 abo_2016 = svymean(~abortion_stillbirth, design_2016,na.rm=TRUE)
 
 abo_2016_1 = abo_2016*100
-abo_2016_2 = confint(abo_2016*100)
+abo_2016_2 = confint(abo_2016)
+
+abo_2016_2 = abo_2016_2*100
 
 abo_2016 = data.frame(abo_2016_1,abo_2016_2)
 rm(abo_2016_1,abo_2016_2)
@@ -662,7 +772,9 @@ rm(abo_2016_1,abo_2016_2)
 abo_2022 = svymean(~abortion_stillbirth, design_2022,na.rm=TRUE)
 
 abo_2022_1 = abo_2022*100
-abo_2022_2 = confint(abo_2022*100)
+abo_2022_2 = confint(abo_2022)
+
+abo_2022_2 = abo_2022_2*100
 
 abo_2022 = data.frame(abo_2022_1,abo_2022_2)
 rm(abo_2022_1,abo_2022_2)
@@ -678,7 +790,9 @@ Variable: syphilis_screening
 syphilis2_total = svymean(~syphilis_screening, design_total,na.rm=TRUE)
 
 syphilis2_total_1 = syphilis2_total*100
-syphilis2_total_2 = confint(syphilis2_total*100)
+syphilis2_total_2 = confint(syphilis2_total)
+
+syphilis2_total_2 = syphilis2_total_2*100
 
 syphilis2_total = data.frame(syphilis2_total_1,syphilis2_total_2)
 rm(syphilis2_total_1,syphilis2_total_2)
@@ -687,7 +801,9 @@ rm(syphilis2_total_1,syphilis2_total_2)
 syphilis2_2010 = svymean(~syphilis_screening, design_2010,na.rm=TRUE)
 
 syphilis2_2010_1 = syphilis2_2010*100
-syphilis2_2010_2 = confint(syphilis2_2010*100)
+syphilis2_2010_2 = confint(syphilis2_2010)
+
+syphilis2_2010_2 = syphilis2_2010_2*100
 
 syphilis2_2010 = data.frame(syphilis2_2010_1,syphilis2_2010_2)
 rm(syphilis2_2010_1,syphilis2_2010_2)
@@ -696,7 +812,9 @@ rm(syphilis2_2010_1,syphilis2_2010_2)
 syphilis2_2016 = svymean(~syphilis_screening, design_2016,na.rm=TRUE)
 
 syphilis2_2016_1 = syphilis2_2016*100
-syphilis2_2016_2 = confint(syphilis2_2016*100)
+syphilis2_2016_2 = confint(syphilis2_2016)
+
+syphilis2_2016_2 = syphilis2_2016_2*100
 
 syphilis2_2016 = data.frame(syphilis2_2016_1,syphilis2_2016_2)
 rm(syphilis2_2016_1,syphilis2_2016_2)
@@ -705,7 +823,9 @@ rm(syphilis2_2016_1,syphilis2_2016_2)
 syphilis2_2022 = svymean(~syphilis_screening, design_2022,na.rm=TRUE)
 
 syphilis2_2022_1 = syphilis2_2022*100
-syphilis2_2022_2 = confint(syphilis2_2022*100)
+syphilis2_2022_2 = confint(syphilis2_2022)
+
+syphilis2_2022_2 = syphilis2_2022_2*100
 
 syphilis2_2022 = data.frame(syphilis2_2022_1,syphilis2_2022_2)
 rm(syphilis2_2022_1,syphilis2_2022_2)
@@ -723,7 +843,9 @@ Variable: know_other_sti
 other_sti_total = svymean(~know_other_sti, design_total,na.rm=TRUE)
 
 other_sti_total_1 = other_sti_total*100
-other_sti_total_2 = confint(other_sti_total*100)
+other_sti_total_2 = confint(other_sti_total)
+
+other_sti_total_2 = other_sti_total_2*100
 
 other_sti_total = data.frame(other_sti_total_1,other_sti_total_2)
 rm(other_sti_total_1,other_sti_total_2)
@@ -732,7 +854,9 @@ rm(other_sti_total_1,other_sti_total_2)
 other_sti_2010 = svymean(~know_other_sti, design_2010,na.rm=TRUE)
 
 other_sti_2010_1 = other_sti_2010*100
-other_sti_2010_2 = confint(other_sti_2010*100)
+other_sti_2010_2 = confint(other_sti_2010)
+
+other_sti_2010_2 = other_sti_2010_2*100
 
 other_sti_2010 = data.frame(other_sti_2010_1,other_sti_2010_2)
 rm(other_sti_2010_1,other_sti_2010_2)
@@ -741,7 +865,9 @@ rm(other_sti_2010_1,other_sti_2010_2)
 other_sti_2016 = svymean(~know_other_sti, design_2016,na.rm=TRUE)
 
 other_sti_2016_1 = other_sti_2016*100
-other_sti_2016_2 = confint(other_sti_2016*100)
+other_sti_2016_2 = confint(other_sti_2016)
+
+other_sti_2016_2 = other_sti_2016_2*100
 
 other_sti_2016 = data.frame(other_sti_2016_1,other_sti_2016_2)
 rm(other_sti_2016_1,other_sti_2016_2)
@@ -750,7 +876,9 @@ rm(other_sti_2016_1,other_sti_2016_2)
 other_sti_2022 = svymean(~know_other_sti, design_2022,na.rm=TRUE)
 
 other_sti_2022_1 = other_sti_2022*100
-other_sti_2022_2 = confint(other_sti_2022*100)
+other_sti_2022_2 = confint(other_sti_2022)
+
+other_sti_2022_2 = other_sti_2022_2*100
 
 other_sti_2022 = data.frame(other_sti_2022_1,other_sti_2022_2)
 rm(other_sti_2022_1,other_sti_2022_2)
@@ -809,7 +937,9 @@ Variable: contraceptive_method_currently
 contraceptive_total = svymean(~contraceptive_method_currently, design_total,na.rm=TRUE)
 
 contraceptive_total_1 = contraceptive_total*100
-contraceptive_total_2 = confint(contraceptive_total*100)
+contraceptive_total_2 = confint(contraceptive_total)
+
+contraceptive_total_2 = contraceptive_total_2*100
 
 contraceptive_total = data.frame(contraceptive_total_1,contraceptive_total_2)
 rm(contraceptive_total_1,contraceptive_total_2)
@@ -818,7 +948,9 @@ rm(contraceptive_total_1,contraceptive_total_2)
 contraceptive_2010 = svymean(~contraceptive_method_currently, design_2010,na.rm=TRUE)
 
 contraceptive_2010_1 = contraceptive_2010*100
-contraceptive_2010_2 = confint(contraceptive_2010*100)
+contraceptive_2010_2 = confint(contraceptive_2010)
+
+contraceptive_2010_2 = contraceptive_2010_2*100
 
 contraceptive_2010 = data.frame(contraceptive_2010_1,contraceptive_2010_2)
 rm(contraceptive_2010_1,contraceptive_2010_2)
@@ -827,7 +959,9 @@ rm(contraceptive_2010_1,contraceptive_2010_2)
 contraceptive_2016 = svymean(~contraceptive_method_currently, design_2016,na.rm=TRUE)
 
 contraceptive_2016_1 = contraceptive_2016*100
-contraceptive_2016_2 = confint(contraceptive_2016*100)
+contraceptive_2016_2 = confint(contraceptive_2016)
+
+contraceptive_2016_2 = contraceptive_2016_2*100
 
 contraceptive_2016 = data.frame(contraceptive_2016_1,contraceptive_2016_2)
 rm(contraceptive_2016_1,contraceptive_2016_2)
@@ -836,7 +970,9 @@ rm(contraceptive_2016_1,contraceptive_2016_2)
 contraceptive_2022 = svymean(~contraceptive_method_currently, design_2022,na.rm=TRUE)
 
 contraceptive_2022_1 = contraceptive_2022*100
-contraceptive_2022_2 = confint(contraceptive_2022*100)
+contraceptive_2022_2 = confint(contraceptive_2022)
+
+contraceptive_2022_2 = contraceptive_2022_2*100
 
 contraceptive_2022 = data.frame(contraceptive_2022_1,contraceptive_2022_2)
 rm(contraceptive_2022_1,contraceptive_2022_2)
@@ -852,7 +988,9 @@ Variable: sexual_partner_2
 sexual_par_total = svymean(~sexual_partner_2, design_total,na.rm=TRUE)
 
 sexual_par_total_1 = sexual_par_total*100
-sexual_par_total_2 = confint(sexual_par_total*100)
+sexual_par_total_2 = confint(sexual_par_total)
+
+sexual_par_total_2 = sexual_par_total_2*100
 
 sexual_par_total = data.frame(sexual_par_total_1,sexual_par_total_2)
 rm(sexual_par_total_1,sexual_par_total_2)
@@ -861,7 +999,9 @@ rm(sexual_par_total_1,sexual_par_total_2)
 sexual_par_2010 = svymean(~sexual_partner_2, design_2010,na.rm=TRUE)
 
 sexual_par_2010_1 = sexual_par_2010*100
-sexual_par_2010_2 = confint(sexual_par_2010*100)
+sexual_par_2010_2 = confint(sexual_par_2010)
+
+sexual_par_2010_2 = sexual_par_2010_2*100
 
 sexual_par_2010 = data.frame(sexual_par_2010_1,sexual_par_2010_2)
 rm(sexual_par_2010_1,sexual_par_2010_2)
@@ -870,7 +1010,9 @@ rm(sexual_par_2010_1,sexual_par_2010_2)
 sexual_par_2016 = svymean(~sexual_partner_2, design_2016,na.rm=TRUE)
 
 sexual_par_2016_1 = sexual_par_2016*100
-sexual_par_2016_2 = confint(sexual_par_2016*100)
+sexual_par_2016_2 = confint(sexual_par_2016)
+
+sexual_par_2016_2 = sexual_par_2016_2*100
 
 sexual_par_2016 = data.frame(sexual_par_2016_1,sexual_par_2016_2)
 rm(sexual_par_2016_1,sexual_par_2016_2)
@@ -879,7 +1021,9 @@ rm(sexual_par_2016_1,sexual_par_2016_2)
 sexual_par_2022 = svymean(~sexual_partner_2, design_2022,na.rm=TRUE)
 
 sexual_par_2022_1 = sexual_par_2022*100
-sexual_par_2022_2 = confint(sexual_par_2022*100)
+sexual_par_2022_2 = confint(sexual_par_2022)
+
+sexual_par_2022_2 = sexual_par_2022_2*100
 
 sexual_par_2022 = data.frame(sexual_par_2022_1,sexual_par_2022_2)
 rm(sexual_par_2022_1,sexual_par_2022_2)
@@ -895,7 +1039,9 @@ Variable: condon_use_last_partner
 condon_use_total = svymean(~condon_use_last_partner, design_total,na.rm=TRUE)
 
 condon_use_total_1 = condon_use_total*100
-condon_use_total_2 = confint(condon_use_total*100)
+condon_use_total_2 = confint(condon_use_total)
+
+condon_use_total_2 = condon_use_total_2*100
 
 condon_use_total = data.frame(condon_use_total_1,condon_use_total_2)
 rm(condon_use_total_1,condon_use_total_2)
@@ -904,7 +1050,9 @@ rm(condon_use_total_1,condon_use_total_2)
 condon_use_2010 = svymean(~condon_use_last_partner, design_2010,na.rm=TRUE)
 
 condon_use_2010_1 = condon_use_2010*100
-condon_use_2010_2 = confint(condon_use_2010*100)
+condon_use_2010_2 = confint(condon_use_2010)
+
+condon_use_2010_2 = condon_use_2010_2*100
 
 condon_use_2010 = data.frame(condon_use_2010_1,condon_use_2010_2)
 rm(condon_use_2010_1,condon_use_2010_2)
@@ -913,7 +1061,9 @@ rm(condon_use_2010_1,condon_use_2010_2)
 condon_use_2016 = svymean(~condon_use_last_partner, design_2016,na.rm=TRUE)
 
 condon_use_2016_1 = condon_use_2016*100
-condon_use_2016_2 = confint(condon_use_2016*100)
+condon_use_2016_2 = confint(condon_use_2016)
+
+condon_use_2016_2 = condon_use_2016_2*100
 
 condon_use_2016 = data.frame(condon_use_2016_1,condon_use_2016_2)
 rm(condon_use_2016_1,condon_use_2016_2)
@@ -922,7 +1072,9 @@ rm(condon_use_2016_1,condon_use_2016_2)
 condon_use_2022 = svymean(~condon_use_last_partner, design_2022,na.rm=TRUE)
 
 condon_use_2022_1 = condon_use_2022*100
-condon_use_2022_2 = confint(condon_use_2022*100)
+condon_use_2022_2 = confint(condon_use_2022)
+
+condon_use_2022_2 = condon_use_2022_2*100
 
 condon_use_2022 = data.frame(condon_use_2022_1,condon_use_2022_2)
 rm(condon_use_2022_1,condon_use_2022_2)
@@ -938,7 +1090,9 @@ Variable: alcohol_prior_sexual_intercourse
 alcohol_total = svymean(~alcohol_prior_sexual_intercourse, design_total,na.rm=TRUE)
 
 alcohol_total_1 = alcohol_total*100
-alcohol_total_2 = confint(alcohol_total*100)
+alcohol_total_2 = confint(alcohol_total)
+
+alcohol_total_2 = alcohol_total_2*100
 
 alcohol_total = data.frame(alcohol_total_1,alcohol_total_2)
 rm(alcohol_total_1,alcohol_total_2)
@@ -947,7 +1101,9 @@ rm(alcohol_total_1,alcohol_total_2)
 alcohol_2010 = svymean(~alcohol_prior_sexual_intercourse, design_2010,na.rm=TRUE)
 
 alcohol_2010_1 = alcohol_2010*100
-alcohol_2010_2 = confint(alcohol_2010*100)
+alcohol_2010_2 = confint(alcohol_2010)
+
+alcohol_2010_2 = alcohol_2010_2*100
 
 alcohol_2010 = data.frame(alcohol_2010_1,alcohol_2010_2)
 rm(alcohol_2010_1,alcohol_2010_2)
@@ -956,7 +1112,9 @@ rm(alcohol_2010_1,alcohol_2010_2)
 alcohol_2016 = svymean(~alcohol_prior_sexual_intercourse, design_2016,na.rm=TRUE)
 
 alcohol_2016_1 = alcohol_2016*100
-alcohol_2016_2 = confint(alcohol_2016*100)
+alcohol_2016_2 = confint(alcohol_2016)
+
+alcohol_2016_2 = alcohol_2016_2*100
 
 alcohol_2016 = data.frame(alcohol_2016_1,alcohol_2016_2)
 rm(alcohol_2016_1,alcohol_2016_2)
@@ -965,7 +1123,9 @@ rm(alcohol_2016_1,alcohol_2016_2)
 alcohol_2022 = svymean(~alcohol_prior_sexual_intercourse, design_2022,na.rm=TRUE)
 
 alcohol_2022_1 = alcohol_2022*100
-alcohol_2022_2 = confint(alcohol_2022*100)
+alcohol_2022_2 = confint(alcohol_2022)
+
+alcohol_2022_2 = alcohol_2022_2*100
 
 alcohol_2022 = data.frame(alcohol_2022_1,alcohol_2022_2)
 rm(alcohol_2022_1,alcohol_2022_2)
@@ -981,7 +1141,9 @@ Variable: diagnosted_sti_12months
 sti2_total = svymean(~diagnosted_sti_12months, design_total,na.rm=TRUE)
 
 sti2_total_1 = sti2_total*100
-sti2_total_2 = confint(sti2_total*100)
+sti2_total_2 = confint(sti2_total)
+
+sti2_total_2 = sti2_total_2*100
 
 sti2_total = data.frame(sti2_total_1,sti2_total_2)
 rm(sti2_total_1,sti2_total_2)
@@ -990,7 +1152,9 @@ rm(sti2_total_1,sti2_total_2)
 sti2_2010 = svymean(~diagnosted_sti_12months, design_2010,na.rm=TRUE)
 
 sti2_2010_1 = sti2_2010*100
-sti2_2010_2 = confint(sti2_2010*100)
+sti2_2010_2 = confint(sti2_2010)
+
+sti2_2010 = sti2_2010*100
 
 sti2_2010 = data.frame(sti2_2010_1,sti2_2010_2)
 rm(sti2_2010_1,sti2_2010_2)
@@ -999,7 +1163,9 @@ rm(sti2_2010_1,sti2_2010_2)
 sti2_2016 = svymean(~diagnosted_sti_12months, design_2016,na.rm=TRUE)
 
 sti2_2016_1 = sti2_2016*100
-sti2_2016_2 = confint(sti2_2016*100)
+sti2_2016_2 = confint(sti2_2016)
+
+sti2_2016 = sti2_2016*100
 
 sti2_2016 = data.frame(sti2_2016_1,sti2_2016_2)
 rm(sti2_2016_1,sti2_2016_2)
@@ -1008,7 +1174,9 @@ rm(sti2_2016_1,sti2_2016_2)
 sti2_2022 = svymean(~diagnosted_sti_12months, design_2022,na.rm=TRUE)
 
 sti2_2022_1 = sti2_2022*100
-sti2_2022_2 = confint(sti2_2022*100)
+sti2_2022_2 = confint(sti2_2022)
+
+sti2_2022_2 = sti2_2022_2*100
 
 sti2_2022 = data.frame(sti2_2022_1,sti2_2022_2)
 rm(sti2_2022_1,sti2_2022_2)
@@ -1024,7 +1192,9 @@ Variable: can_get_condoms
 get_condon_total = svymean(~can_get_condoms, design_total,na.rm=TRUE)
 
 get_condon_total_1 = get_condon_total*100
-get_condon_total_2 = confint(get_condon_total*100)
+get_condon_total_2 = confint(get_condon_total)
+
+get_condon_total_2 = get_condon_total_2*100
 
 get_condon_total = data.frame(get_condon_total_1,get_condon_total_2)
 rm(get_condon_total_1,get_condon_total_2)
@@ -1033,7 +1203,9 @@ rm(get_condon_total_1,get_condon_total_2)
 get_condon_2010 = svymean(~can_get_condoms, design_2010,na.rm=TRUE)
 
 get_condon_2010_1 = get_condon_2010*100
-get_condon_2010_2 = confint(get_condon_2010*100)
+get_condon_2010_2 = confint(get_condon_2010)
+
+get_condon_2010_2 = get_condon_2010_2*100
 
 get_condon_2010 = data.frame(get_condon_2010_1,get_condon_2010_2)
 rm(get_condon_2010_1,get_condon_2010_2)
@@ -1042,7 +1214,9 @@ rm(get_condon_2010_1,get_condon_2010_2)
 get_condon_2016 = svymean(~can_get_condoms, design_2016,na.rm=TRUE)
 
 get_condon_2016_1 = get_condon_2016*100
-get_condon_2016_2 = confint(get_condon_2016*100)
+get_condon_2016_2 = confint(get_condon_2016)
+
+get_condon_2016_2 = get_condon_2016_2*100
 
 get_condon_2016 = data.frame(get_condon_2016_1,get_condon_2016_2)
 rm(get_condon_2016_1,get_condon_2016_2)
@@ -1051,7 +1225,9 @@ rm(get_condon_2016_1,get_condon_2016_2)
 get_condon_2022 = svymean(~can_get_condoms, design_2022,na.rm=TRUE)
 
 get_condon_2022_1 = get_condon_2022*100
-get_condon_2022_2 = confint(get_condon_2022*100)
+get_condon_2022_2 = confint(get_condon_2022)
+
+get_condon_2022_2 = get_condon_2022_2*100
 
 get_condon_2022 = data.frame(get_condon_2022_1,get_condon_2022_2)
 rm(get_condon_2022_1,get_condon_2022_2)
@@ -1067,7 +1243,9 @@ Variable: hiv_screening
 hiv_screening_total = svymean(~hiv_screening, design_total,na.rm=TRUE)
 
 hiv_screening_total_1 = hiv_screening_total*100
-hiv_screening_total_2 = confint(hiv_screening_total*100)
+hiv_screening_total_2 = confint(hiv_screening_total)
+
+hiv_screening_total_2 = hiv_screening_total_2*100
 
 hiv_screening_total = data.frame(hiv_screening_total_1,hiv_screening_total_2)
 rm(hiv_screening_total_1,hiv_screening_total_2)
@@ -1076,7 +1254,9 @@ rm(hiv_screening_total_1,hiv_screening_total_2)
 hiv_screening_2010 = svymean(~hiv_screening, design_2010,na.rm=TRUE)
 
 hiv_screening_2010_1 = hiv_screening_2010*100
-hiv_screening_2010_2 = confint(hiv_screening_2010*100)
+hiv_screening_2010_2 = confint(hiv_screening_2010)
+
+hiv_screening_2010_2 = hiv_screening_2010_2*100
 
 hiv_screening_2010 = data.frame(hiv_screening_2010_1,hiv_screening_2010_2)
 rm(hiv_screening_2010_1,hiv_screening_2010_2)
@@ -1085,7 +1265,9 @@ rm(hiv_screening_2010_1,hiv_screening_2010_2)
 hiv_screening_2016 = svymean(~hiv_screening, design_2016,na.rm=TRUE)
 
 hiv_screening_2016_1 = hiv_screening_2016*100
-hiv_screening_2016_2 = confint(hiv_screening_2016*100)
+hiv_screening_2016_2 = confint(hiv_screening_2016)
+
+hiv_screening_2016_2 = hiv_screening_2016_2*100
 
 hiv_screening_2016 = data.frame(hiv_screening_2016_1,hiv_screening_2016_2)
 rm(hiv_screening_2016_1,hiv_screening_2016_2)
@@ -1094,7 +1276,9 @@ rm(hiv_screening_2016_1,hiv_screening_2016_2)
 hiv_screening_2022 = svymean(~hiv_screening, design_2022,na.rm=TRUE)
 
 hiv_screening_2022_1 = hiv_screening_2022*100
-hiv_screening_2022_2 = confint(hiv_screening_2022*100)
+hiv_screening_2022_2 = confint(hiv_screening_2022)
+
+hiv_screening_2022_2 = hiv_screening_2022_2*100
 
 hiv_screening_2022 = data.frame(hiv_screening_2022_1,hiv_screening_2022_2)
 rm(hiv_screening_2022_1,hiv_screening_2022_2)
