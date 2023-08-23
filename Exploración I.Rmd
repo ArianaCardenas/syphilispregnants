@@ -124,7 +124,7 @@ rm(age_mother_total,age_mother_2010,age_mother_2016,age_mother_2022)
 variable: education_level (education_level_reco)
 ```{r}
 #EDUC TOTAL
-educ_total = svymean(~education_level_reco, design_total,na.rm=TRUE)
+educ_total = svymean(~education_level_reco, design_total,na.rm=FALSE)
 
 educ_total_1 = educ_total*100
 educ_total_2 = confint(educ_total)
@@ -172,10 +172,10 @@ rm(educ_2022_1,educ_2022_2)
 rm(educ_total,educ_2010,educ_2016,educ_2022)
 ```
 
-variable: marital_status
+#variable: marital_status
 ```{r}
 #STATUS TOTAL
-status_total = svymean(~marital_status, design_total,na.rm=TRUE)
+status_total = svymean(~ifelse(is.na(marital_status), "NA", marital_status), design_total)
 
 status_total_1 = status_total*100
 status_total_2 = confint(status_total)
@@ -186,7 +186,7 @@ status_total = data.frame(status_total_1,status_total_2)
 rm(status_total_1,status_total_2)
 
 #STATUS 2010 
-status_2010 = svymean(~marital_status, design_2010,na.rm=TRUE)
+status_2010 = svymean(~ifelse(is.na(marital_status), "NA", marital_status), design_2010)
 
 status_2010_1 = status_2010*100
 status_2010_2 = confint(status_2010)
@@ -197,7 +197,7 @@ status_2010 = data.frame(status_2010_1,status_2010_2)
 rm(status_2010_1,status_2010_2)
 
 #STATUS 2016
-status_2016 = svymean(~marital_status, design_2016,na.rm=TRUE)
+status_2016 = svymean(~ifelse(is.na(marital_status), "NA", marital_status), design_2016)
 
 status_2016_1 = status_2016*100
 status_2016_2 = confint(status_2016)
@@ -208,7 +208,7 @@ status_2016 = data.frame(status_2016_1,status_2016_2)
 rm(status_2016_1,status_2016_2)
 
 #STATUS 2022 
-status_2022 = svymean(~marital_status, design_2022,na.rm=TRUE)
+status_2022 = svymean(~ifelse(is.na(marital_status), "NA", marital_status), design_2022)
 
 status_2022_1 = status_2022*100
 status_2022_2 = confint(status_2022)
