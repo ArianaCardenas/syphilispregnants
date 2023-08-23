@@ -75,11 +75,14 @@ rm(prepplot,prepplot2,pobfem,departamentos)
 # Tamizajes de Sífilis por departamento
 
 ```{r}
+
 ggplot() +
   geom_sf(data = data_total_ntest, aes(geometry = geometry,fill = ntest), color = "white", size = 0.2) +
   scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening in pregnants, INS data",
         fill = "Syphilis screening")
+
+
 ```
 # Tamizajes reactivos de Sífilis por departamentos
 
@@ -93,6 +96,7 @@ ggplot() +
 #Tamizajes de Sífilis por departamento, ajustado por población
 
 ```{r}
+
 ggplot() +
   geom_sf(data = data_total_ntest, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
   scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
@@ -133,6 +137,17 @@ data_total_ntesttotal
 ```{r}
 rm(data_total_ntesttotal)
 ```
+
+```{r}
+
+ggplot() +
+  geom_sf(data = data_total_ntest, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  facet_wrap(.~year) +
+   labs(title="Syphilis screening in pregnants",
+        fill = "Syphilis screening per 10000 hab")
+```
+
 
 ## TAMIZAJES POR AÑO
 
@@ -604,6 +619,16 @@ data_reactivos_allyears
 ```{r}
 rm(data_reactivos_allyears)
 ```
+
+```{r}
+ggplot() +
+  geom_sf(data = data_total_reactivos, aes(geometry = geometry,fill = rate), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  facet_wrap(.~year) +
+   labs(title="Syphilis cases in pregnants",
+        fill = "Syphilis cases per 10000 hab")
+```
+
 
 ## TAMIZAJES POR AÑO
 
