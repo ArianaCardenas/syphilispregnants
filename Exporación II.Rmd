@@ -17,6 +17,14 @@ library(tidyverse)
 library(survey)
 library(dplyr)
 data <- read_csv("Data_final/data_syphilis.csv")
+
+data <- data %>%
+   mutate(size_final = case_when(
+      size_birth == "large"| size_birth == "very large"  ~ "large/very large",
+      size_birth == "normal" ~ "normal",
+      size_birth == "small"| size_birth == "very_small"  ~ "small/very small",
+      TRUE ~ NA
+    ))
 ```
 
 ```{r}
@@ -55,13 +63,10 @@ design_2022 <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ 
 options(survey.lonely.psu="adjust")
 ```
 
-```{r}
-rm(data_filtered_2010,data_filtered_2016,data_filtered_2022)
-```
 
 ```{r}
 #TIPO DE RESIDENCIA
-residence_total <- svymean(~type_residence, design=design_total,na.rm=TRUE)
+residence_total = svymean(~ifelse(is.na(type_residence),"NA",type_residence), design=design_total)
 
 residence_total_1 = residence_total*100
 residence_total_2 = confint(residence_total)
@@ -70,7 +75,7 @@ residence_total = data.frame(residence_total_1,residence_total_2*100)
 rm(residence_total_1,residence_total_2)
 
 #RESIDENCIA 2010 
-residence_2010 <- svymean(~type_residence, design_2010,na.rm=TRUE)
+residence_2010 <- svymean(~ifelse(is.na(type_residence),"NA",type_residence), design_2010)
 
 residence_2010_1 = residence_2010*100
 residence_2010_2 = confint(residence_2010)
@@ -79,7 +84,7 @@ residence_2010 = data.frame(residence_2010_1,residence_2010_2*100)
 rm(residence_2010_1,residence_2010_2)
 
 #RESIDENCIA 2016 
-residence_2016 <- svymean(~type_residence, design_2016,na.rm=TRUE)
+residence_2016 <- svymean(~ifelse(is.na(type_residence),"NA",type_residence), design_2016)
 
 residence_2016_1 = residence_2016*100
 residence_2016_2 = confint(residence_2016)
@@ -88,7 +93,7 @@ residence_2016 = data.frame(residence_2016_1,residence_2016_2*100)
 rm(residence_2016_1,residence_2016_2)
 
 #RESIDENCIA 2022
-residence_2022 <- svymean(~type_residence, design_2022,na.rm=TRUE)
+residence_2022 <- svymean(~ifelse(is.na(type_residence),"NA",type_residence), design_2022)
 
 residence_2022_1 = residence_2022*100
 residence_2022_2 = confint(residence_2022)
@@ -103,7 +108,7 @@ rm(residence_total,residence_2010,residence_2016,residence_2022)
 
 ```{r}
 #Natural region
-natural_total <- svymean(~natural_region, design=design_total,na.rm=TRUE)
+natural_total <- svymean(~ifelse(is.na(natural_region),"NA",natural_region), design=design_total)
 
 natural_total_1 = natural_total*100
 natural_total_2 = confint(natural_total)
@@ -112,7 +117,7 @@ natural_total = data.frame(natural_total_1,natural_total_2*100)
 rm(natural_total_1,natural_total_2)
 
 #NATURAL 2010 
-natural_2010 <- svymean(~natural_region, design_2010,na.rm=TRUE)
+natural_2010 <- svymean(~ifelse(is.na(natural_region),"NA",natural_region), design_2010)
 
 natural_2010_1 = natural_2010*100
 natural_2010_2 = confint(natural_2010)
@@ -121,7 +126,7 @@ natural_2010 = data.frame(natural_2010_1,natural_2010_2*100)
 rm(natural_2010_1,natural_2010_2)
 
 #NATURAL 2016 
-natural_2016 <- svymean(~natural_region, design_2016,na.rm=TRUE)
+natural_2016 <- svymean(~ifelse(is.na(natural_region),"NA",natural_region), design_2016)
 
 natural_2016_1 = natural_2016*100
 natural_2016_2 = confint(natural_2016)
@@ -130,7 +135,7 @@ natural_2016 = data.frame(natural_2016_1,natural_2016_2*100)
 rm(natural_2016_1,natural_2016_2)
 
 #NATURAL 2022
-natural_2022 <- svymean(~natural_region, design_2022,na.rm=TRUE)
+natural_2022 <- svymean(~ifelse(is.na(natural_region),"NA",natural_region), design_2022)
 
 natural_2022_1 = natural_2022*100
 natural_2022_2 = confint(natural_2022)
@@ -146,7 +151,7 @@ rm(natural_total,natural_2010, natural_2016, natural_2022)
 
 ```{r}
 #Wealth index
-wi_total <- svymean(~wealth_index, design=design_total,na.rm=TRUE)
+wi_total <- svymean(~ifelse(is.na(wealth_index),"NA",wealth_index), design=design_total)
 
 wi_total_1 = wi_total*100
 wi_total_2 = confint(wi_total)
@@ -155,7 +160,7 @@ wi_total = data.frame(wi_total_1,wi_total_2*100)
 rm(wi_total_1,wi_total_2)
 
 #WI 2010 
-wi_2010 <- svymean(~wealth_index, design_2010,na.rm=TRUE)
+wi_2010 <- svymean(~ifelse(is.na(wealth_index),"NA",wealth_index), design_2010)
 
 wi_2010_1 = wi_2010*100
 wi_2010_2 = confint(wi_2010)
@@ -164,7 +169,7 @@ wi_2010 = data.frame(wi_2010_1,wi_2010_2*100)
 rm(wi_2010_1,wi_2010_2)
 
 #WI 2016 
-wi_2016 <- svymean(~wealth_index, design_2016,na.rm=TRUE)
+wi_2016 <- svymean(~ifelse(is.na(wealth_index),"NA",wealth_index), design_2016)
 
 wi_2016_1 = wi_2016*100
 wi_2016_2 = confint(wi_2016)
@@ -173,15 +178,13 @@ wi_2016 = data.frame(wi_2016_1,wi_2016_2*100)
 rm(wi_2016_1,wi_2016_2)
 
 #WI 2022
-wi_2022 <- svymean(~wealth_index, design_2022,na.rm=TRUE)
+wi_2022 <- svymean(~ifelse(is.na(wealth_index),"NA",wealth_index), design_2022)
 
 wi_2022_1 = wi_2022*100
 wi_2022_2 = confint(wi_2022)
 
 wi_2022 = data.frame(wi_2022_1,wi_2022_2*100)
 rm(wi_2022_1,wi_2022_2)
-
-
 ```
 
 ```{r}
@@ -192,7 +195,7 @@ rm(wi_total,wi_2010, wi_2016, wi_2022)
 #Relationship with household head
 
 #Total
-household_total <- svymean(~relationship_household_head, design=design_total,na.rm=TRUE)
+household_total <- svymean(~ifelse(is.na(relationship_household_head),"NA",relationship_household_head), design=design_total)
 
 household_total_1 = household_total*100
 household_total_2 = confint(household_total)
@@ -201,7 +204,7 @@ household_total = data.frame(household_total_1,household_total_2*100)
 rm(household_total_1,household_total_2)
 
 #HOUSEHOLD 2010 
-household_2010 <- svymean(~relationship_household_head, design_2010,na.rm=TRUE)
+household_2010 <- svymean(~ifelse(is.na(relationship_household_head),"NA",relationship_household_head), design_2010)
 
 household_2010_1 = household_2010*100
 household_2010_2 = confint(household_2010)
@@ -210,7 +213,7 @@ household_2010 = data.frame(household_2010_1,household_2010_2*100)
 rm(household_2010_1,household_2010_2)
 
 #HOUSEHOLD 2016 
-household_2016 <- svymean(~relationship_household_head, design_2016,na.rm=TRUE)
+household_2016 <- svymean(~ifelse(is.na(relationship_household_head),"NA",relationship_household_head), design_2016)
 
 household_2016_1 = household_2016*100
 household_2016_2 = confint(household_2016)
@@ -219,7 +222,7 @@ household_2016 = data.frame(household_2016_1,household_2016_2*100)
 rm(household_2016_1,household_2016_2)
 
 #HOUSEHOLD 2022
-household_2022 <- svymean(~relationship_household_head, design_2022,na.rm=TRUE)
+household_2022 <- svymean(~ifelse(is.na(relationship_household_head),"NA",relationship_household_head), design_2022)
 
 household_2022_1 = household_2022*100
 household_2022_2 = confint(household_2022)
@@ -237,7 +240,7 @@ rm(household_total,household_2010, household_2016, household_2022)
 #Total members household
 
 #Total
-members_total <- svymean(~members_household, design=design_total,na.rm=TRUE)
+members_total <- svymean(~ifelse(is.na(members_household),"NA",members_household),design=design_total)
 
 members_total_1 = members_total*100
 members_total_2 = confint(members_total)
@@ -246,7 +249,7 @@ members_total = data.frame(members_total_1,members_total_2*100)
 rm(members_total_1,members_total_2)
 
 #MEMBERS 2010 
-members_2010 <- svymean(~members_household, design_2010,na.rm=TRUE)
+members_2010 <- svymean(~ifelse(is.na(members_household),"NA",members_household), design_2010)
 
 members_2010_1 = members_2010*100
 members_2010_2 = confint(members_2010)
@@ -255,7 +258,7 @@ members_2010 = data.frame(members_2010_1,members_2010_2*100)
 rm(members_2010_1,members_2010_2)
 
 #MEMBERS 2016 
-members_2016 <- svymean(~members_household, design_2016,na.rm=TRUE)
+members_2016 <- svymean(~ifelse(is.na(members_household),"NA",members_household), design_2016)
 
 members_2016_1 = members_2016*100
 members_2016_2 = confint(members_2016)
@@ -264,7 +267,7 @@ members_2016 = data.frame(members_2016_1,members_2016_2*100)
 rm(members_2016_1,members_2016_2)
 
 #MEMBERS 2022
-members_2022 <- svymean(~members_household, design_2022,na.rm=TRUE)
+members_2022 <- svymean(~ifelse(is.na(members_household),"NA",members_household), design_2022)
 
 members_2022_1 = members_2022*100
 members_2022_2 = confint(members_2022)
@@ -282,6 +285,7 @@ rm(members_total,members_2010, members_2016, members_2022)
 #Social programs: Juntos
 
 #Total
+#juntos_total <- svymean(~ifelse(is.na(juntos),"NA",juntos),design=design_total)
 juntos_total <- svymean(~juntos, design=design_total,na.rm=TRUE)
 
 juntos_total_1 = juntos_total*100
@@ -300,7 +304,7 @@ rm(juntos_total_1,juntos_total_2)
 #rm(juntos_2010_1,juntos_2010_2)
 
 #JUNTOS 2016 
-juntos_2016 <- svymean(~juntos, design_2016,na.rm=TRUE)
+juntos_2016 <- svymean(~ifelse(is.na(juntos),"NA",juntos), design_2016)
 
 juntos_2016_1 = juntos_2016*100
 juntos_2016_2 = confint(juntos_2016)
@@ -309,7 +313,7 @@ juntos_2016 = data.frame(juntos_2016_1,juntos_2016_2*100)
 rm(juntos_2016_1,juntos_2016_2)
 
 #JUNTOS 2022
-juntos_2022 <- svymean(~juntos, design_2022,na.rm=TRUE)
+juntos_2022 <- svymean(~ifelse(is.na(juntos),"NA",juntos), design_2022)
 
 juntos_2022_1 = juntos_2022*100
 juntos_2022_2 = confint(juntos_2022)
@@ -343,7 +347,7 @@ rm(wawa_total_1,wawa_total_2)
 #rm(wawa_2010_1,wawa_2010_2)
 
 #WAWA 2016 
-wawa_2016 <- svymean(~wawa_wasi, design_2016,na.rm=TRUE)
+wawa_2016 <- svymean(~ifelse(is.na(wawa_wasi),"NA",wawa_wasi), design_2016)
 
 wawa_2016_1 = wawa_2016*100
 wawa_2016_2 = confint(wawa_2016)
@@ -352,7 +356,7 @@ wawa_2016 = data.frame(wawa_2016_1,wawa_2016_2*100)
 rm(wawa_2016_1,wawa_2016_2)
 
 #WAWA 2022
-wawa_2022 <- svymean(~wawa_wasi, design_2022,na.rm=TRUE)
+wawa_2022 <- svymean(~ifelse(is.na(wawa_wasi),"NA",wawa_wasi), design_2022)
 
 wawa_2022_1 = wawa_2022*100
 wawa_2022_2 = confint(wawa_2022)
@@ -370,7 +374,7 @@ rm(wawa_total,wawa_2010, wawa_2016, wawa_2022)
 #Health insurance
 
 #Total
-insurance_total <- svymean(~health_insurance, design=design_total,na.rm=TRUE)
+insurance_total <- svymean(~ifelse(is.na(health_insurance),"NA",health_insurance), design=design_total)
 
 insurance_total_1 = insurance_total*100
 insurance_total_2 = confint(insurance_total)
@@ -379,7 +383,7 @@ insurance_total = data.frame(insurance_total_1,insurance_total_2*100)
 rm(insurance_total_1,insurance_total_2)
 
 #INSURANCE 2010 
-insurance_2010 <- svymean(~health_insurance, design_2010,na.rm=TRUE)
+insurance_2010 <- svymean(~ifelse(is.na(health_insurance),"NA",health_insurance), design_2010)
 
 insurance_2010_1 = insurance_2010*100
 insurance_2010_2 = confint(insurance_2010)
@@ -388,7 +392,7 @@ insurance_2010 = data.frame(insurance_2010_1,insurance_2010_2*100)
 rm(insurance_2010_1,insurance_2010_2)
 
 #INSURANCE 2016 
-insurance_2016 <- svymean(~health_insurance, design_2016,na.rm=TRUE)
+insurance_2016 <- svymean(~ifelse(is.na(health_insurance),"NA",health_insurance), design_2016)
 
 insurance_2016_1 = insurance_2016*100
 insurance_2016_2 = confint(insurance_2016)
@@ -397,7 +401,7 @@ insurance_2016 = data.frame(insurance_2016_1,insurance_2016_2*100)
 rm(insurance_2016_1,insurance_2016_2)
 
 #INSURANCE 2022
-insurance_2022 <- svymean(~health_insurance, design_2022,na.rm=TRUE)
+insurance_2022 <- svymean(~ifelse(is.na(health_insurance),"NA",health_insurance), design_2022)
 
 insurance_2022_1 = insurance_2022*100
 insurance_2022_2 = confint(insurance_2022)
@@ -414,7 +418,7 @@ rm(insurance_total,insurance_2010, insurance_2016, insurance_2022)
 #place of prenatal care
 
 #Total
-place_total <- svymean(~place_prenatal_care, design=design_total,na.rm=TRUE)
+place_total <- svymean(~ifelse(is.na(place_prenatal_care),"NA",place_prenatal_care), design=design_total)
 
 place_total_1 = place_total*100
 place_total_2 = confint(place_total)
@@ -423,7 +427,7 @@ place_total = data.frame(place_total_1,place_total_2*100)
 rm(place_total_1,place_total_2)
 
 #PLACE 2010 
-place_2010 <- svymean(~place_prenatal_care, design_2010,na.rm=TRUE)
+place_2010 <- svymean(~ifelse(is.na(place_prenatal_care),"NA",place_prenatal_care), design_2010)
 
 place_2010_1 = place_2010*100
 place_2010_2 = confint(place_2010)
@@ -432,7 +436,7 @@ place_2010 = data.frame(place_2010_1,place_2010_2*100)
 rm(place_2010_1,place_2010_2)
 
 #PLACE 2016 
-place_2016 <- svymean(~place_prenatal_care, design_2016,na.rm=TRUE)
+place_2016 <- svymean(~ifelse(is.na(place_prenatal_care),"NA",place_prenatal_care), design_2016)
 
 place_2016_1 = place_2016*100
 place_2016_2 = confint(place_2016)
@@ -441,7 +445,7 @@ place_2016 = data.frame(place_2016_1,place_2016_2*100)
 rm(place_2016_1,place_2016_2)
 
 #PLACE 2022
-place_2022 <- svymean(~place_prenatal_care, design_2022,na.rm=TRUE)
+place_2022 <- svymean(~ifelse(is.na(place_prenatal_care),"NA",place_prenatal_care), design_2022)
 
 place_2022_1 = place_2022*100
 place_2022_2 = confint(place_2022)
@@ -458,51 +462,40 @@ rm(place_total,place_2010, place_2016, place_2022)
 #professional level of prenatal care
 
 #Total
-provider_total <- data %>%
-   dplyr::group_by(prenatal_care_provider) %>%
-  dplyr::summarise(total_observaciones = n(),
-            porcentaje = round(total_observaciones / nrow(data) * 100,1),
-            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[1] * 100,1),
-            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[2] * 100,1))
-  
-# 2010
-sub_provider_2010 <- subset(data, year == 2010)
+provider_total <- svymean(~ifelse(is.na(prenatal_care_provider),"NA",prenatal_care_provider), design=design_total)
 
-# Agrupar los datos 
-provider_2010 <- sub_provider_2010  %>%
-  dplyr::group_by(prenatal_care_provider) %>%
-  dplyr::summarise(total_observaciones = n(),
-            porcentaje = round(total_observaciones / nrow(sub_provider_2010) * 100,1),
-            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_provider_2010), conf.level = 0.95)$conf.int[1] * 100,1),
-            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_provider_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+provider_total_1 = provider_total*100
+provider_total_2 = confint(provider_total)
 
-rm(sub_provider_2010)
+provider_total = data.frame(provider_total_1,provider_total_2*100)
+rm(provider_total_1,provider_total_2)
 
-# 2016
-sub_provider_2016 <- subset(data, year == 2016)
+#PROVIDER 2010 
+provider_2010 <- svymean(~ifelse(is.na(prenatal_care_provider),"NA",prenatal_care_provider), design_2010)
 
-# Agrupar los datos 
-provider_2016 <- sub_provider_2016  %>%
-  dplyr::group_by(prenatal_care_provider) %>%
-  dplyr::summarise(total_observaciones = n(),
-            porcentaje = round(total_observaciones / nrow(sub_provider_2016) * 100,1),
-            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_provider_2016), conf.level = 0.95)$conf.int[1] * 100,1),
-            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_provider_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+provider_2010_1 = provider_2010*100
+provider_2010_2 = confint(provider_2010)
 
-rm(sub_provider_2016)
+provider_2010 = data.frame(provider_2010_1,provider_2010_2*100)
+rm(provider_2010_1,provider_2010_2)
 
-# 2022
-sub_provider_2022 <- subset(data, year == 2022)
+#PROVIDER 2016 
+provider_2016 <- svymean(~ifelse(is.na(prenatal_care_provider),"NA",prenatal_care_provider), design_2016)
 
-# Agrupar los datos
-provider_2022 <- sub_provider_2022  %>%
-  dplyr::group_by(prenatal_care_provider) %>%
-  dplyr::summarise(total_observaciones = n(),
-            porcentaje = round(total_observaciones / nrow(sub_provider_2022) * 100,1),
-            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_provider_2022), conf.level = 0.95)$conf.int[1] * 100,1),
-            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_provider_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+provider_2016_1 = provider_2016*100
+provider_2016_2 = confint(provider_2016)
 
-rm(sub_provider_2022)
+provider_2016 = data.frame(provider_2016_1,provider_2016_2*100)
+rm(provider_2016_1,provider_2016_2)
+
+#PROVIDER 2022
+provider_2022 <- svymean(~ifelse(is.na(prenatal_care_provider),"NA",prenatal_care_provider), design_2022)
+
+provider_2022_1 = provider_2022*100
+provider_2022_2 = confint(provider_2022)
+
+provider_2022 = data.frame(provider_2022_1,provider_2022_2*100)
+rm(provider_2022_1,provider_2022_2)
 ```
 
 ```{r}
@@ -513,75 +506,40 @@ rm(provider_total, provider_2010, provider_2016, provider_2022)
 #Size of child at birth
 
 #Total
-size_total <- data %>%
-   mutate(size_final = case_when(
-      size_birth == "large"| size_birth == "very large"  ~ "large/very large",
-      size_birth == "normal" ~ "normal",
-      size_birth == "small"| size_birth == "very_small"  ~ "small/very small",
-      TRUE ~ NA
-    )) %>%
-   dplyr::group_by(size_final) %>%
-  dplyr::summarise(total_observaciones = n(),
-            porcentaje = round(total_observaciones / nrow(data) * 100,1),
-            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[1] * 100,1),
-            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[2] * 100,1))
-  
-# 2010
-sub_size_2010 <- subset(data, year == 2010)
+size_total <- svymean(~ifelse(is.na(size_final),"NA",size_final), design=design_total)
 
-# Agrupar los datos 
-size_2010 <- sub_size_2010  %>%
-     mutate(size_final = case_when(
-      size_birth == "large"| size_birth == "very large"  ~ "large/very large",
-      size_birth == "normal" ~ "normal",
-      size_birth == "small"| size_birth == "very_small"  ~ "small/very small",
-      TRUE ~ NA
-    )) %>%
-  dplyr::group_by(size_final) %>%
-  dplyr::summarise(total_observaciones = n(),
-            porcentaje = round(total_observaciones / nrow(sub_size_2010) * 100,1),
-            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_size_2010), conf.level = 0.95)$conf.int[1] * 100,1),
-            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_size_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+size_total_1 = size_total*100
+size_total_2 = confint(size_total)
 
-rm(sub_size_2010)
+size_total = data.frame(size_total_1,size_total_2*100)
+rm(size_total_1,size_total_2)
 
-# 2016
-sub_size_2016 <- subset(data, year == 2016)
+#SIZE 2010 
+size_2010 <- svymean(~ifelse(is.na(size_final),"NA",size_final), design_2010)
 
-# Agrupar los datos 
-size_2016 <- sub_size_2016  %>%
-     mutate(size_final = case_when(
-      size_birth == "large"| size_birth == "very large"  ~ "large/very large",
-      size_birth == "normal" ~ "normal",
-      size_birth == "small"| size_birth == "very_small"  ~ "small/very small",
-      TRUE ~ NA
-    )) %>%
-  dplyr::group_by(size_final) %>%
-  dplyr::summarise(total_observaciones = n(),
-            porcentaje = round(total_observaciones / nrow(sub_size_2016) * 100,1),
-            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_size_2016), conf.level = 0.95)$conf.int[1] * 100,1),
-            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_size_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+size_2010_1 = size_2010*100
+size_2010_2 = confint(size_2010)
 
-rm(sub_size_2016)
+size_2010 = data.frame(size_2010_1,size_2010_2*100)
+rm(size_2010_1,size_2010_2)
 
-# 2022
-sub_size_2022 <- subset(data, year == 2022)
+#SIZE 2016 
+size_2016 <- svymean(~ifelse(is.na(size_final),"NA",size_final), design_2016)
 
-# Agrupar los datos
-size_2022 <- sub_size_2022  %>%
-     mutate(size_final = case_when(
-      size_birth == "large"| size_birth == "very large"  ~ "large/very large",
-      size_birth == "normal" ~ "normal",
-      size_birth == "small"| size_birth == "very_small"  ~ "small/very small",
-      TRUE ~ NA
-    )) %>%
-  dplyr::group_by(size_final) %>%
-  dplyr::summarise(total_observaciones = n(),
-            porcentaje = round(total_observaciones / nrow(sub_size_2022) * 100,1),
-            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_size_2022), conf.level = 0.95)$conf.int[1] * 100,1),
-            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_size_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+size_2016_1 = size_2016*100
+size_2016_2 = confint(size_2016)
 
-rm(sub_size_2022)
+size_2016 = data.frame(size_2016_1,size_2016_2*100)
+rm(size_2016_1,size_2016_2)
+
+#SIZE 2022
+size_2022 <- svymean(~ifelse(is.na(size_final),"NA",size_final), design_2022)
+
+size_2022_1 = size_2022*100
+size_2022_2 = confint(size_2022)
+
+size_2022 = data.frame(size_2022_1,size_2022_2*100)
+rm(size_2022_1,size_2022_2)
 ```
 
 ```{r}
@@ -592,51 +550,40 @@ rm(size_total, size_2010, size_2016, size_2022)
 #Weight of child at birth
 
 #Total
-weight_total <- data %>%
-  dplyr::group_by(weight_birth) %>%
-  dplyr::summarise(total_observaciones = n(),
-            porcentaje = round(total_observaciones / nrow(data) * 100,1),
-            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[1] * 100,1),
-            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(data), conf.level = 0.95)$conf.int[2] * 100,1))
-  
-# 2010
-sub_weight_2010 <- subset(data, year == 2010)
+weight_total <- svymean(~ifelse(is.na(weight_birth),"NA",weight_birth), design=design_total)
 
-# Agrupar los datos 
-weight_2010 <- sub_weight_2010  %>%
-  dplyr::group_by(weight_birth) %>%
-  dplyr::summarise(total_observaciones = n(),
-            porcentaje = round(total_observaciones / nrow(sub_weight_2010) * 100,1),
-            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_weight_2010), conf.level = 0.95)$conf.int[1] * 100,1),
-            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_weight_2010), conf.level = 0.95)$conf.int[2] * 100,1))
+weight_total_1 = weight_total*100
+weight_total_2 = confint(weight_total)
 
-rm(sub_weight_2010)
+weight_total = data.frame(weight_total_1,weight_total_2*100)
+rm(weight_total_1,weight_total_2)
 
-# 2016
-sub_weight_2016 <- subset(data, year == 2016)
+#WEIGHT 2010 
+weight_2010 <- svymean(~ifelse(is.na(weight_birth),"NA",weight_birth), design_2010)
 
-# Agrupar los datos 
-weight_2016 <- sub_weight_2016  %>%
-  dplyr::group_by(weight_birth) %>%
-  dplyr::summarise(total_observaciones = n(),
-            porcentaje = round(total_observaciones / nrow(sub_weight_2016) * 100,1),
-            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_weight_2016), conf.level = 0.95)$conf.int[1] * 100,1),
-            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_weight_2016), conf.level = 0.95)$conf.int[2] * 100,1))
+weight_2010_1 = weight_2010*100
+weight_2010_2 = confint(weight_2010)
 
-rm(sub_weight_2016)
+weight_2010 = data.frame(weight_2010_1,weight_2010_2*100)
+rm(weight_2010_1,weight_2010_2)
 
-# 2022
-sub_weight_2022 <- subset(data, year == 2022)
+#WEIGHT 2016 
+weight_2016 <- svymean(~ifelse(is.na(weight_birth),"NA",weight_birth), design_2016)
 
-# Agrupar los datos
-weight_2022 <- sub_weight_2022  %>%
-  dplyr::group_by(weight_birth) %>%
-  dplyr::summarise(total_observaciones = n(),
-            porcentaje = round(total_observaciones / nrow(sub_weight_2022) * 100,1),
-            intervalo_confianza_inf = round(prop.test(total_observaciones, nrow(sub_weight_2022), conf.level = 0.95)$conf.int[1] * 100,1),
-            intervalo_confianza_sup = round(prop.test(total_observaciones, nrow(sub_weight_2022), conf.level = 0.95)$conf.int[2] * 100,1))
+weight_2016_1 = weight_2016*100
+weight_2016_2 = confint(weight_2016)
 
-rm(sub_weight_2022)
+weight_2016 = data.frame(weight_2016_1,weight_2016_2*100)
+rm(weight_2016_1,weight_2016_2)
+
+#WEIGHT 2022
+weight_2022 <- svymean(~ifelse(is.na(weight_birth),"NA",weight_birth), design_2022)
+
+weight_2022_1 = weight_2022*100
+weight_2022_2 = confint(weight_2022)
+
+weight_2022 = data.frame(weight_2022_1,weight_2022_2*100)
+rm(weight_2022_1,weight_2022_2)
 ```
 
 ```{r}
@@ -645,46 +592,20 @@ rm(weight_total, weight_2010, weight_2016, weight_2022)
 
 ```{r}
 #MONTHS OF THE FIRST PRENATAL VISIT
-month_total <- data %>%
-  summarise(mediana = median(first_prenatal_visit_1, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(first_prenatal_visit_1, 0.25, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(first_prenatal_visit_1, 0.75, na.rm = TRUE))
+month_total <- svyquantile(~first_prenatal_visit_1, design=design_total,na.rm=TRUE, c(.25,.5,.75))
+print(month_total)
 
-#AGE FIRST SEXUAL INTERCOURSE 2010
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
+#MONTH 2010 
+month_2010 <- svyquantile(~first_prenatal_visit_1, design_2010,na.rm=TRUE, c(.25,.5,.75))
+print(month_2010)
 
-month_2010 <- datos_filtrados %>%
-  summarise(mediana = median(first_prenatal_visit_1, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(first_prenatal_visit_1, 0.25, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(first_prenatal_visit_1, 0.75, na.rm = TRUE))
+#MONTH 2016 
+month_2016 <- svyquantile(~first_prenatal_visit_1, design_2016,na.rm=TRUE, c(.25,.5,.75))
+print(month_2016)
 
-rm(year_,datos_filtrados)
-
-#AGE FIRST SEXUAL INTERCOURSE 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-
-month_2016 <- datos_filtrados %>%
-  summarise(mediana = median(first_prenatal_visit_1, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(first_prenatal_visit_1, 0.25, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(first_prenatal_visit_1, 0.75, na.rm = TRUE))
-
-rm(year_,datos_filtrados)
-
-#AGE FIRST SEXUAL INTERCOURSE 2022
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-
-month_2022 <- datos_filtrados %>%
-  summarise(mediana = median(first_prenatal_visit_1, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(first_prenatal_visit_1, 0.25, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(first_prenatal_visit_1, 0.75, na.rm = TRUE))
-
-rm(year_,datos_filtrados)
+#MONTH 2022
+month_2022 <- svyquantile(~first_prenatal_visit_1, design_2022,na.rm=TRUE, c(.25,.5,.75))
+print(month_2022)
 ```
 
 ```{r}
@@ -693,46 +614,21 @@ rm(month_total,month_2010, month_2016, month_2022)
 
 ```{r}
 #NUMBER OF THE PRENATAL VISITS
-number_total <- data %>%
-  summarise(mediana = median(number_prenatal_visits_1, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(number_prenatal_visits_1, 0.25, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(number_prenatal_visits_1, 0.75, na.rm = TRUE))
 
-#AGE FIRST SEXUAL INTERCOURSE 2010
-year_ = 2010
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
+number_total <- svyquantile(~number_prenatal_visits_1, design=design_total,na.rm=TRUE, c(.25,.5,.75))
+print(number_total)
 
-number_2010 <- datos_filtrados %>%
-  summarise(mediana = median(number_prenatal_visits_1, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(number_prenatal_visits_1, 0.25, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(number_prenatal_visits_1, 0.75, na.rm = TRUE))
+#NUMBER 2010 
+number_2010 <- svyquantile(~number_prenatal_visits_1, design_2010,na.rm=TRUE, c(.25,.5,.75))
+print(number_2010)
 
-rm(year_,datos_filtrados)
+#NUMBER 2016 
+number_2016 <- svyquantile(~number_prenatal_visits_1, design_2016,na.rm=TRUE, c(.25,.5,.75))
+print(number_2016)
 
-#AGE FIRST SEXUAL INTERCOURSE 2016
-year_ = 2016
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-
-number_2016 <- datos_filtrados %>%
-  summarise(mediana = median(number_prenatal_visits_1, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(number_prenatal_visits_1, 0.25, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(number_prenatal_visits_1, 0.75, na.rm = TRUE))
-
-rm(year_,datos_filtrados)
-
-#AGE FIRST SEXUAL INTERCOURSE 2022
-year_ = 2022
-datos_filtrados <- filter(data, year == year_)
-total_general <- nrow(datos_filtrados)
-
-number_2022 <- datos_filtrados %>%
-  summarise(mediana = median(number_prenatal_visits_1, na.rm=TRUE),
-         Intervalo_Confianza_Inf = quantile(number_prenatal_visits_1, 0.25, na.rm = TRUE),
-            Intervalo_Confianza_Sup = quantile(number_prenatal_visits_1, 0.75, na.rm = TRUE))
-
-rm(year_,datos_filtrados)
+#NUMBER 2022
+number_2022 <- svyquantile(~number_prenatal_visits_1, design_2022,na.rm=TRUE, c(.25,.5,.75))
+print(number_2022)
 ```
 
 ```{r}

@@ -60,25 +60,27 @@ rm(data_ubigeo_macroregion,data_ubigeo,data_syphilis)
 ```{r}
 # Filtrar los datos
 data_filtered <- data_total %>%
-  filter(!is.na(syphilis_screening))%>%
   mutate(
-    syphilis_screening=ifelse(syphilis_screening=="Yes",1,0)
+    syphilis_screening=ifelse(syphilis_screening=="Yes",1, 0)
   )
+
+data_filtered$syphilis_screening <- ifelse(is.na(data_filtered$syphilis_screening),0,data_filtered$syphilis_screening)
 
 data_filtered$NOMBDEP = as.factor(data_filtered$NOMBDEP)
 data_filtered$year = as.factor(data_filtered$year)
 
 # Crear el diseño de muestreo estratificado
-design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_filtered)
+design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_filtered, na.rm = TRUE)
 
 options(survey.lonely.psu="adjust")
 
-syphilis_year<- svyby(~syphilis_screening,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
-syphilis_total<- svyby(~syphilis_screening,~NOMBDEP,svymean,design=design,deff=TRUE,na.rm=TRUE)
+syphilis_year<- svyby(~syphilis_screening,~NOMBDEP+year,svymean,design=design,na.rm=TRUE)
+syphilis_total<- svyby(~syphilis_screening,~NOMBDEP,svymean,design=design,na.rm=TRUE)
 
 syphilis_year = as.data.frame(syphilis_year)
 syphilis_total = as.data.frame(syphilis_total)
 ```
+
 ```{r}
 rm(design,data_filtered,data_total)
 ```
@@ -92,7 +94,7 @@ Total
 ```{r}
 ggplot() +
   geom_sf(data = data_grafico_total, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "blue") +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening total",
         fill = "Syphilis screening")
 ```
@@ -117,7 +119,7 @@ data_grafico_2010 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2010, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "blue") +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening 2010",
         fill = "Syphilis screening")
 ```
@@ -132,7 +134,7 @@ data_grafico_2011 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2011, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "blue") +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening 2011",
         fill = "Syphilis screening")
 ```
@@ -148,7 +150,7 @@ data_grafico_2012 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2012, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "blue") +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening 2012",
         fill = "Syphilis screening")
 ```
@@ -164,7 +166,7 @@ data_grafico_2013 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2013, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "blue") +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening 2013",
         fill = "Syphilis screening")
 ```
@@ -180,7 +182,7 @@ data_grafico_2014 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2014, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "blue") +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening 2014",
         fill = "Syphilis screening")
 ```
@@ -196,7 +198,7 @@ data_grafico_2015 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2015, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "blue") +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening 2015",
         fill = "Syphilis screening")
 ```
@@ -212,7 +214,7 @@ data_grafico_2016 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2016, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "blue") +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening 2016",
         fill = "Syphilis screening")
 ```
@@ -228,7 +230,7 @@ data_grafico_2017 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2017, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "blue") +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening 2017",
         fill = "Syphilis screening")
 ```
@@ -244,7 +246,7 @@ data_grafico_2018 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2018, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "blue") +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening 2018",
         fill = "Syphilis screening")
 ```
@@ -260,7 +262,7 @@ data_grafico_2019 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2019, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "blue") +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening 2019",
         fill = "Syphilis screening")
 ```
@@ -269,6 +271,7 @@ ggplot() +
 rm(data_grafico_2019)
 ```
 
+
 2020
 ```{r}
 data_grafico_2020 = data_grafico_year %>%
@@ -276,7 +279,7 @@ data_grafico_2020 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2020, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "blue") +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening 2020",
         fill = "Syphilis screening")
 ```
@@ -292,7 +295,7 @@ data_grafico_2021 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2021, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "blue") +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening 2021",
         fill = "Syphilis screening")
 ```
@@ -308,7 +311,7 @@ data_grafico_2022 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2022, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "blue") +
+  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Syphilis screening 2022",
         fill = "Syphilis screening")
 ```
