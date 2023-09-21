@@ -94,9 +94,9 @@ Total
 ```{r}
 ggplot() +
   geom_sf(data = data_grafico_total, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
    labs(title="Syphilis screening total",
-        fill = "Syphilis screening")
+        fill = "Syphilis screening") 
 ```
 
 ```{r}
@@ -119,7 +119,7 @@ data_grafico_2010 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2010, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
    labs(title="Syphilis screening 2010",
         fill = "Syphilis screening")
 ```
@@ -134,7 +134,7 @@ data_grafico_2011 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2011, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
    labs(title="Syphilis screening 2011",
         fill = "Syphilis screening")
 ```
@@ -150,7 +150,7 @@ data_grafico_2012 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2012, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
    labs(title="Syphilis screening 2012",
         fill = "Syphilis screening")
 ```
@@ -166,7 +166,7 @@ data_grafico_2013 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2013, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
    labs(title="Syphilis screening 2013",
         fill = "Syphilis screening")
 ```
@@ -182,7 +182,7 @@ data_grafico_2014 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2014, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
    labs(title="Syphilis screening 2014",
         fill = "Syphilis screening")
 ```
@@ -198,7 +198,7 @@ data_grafico_2015 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2015, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
    labs(title="Syphilis screening 2015",
         fill = "Syphilis screening")
 ```
@@ -214,7 +214,7 @@ data_grafico_2016 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2016, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
    labs(title="Syphilis screening 2016",
         fill = "Syphilis screening")
 ```
@@ -230,7 +230,7 @@ data_grafico_2017 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2017, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
    labs(title="Syphilis screening 2017",
         fill = "Syphilis screening")
 ```
@@ -246,7 +246,7 @@ data_grafico_2018 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2018, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
    labs(title="Syphilis screening 2018",
         fill = "Syphilis screening")
 ```
@@ -262,7 +262,7 @@ data_grafico_2019 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2019, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
    labs(title="Syphilis screening 2019",
         fill = "Syphilis screening")
 ```
@@ -279,7 +279,7 @@ data_grafico_2020 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2020, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
    labs(title="Syphilis screening 2020",
         fill = "Syphilis screening")
 ```
@@ -295,7 +295,7 @@ data_grafico_2021 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2021, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
    labs(title="Syphilis screening 2021",
         fill = "Syphilis screening")
 ```
@@ -311,11 +311,21 @@ data_grafico_2022 = data_grafico_year %>%
 
 ggplot() +
   geom_sf(data = data_grafico_2022, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
    labs(title="Syphilis screening 2022",
         fill = "Syphilis screening")
 ```
 
 ```{r}
-rm(data_grafico_2022, data_grafico_year)
+rm(data_grafico_2022)
 ```
+
+```{r, fig.height=7, fig.width=9}
+ggplot() +
+  geom_sf(data = data_grafico_year, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
+  scale_fill_gradient(low = "skyblue", high = "darkblue") +
+  facet_wrap(~year, nrow = 3)+
+   labs(title="Syphilis screening 2010 - 2022",
+        fill = "Syphilis screening") 
+```
+
