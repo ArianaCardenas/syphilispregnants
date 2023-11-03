@@ -343,12 +343,12 @@ ggplot(data_grafico_year, aes(x = syphilis_screening, y = NOMBDEP)) +
   ylab("Region")
 ```
 
-Grafico dumbbell 2012-2017
+Grafico dumbbell 2014-2022
 ```{r}
-d12_d17 = data_grafico_year %>%
-  filter(year==2012|year==2013|year==2014|year==2015|year==2016|year==2017)
+d14_d22 = data_grafico_year %>%
+  filter(year==2014|year==2015|year==2016|year==2017|year==2018|year==2019|year==2020|year==2021|year==2022)
   
-ggplot(d12_d17, aes(x = syphilis_screening, y = NOMBDEP)) +
+ggplot(d14_d22, aes(x = syphilis_screening, y = NOMBDEP)) +
   geom_line() +
   geom_point(aes(color = year), size = 3) +
   xlab("Syphilis screening")+
