@@ -144,12 +144,6 @@ ggplot(dntest, aes(x = rate, y = NOMBDEP)) +
 ```
 Tabla de las 10 provincias con más casos de sífilis materna por 1000 nacidos vivos.
 
-Se eliminan las provincias con menos de diez nacidos vivos por año. La lista es la sgte:
-```{r}
-provmenosde10 <- data_maternal_table %>%
-  filter(n<11)
-```
-
 ```{r, echo=FALSE}
 
 data_maternal_table <- data_ins_long %>%
@@ -159,6 +153,11 @@ data_maternal_table <- data_ins_long %>%
   left_join(newborn, by =c("NOMBDEP", "NOMBPROV", "year")) %>%
   mutate(rate = (tamizaje_reactivo/n)*1000) %>%
   filter(n>10)
+
+#Se eliminan las provincias con menos de diez nacidos vivos por año. La lista es la sgte:
+
+provmenosde10 <- data_maternal_table %>%
+  filter(n<11)
 
 data_maternal_table <- data_maternal_table %>%
   select(NOMBDEP, NOMBPROV, year, rate) %>%
@@ -175,6 +174,9 @@ data_maternal_table <- data_maternal_table %>%
 data_maternal_table
 
 ```
+
+
+
 Mapa de sífilis materna por departamento.
 
 ```{r}
