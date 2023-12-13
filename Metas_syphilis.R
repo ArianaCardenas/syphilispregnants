@@ -5,7 +5,7 @@ library(RColorBrewer)
 library(sf)
 library(tmap)
 library(ggsci)
-install.packages("ggupset")
+#install.packages("ggupset")
 library(ggupset)
 
 data <- read_csv("Data_final/data_syphilis.csv")
@@ -62,10 +62,25 @@ congenital_total <- data_congenital %>%
   summarise(congenital_prop = mean(rate, na.rm = TRUE)) 
 
 #Meta 3: disminución en un 90% los casos de sífilis materna
+#Correr el rmd de Mapas Syphilis INS.Rmd
 
+maternal_2018<- dntest %>% 
+  filter(year==2018) %>% 
+  group_by(NOMBDEP) %>% 
+  summarise(maternal_prop_18 = mean(rate, na.rm = TRUE))
 
+maternal_2022<- dntest %>% 
+  filter(year==2022) %>% 
+  group_by(NOMBDEP) %>% 
+  summarise(maternal_prop_22 = mean(rate, na.rm = TRUE))
 
+combined_data_maternal <- maternal_2018 %>% 
+  left_join(maternal_2022, by = c("NOMBDEP"))
 
+combined_data_maternal <-  combined_data_maternal %>% 
+  mutate(rest= maternal_prop_18 - maternal_prop_22) %>% 
+  mutate(rest_porcent = (100 - ((maternal_prop_22/maternal_prop_18)*100)))
+  
 #Figura 2022
 
 # Convertir a mayuscula en la tabla freq_screening_2022
@@ -74,19 +89,25 @@ freq_screening_2022 <- freq_screening_2022 %>%
 
 # Luego, realizar la fusión
 combined_data_2022 <- congenital_2022 %>%
-  left_join(freq_screening_2022, by = c("NOMBDEP" = "departament"))
+  left_join(freq_screening_2022, by = c("NOMBDEP" = "departament")) %>% 
+  left_join(combined_data_maternal, by = "NOMBDEP") 
 
 METAS_2022 <- combined_data_2022 %>% 
   
   mutate(
     meta1 = ifelse(syphilis_prop>=0.95, 1,0),
     meta2 = ifelse(congenital_prop<0.5,1,0),
+    meta3 = ifelse(rest_porcent >=45,1,0),
     
-    metas = ifelse(syphilis_prop>=0.95 & congenital_prop<0.50, list(c ("Meta 1", "Meta 2")),
-               ifelse(syphilis_prop<0.95 & congenital_prop>=0.50, list(c(NA)),
-               ifelse(syphilis_prop>=0.95 & congenital_prop>=0.50, list(c("Meta 1")),
-               ifelse(syphilis_prop<0.95 & congenital_prop<0.50, list(c("Meta 2")), NA)
-               ))))
+    metas = ifelse(syphilis_prop>=0.95 & congenital_prop<0.50 & rest_porcent>=45, list(c ("Meta 1", "Meta 2", "Meta 3")),
+                   ifelse(syphilis_prop<0.95 & congenital_prop>=0.50 & rest_porcent<45, list(c(NA)),
+                          ifelse(syphilis_prop>=0.95 & congenital_prop>=0.50 & rest_porcent<45, list(c("Meta 1")),
+                                 ifelse(syphilis_prop<0.95 & congenital_prop<0.50 & rest_porcent<45, list(c("Meta 2")),
+                                        ifelse(syphilis_prop<0.95 & congenital_prop>=0.50 & rest_porcent>=45, list(c("Meta 3")),
+                                               ifelse(syphilis_prop>=0.95 & congenital_prop<0.50 & rest_porcent<45, list(c("Meta 1", "Meta 2")),
+                                                      ifelse(syphilis_prop>=0.95 & congenital_prop>=0.50 & rest_porcent>=45, list(c("Meta 1", "Meta 3")),
+                                                             ifelse(syphilis_prop<0.95 & congenital_prop<0.50 & rest_porcent>=45, list(c("Meta 2", "Meta 3")), NA)
+               ))))))))
 
 figura_metas_2022<-
   ggplot(METAS_2022) +
@@ -98,9 +119,11 @@ figura_metas_2022<-
     panel.grid = element_blank()
   )+
   labs(x = "Goals", y = "")+
-  scale_x_upset(n_intersections= 4) +
+  scale_x_upset(n_intersections= 8) +
   scale_y_continuous(breaks = NULL)
 print(figura_metas_2022)
+
+##Hasta aquí está lista la figura###
 
 #Figura 2018
 
