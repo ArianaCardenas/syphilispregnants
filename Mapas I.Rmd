@@ -38,7 +38,10 @@ data_ubigeo = rbind(data_ubigeo,data_ubigeo_2022_innova)
 ```{r}
 data_ubigeo_macroregion = data_ubigeo %>%
 mutate(
-  Macrozona = ifelse(NOMBDEP=="TUMBES"|NOMBDEP=="PIURA"|NOMBDEP=="LAMBAYEQUE"|NOMBDEP=="LA LIBERTAD"|NOMBDEP=="ANCASH"| NOMBDEP=="CAJAMARCA"&NOMBPROV!="SAN IGNACIO"|NOMBDEP=="CAJAMARCA"&NOMBPROV!="JAEN"| NOMBDEP=="AMAZONAS"&NOMBPROV=="LUYA"|NOMBDEP=="AMAZONAS"&NOMBPROV=="CHACHAPOYAS", "Norte", ifelse(NOMBDEP=="LORETO"|NOMBDEP=="UCAYALI"|NOMBDEP=="SAN MARTIN"|NOMBDEP=="MADRE DE DIOS"|NOMBDEP=="CAJAMARCA"&NOMBPROV=="SAN IGNACIO"|NOMBDEP=="CAJAMARCA"&NOMBPROV=="JAEN"| NOMBDEP=="AMAZONAS"&NOMBPROV!="LUYA"|NOMBDEP=="AMAZONAS"&NOMBPROV!="CHACHAPOYAS"|NOMBDEP=="HUANUCO"&NOMBPROV=="MARAÑON"|NOMBDEP=="HUANUCO"&NOMBPROV=="LEONCIO PRADO"|NOMBDEP=="HUANUCO"&NOMBPROV=="PUERTO INCA"|NOMBDEP=="PASCO"&NOMBPROV=="OXAPAMPA"|NOMBDEP=="JUNIN"&NOMBPROV=="CHANCHAMAYO"|NOMBDEP=="JUNIN"&NOMBPROV=="SATIPO"|NOMBDEP=="CUSCO"&NOMBPROV==" LA CONVECION","Selva", ifelse(NOMBDEP=="HUANCAVELICA"|NOMBDEP=="LIMA"&NOMBPROV!="LIMA"|NOMBDEP=="HUANUCO"&NOMBPROV!="MARAÑON"|NOMBDEP=="HUANUCO"&NOMBPROV!="LEONCIO PRADO"|NOMBDEP=="HUANUCO"&NOMBPROV!="PUERTO INCA"|NOMBDEP=="PASCO"&NOMBPROV!="OXAPAMPA"|NOMBDEP=="JUNIN"&NOMBPROV!="CHANCHAMAYO"|NOMBDEP=="JUNIN"&NOMBPROV!="SATIPO","Centro", ifelse(NOMBDEP=="LIMA"&NOMBPROV=="LIMA"|NOMBDEP=="CALLAO","Lima Metropolitana",         ifelse(NOMBDEP=="ICA"|NOMBDEP=="AYACUCHO"|NOMBDEP=="AREQUIPA"|NOMBDEP=="MOQUEGUA"|NOMBDEP=="TACNA"|NOMBDEP=="PUNO"|NOMBDEP=="APURIMAC"|NOMBDEP=="CUSCO"&NOMBPROV!=" LA CONVENCION","Sur","Por definir"))))))
+  Macrozona = ifelse(NOMBDEP=="TUMBES"|NOMBDEP=="PIURA"|NOMBDEP=="LAMBAYEQUE"|NOMBDEP=="LA LIBERTAD"|NOMBDEP=="ANCASH"| NOMBDEP=="CAJAMARCA"&NOMBPROV!="SAN IGNACIO"|NOMBDEP=="CAJAMARCA"&NOMBPROV!="JAEN"| NOMBDEP=="AMAZONAS"&NOMBPROV=="LUYA"|NOMBDEP=="AMAZONAS"&NOMBPROV=="CHACHAPOYAS", "Norte", ifelse(NOMBDEP=="LORETO"|NOMBDEP=="UCAYALI"|NOMBDEP=="SAN MARTIN"|NOMBDEP=="MADRE DE DIOS"|NOMBDEP=="CAJAMARCA"&NOMBPROV=="SAN IGNACIO"|NOMBDEP=="CAJAMARCA"&NOMBPROV=="JAEN"| NOMBDEP=="AMAZONAS"&NOMBPROV!="LUYA"|NOMBDEP=="AMAZONAS"&NOMBPROV!="CHACHAPOYAS"|NOMBDEP=="HUANUCO"&NOMBPROV=="MARAÑON"|NOMBDEP=="HUANUCO"&NOMBPROV=="LEONCIO PRADO"|NOMBDEP=="HUANUCO"&NOMBPROV=="PUERTO INCA"|NOMBDEP=="PASCO"&NOMBPROV=="OXAPAMPA"|NOMBDEP=="JUNIN"&NOMBPROV=="CHANCHAMAYO"|NOMBDEP=="JUNIN"&NOMBPROV=="SATIPO"|NOMBDEP=="CUSCO"&NOMBPROV==" LA CONVECION","Selva", ifelse(NOMBDEP=="HUANCAVELICA"|NOMBDEP=="LIMA"&NOMBPROV!="LIMA"|NOMBDEP=="HUANUCO"&NOMBPROV!="MARAÑON"|NOMBDEP=="HUANUCO"&NOMBPROV!="LEONCIO PRADO"|NOMBDEP=="HUANUCO"&NOMBPROV!="PUERTO INCA"|NOMBDEP=="PASCO"&NOMBPROV!="OXAPAMPA"|NOMBDEP=="JUNIN"&NOMBPROV!="CHANCHAMAYO"|NOMBDEP=="JUNIN"&NOMBPROV!="SATIPO","Centro", ifelse(NOMBDEP=="LIMA"&NOMBPROV=="LIMA"|NOMBDEP=="CALLAO","Lima Metropolitana",         ifelse(NOMBDEP=="ICA"|NOMBDEP=="AYACUCHO"|NOMBDEP=="AREQUIPA"|NOMBDEP=="MOQUEGUA"|NOMBDEP=="TACNA"|NOMBDEP=="PUNO"|NOMBDEP=="APURIMAC"|NOMBDEP=="CUSCO"&NOMBPROV!=" LA CONVENCION","Sur","Por definir"))))),
+  ZONA= ifelse(NOMBDEP=="TUMBES"|NOMBDEP=="PIURA"|NOMBDEP=="LAMBAYEQUE"|NOMBDEP=="LA LIBERTAD"|NOMBDEP=="CAJAMARCA"|NOMBDEP=="AMAZONAS",1,ifelse(NOMBDEP=="ANCASH"|NOMBDEP=="HUANUCO"|NOMBDEP=="PASCO"|NOMBDEP=="JUNIN"|NOMBDEP=="HUANCAVELICA"|NOMBDEP=="ICA"|NOMBDEP=="LIMA",2,ifelse(NOMBDEP=="AYACUCHO"|NOMBDEP=="AREQUIPA"|NOMBDEP=="APURIMAC"|NOMBDEP=="CUSCO"|NOMBDEP=="PUNO"|NOMBDEP=="MOQUEGUA"|NOMBDEP=="TACNA",3,ifelse(NOMBDEP=="LORETO"|NOMBDEP=="SAN MARTIN"|NOMBDEP=="UCAYALI"|NOMBDEP=="MADRE DE DIOS",4,NA)))),
+  
+  )
 ```
 
 ```{r}
@@ -70,22 +73,25 @@ data_filtered$NOMBDEP = as.factor(data_filtered$NOMBDEP)
 data_filtered$year = as.factor(data_filtered$year)
 
 data_filtered = data_filtered %>%
-  filter(year!=2010&year!=2011)
+  filter(year!=2010&year!=2011&year!=2012&year!=2013)
 
 # Crear el diseño de muestreo estratificado
 design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_filtered, na.rm = TRUE)
 
 options(survey.lonely.psu="adjust")
 
-syphilis_year<- svyby(~syphilis_screening,~NOMBDEP+year,svymean,design=design,na.rm=TRUE)
-syphilis_total<- svyby(~syphilis_screening,~NOMBDEP,svymean,design=design,na.rm=TRUE)
+syphilis_year<- svyby(~syphilis_screening,~NOMBDEP+year+ZONA,svymean,design=design,na.rm=TRUE)
+syphilis_total<- svyby(~syphilis_screening,~NOMBDEP+ZONA,svymean,design=design,na.rm=TRUE)
+syphilis_provincias<- svyby(~syphilis_screening,~NOMBPROV+year+ZONA,svymean,design=design,na.rm=TRUE)
 
 syphilis_year = as.data.frame(syphilis_year)
 syphilis_total = as.data.frame(syphilis_total)
+syphilis_provincias = as.data.frame(syphilis_provincias)
 ```
 
 ```{r}
-rm(design,data_filtered,data_total)
+data_grafico_prov <- syphilis_provincias  %>%
+  left_join(provincias, by = c("NOMBPROV"))
 ```
 
 ```{r}
@@ -103,80 +109,14 @@ ggplot() +
 ```
 
 ```{r}
-rm(data_grafico_total,syphilis_total)
-```
-
-```{r}
 data_grafico_year <- syphilis_year  %>%
   left_join(departamentos, by = c("NOMBDEP"))
 ```
 
 ```{r}
-rm(departamentos,provincias,syphilis_year)
+rm(departamentos,provincias,syphilis_year,syphilis_provincias,design,data_filtered,data_total)
 ```
 
-2010
-```{r}
-data_grafico_2010 = data_grafico_year %>%
-  filter(year==2010)
-
-ggplot() +
-  geom_sf(data = data_grafico_2010, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "darkblue") +
-   labs(title="Syphilis screening 2010",
-        fill = "Syphilis screening")
-```
-```{r}
-rm(data_grafico_2010)
-```
-
-2011
-```{r}
-data_grafico_2011 = data_grafico_year %>%
-  filter(year==2011)
-
-ggplot() +
-  geom_sf(data = data_grafico_2011, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "darkblue") +
-   labs(title="Syphilis screening 2011",
-        fill = "Syphilis screening")
-```
-
-```{r}
-rm(data_grafico_2011)
-```
-
-2012
-```{r}
-data_grafico_2012 = data_grafico_year %>%
-  filter(year==2012)
-
-ggplot() +
-  geom_sf(data = data_grafico_2012, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "darkblue") +
-   labs(title="Syphilis screening 2012",
-        fill = "Syphilis screening")
-```
-
-```{r}
-rm(data_grafico_2012)
-```
-
-2013
-```{r}
-data_grafico_2013 = data_grafico_year %>%
-  filter(year==2013)
-
-ggplot() +
-  geom_sf(data = data_grafico_2013, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "darkblue") +
-   labs(title="Syphilis screening 2013",
-        fill = "Syphilis screening")
-```
-
-```{r}
-rm(data_grafico_2013)
-```
 
 2014
 ```{r}
@@ -274,7 +214,6 @@ ggplot() +
 rm(data_grafico_2019)
 ```
 
-
 2020
 ```{r}
 data_grafico_2020 = data_grafico_year %>%
@@ -324,12 +263,12 @@ rm(data_grafico_2022)
 ```
 
 ```{r, fig.height=7, fig.width=9}
-ggplot() +
-  geom_sf(data = data_grafico_year, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
-  scale_fill_gradient(low = "skyblue", high = "darkblue") +
-  facet_wrap(~year, nrow = 3)+
-   labs(title="Syphilis screening 2012 - 2022",
-        fill = "Syphilis screening") 
+#ggplot() +
+  #geom_sf(data = data_grafico_year, aes(geometry = geometry,fill = syphilis_screening), color = "white", size = 0.2) +
+  #scale_fill_gradient(low = "skyblue", high = "darkblue") +
+  #facet_wrap(~year)+
+   #labs(title="Syphilis screening 2014 - 2022",
+        #fill = "Syphilis screening") 
 ```
 
 #####
@@ -343,30 +282,59 @@ ggplot(data_grafico_year, aes(x = syphilis_screening, y = NOMBDEP)) +
   ylab("Region")
 ```
 
-Grafico dumbbell 2014-2022
+Grafico dumbbell 2014-2018
 ```{r}
-d14_d22 = data_grafico_year %>%
-  filter(year==2014|year==2015|year==2016|year==2017|year==2018|year==2019|year==2020|year==2021|year==2022)
+d14_d18 = data_grafico_year %>%
+  filter(year==2014|year==2015|year==2016|year==2017|year==2018)
   
-ggplot(d14_d22, aes(x = syphilis_screening, y = NOMBDEP)) +
+ggplot(d14_d18, aes(x = syphilis_screening, y = NOMBDEP)) +
+  geom_line() +
+  geom_point(aes(color = year), size = 3) +
+  xlab("Syphilis screening")+
+  ylab("Region")
+
+rm(d14_d18)
+```
+
+Grafico dumbbell 2019-2022
+```{r}
+d19_d22 = data_grafico_year %>%
+  filter(year==2019|year==2020|year==2021|year==2022)
+  
+ggplot(d19_d22, aes(x = syphilis_screening, y = NOMBDEP)) +
+  geom_line() +
+  geom_point(aes(color = year), size = 3) +
+  xlab("Syphilis screening")+
+  ylab("Region")
+
+rm(d19_d22)
+```
+
+##Agrupación de regiones: https://www.inei.gob.pe/media/MenuRecursivo/boletines/indicador_de_la_produccion_departamental.pdf
+
+```{r}
+dtotal = data_grafico_year %>%
+  filter(year==2014|year==2018|year==2022) 
+
+ggplot(dtotal, aes(x = syphilis_screening, y = reorder(NOMBDEP,ZONA))) +
   geom_line() +
   geom_point(aes(color = year), size = 3) +
   xlab("Syphilis screening")+
   ylab("Region")
 ```
 
-Grafico dumbbell 2018-2022
-```{r}
-d18_d22 = data_grafico_year %>%
-  filter(year==2018|year==2019|year==2020|year==2021|year==2022)
-  
-ggplot(d18_d22, aes(x = syphilis_screening, y = NOMBDEP)) +
+
+#Grafico dumbbell provincias
+
+```{r,fig.height=6}
+norte_prov = data_grafico_prov%>%
+  filter(year==2018|year==2022) %>%
+  filter(ZONA=="CENTRO")
+
+ggplot(norte_prov, aes(x = syphilis_screening, y = NOMBPROV)) +
   geom_line() +
   geom_point(aes(color = year), size = 3) +
   xlab("Syphilis screening")+
-  ylab("Region")
+  ylab("Provincia")
 ```
-
-
-
 
