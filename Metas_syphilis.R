@@ -92,26 +92,26 @@ combined_data_2022 <- congenital_2022 %>%
   left_join(freq_screening_2022, by = c("NOMBDEP" = "departament")) %>% 
   left_join(combined_data_maternal, by = "NOMBDEP") 
 
-METAS_2022 <- combined_data_2022 %>% 
+GOALS_2022 <- combined_data_2022 %>% 
   
   mutate(
-    meta1 = ifelse(syphilis_prop>=0.95, 1,0),
-    meta2 = ifelse(congenital_prop<0.5,1,0),
-    meta3 = ifelse(rest_porcent >=45,1,0),
+    goal1 = ifelse(syphilis_prop>=0.95, 1,0),
+    goal2 = ifelse(congenital_prop<0.5,1,0),
+    goal3 = ifelse(rest_porcent >=45,1,0),
     
-    metas = ifelse(syphilis_prop>=0.95 & congenital_prop<0.50 & rest_porcent>=45, list(c ("Meta 1", "Meta 2", "Meta 3")),
+    goals = ifelse(syphilis_prop>=0.95 & congenital_prop<0.50 & rest_porcent>=45, list(c ("Goal 1", "Goal 2", "Goal 3")),
                    ifelse(syphilis_prop<0.95 & congenital_prop>=0.50 & rest_porcent<45, list(c(NA)),
-                          ifelse(syphilis_prop>=0.95 & congenital_prop>=0.50 & rest_porcent<45, list(c("Meta 1")),
-                                 ifelse(syphilis_prop<0.95 & congenital_prop<0.50 & rest_porcent<45, list(c("Meta 2")),
-                                        ifelse(syphilis_prop<0.95 & congenital_prop>=0.50 & rest_porcent>=45, list(c("Meta 3")),
-                                               ifelse(syphilis_prop>=0.95 & congenital_prop<0.50 & rest_porcent<45, list(c("Meta 1", "Meta 2")),
-                                                      ifelse(syphilis_prop>=0.95 & congenital_prop>=0.50 & rest_porcent>=45, list(c("Meta 1", "Meta 3")),
-                                                             ifelse(syphilis_prop<0.95 & congenital_prop<0.50 & rest_porcent>=45, list(c("Meta 2", "Meta 3")), NA)
+                          ifelse(syphilis_prop>=0.95 & congenital_prop>=0.50 & rest_porcent<45, list(c("Goal 1")),
+                                 ifelse(syphilis_prop<0.95 & congenital_prop<0.50 & rest_porcent<45, list(c("Goal 2")),
+                                        ifelse(syphilis_prop<0.95 & congenital_prop>=0.50 & rest_porcent>=45, list(c("Goal 3")),
+                                               ifelse(syphilis_prop>=0.95 & congenital_prop<0.50 & rest_porcent<45, list(c("Goal 1", "Goal 2")),
+                                                      ifelse(syphilis_prop>=0.95 & congenital_prop>=0.50 & rest_porcent>=45, list(c("Goal 1", "Goal 3")),
+                                                             ifelse(syphilis_prop<0.95 & congenital_prop<0.50 & rest_porcent>=45, list(c("Goal 2", "Goal 3")), NA)
                ))))))))
 
 figura_metas_2022<-
-  ggplot(METAS_2022) +
-  aes(x = metas)+
+  ggplot(GOALS_2022) +
+  aes(x = goals)+
   geom_bar(fill = "#506D84")+
   geom_text(stat='count', aes(label=after_stat(count)), vjust=-1, size = 4) +
   theme_minimal()+
@@ -122,6 +122,67 @@ figura_metas_2022<-
   scale_x_upset(n_intersections= 8) +
   scale_y_continuous(breaks = NULL)
 print(figura_metas_2022)
+
+#ggsave("Fig_goals2022.png", width = 8, height = 4)
+
+figura_metas_2022b <- GOALS_2022 %>% 
+  select(NOMBDEP, syphilis_prop, congenital_prop, rest_porcent, goals) %>% 
+  pivot_longer(cols = c(syphilis_prop, congenital_prop, rest_porcent), names_to = "Goals") %>% 
+  filter(value == 0) %>% 
+  #group_by(NOMBDEP, goals) %>% 
+  summarise(numero = n()) %>% 
+  mutate(goals = recode(goals, "goal1" = "Goal 1",
+                        "goal2" = "Goal 2",
+                        "goal3" = "Goal 3"),
+         percent = round((numero/sum(numero)*100)),
+         goals = factor(goals, levels = c("Goal 1", "Goal 2", "Goal 3"))) %>% 
+  left_join(region_shape) %>% 
+  st_as_sf %>% 
+
+  ggplot()+
+  geom_sf(aes(fill = percent), col = "#b6cfde") +
+  scale_fill_gradient(high  ="#0C6291", low = "#e5e5e5")+
+  #scale_color_gradient(high ="#e5e5e5", low = "#e5e5e5") +
+  guides(fill = guide_colourbar(barheight = 0.5, barwidth = 25,title.position = "top", direction = "horizontal"))+
+  facet_wrap(~goals, nrow = 1)+
+  theme_minimal()+
+  labs(color = "", fill = "% of non-vaccinations by regions")+
+  theme(
+    legend.position = "bottom",
+    legend.title = element_text(size = 9, face = "bold"),
+    legend.text = element_text(size = 8),
+    panel.grid = element_blank(),
+    strip.text = element_text(size = 9, face = "bold"),
+    axis.text = element_text(size = 5))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Extra
+
+
 
 ##Hasta aquí está lista la figura###
 
@@ -182,6 +243,7 @@ METAS_2014 <- combined_data_2014 %>%
                           ifelse(syphilis_prop>=0.95 & congenital_prop>=0.50, list(c("Meta 1")),
                                  ifelse(syphilis_prop<0.95 & congenital_prop<0.50, list(c("Meta 2")), NA)
                           ))))
+
 
 figura_metas_2014<-
   ggplot(METAS_2014) +
