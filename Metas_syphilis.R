@@ -195,7 +195,7 @@ figure2<-cowplot::plot_grid(figure_2a,figure_2b, ncol = 1, labels = c("a","b"), 
 
 print(figure2)
 
-ggsave("Figure2.png", plot = figure2, width = 8, height = 4, dpi = 300)
+#ggsave("Figure2.png", plot = figure2, width = 8, height = 4, dpi = 300)
 
 
 
