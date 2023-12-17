@@ -123,39 +123,38 @@ figura_metas_2022<-
   scale_y_continuous(breaks = NULL)
 print(figura_metas_2022)
 
-#ggsave("Fig_goals2022.png", width = 8, height = 4)
+ggsave("Figure_2a.png",plot = figura_metas_2022, width = 6, height = 4, dpi = 300)
 
-figura_metas_2022b <- GOALS_2022 %>% 
-  select(NOMBDEP, syphilis_prop, congenital_prop, rest_porcent, goals) %>% 
-  pivot_longer(cols = c(syphilis_prop, congenital_prop, rest_porcent), names_to = "Goals") %>% 
-  filter(value == 0) %>% 
-  #group_by(NOMBDEP, goals) %>% 
-  summarise(numero = n()) %>% 
-  mutate(goals = recode(goals, "goal1" = "Goal 1",
-                        "goal2" = "Goal 2",
-                        "goal3" = "Goal 3"),
-         percent = round((numero/sum(numero)*100)),
-         goals = factor(goals, levels = c("Goal 1", "Goal 2", "Goal 3"))) %>% 
-  left_join(region_shape) %>% 
-  st_as_sf %>% 
+#Goal 1
 
-  ggplot()+
-  geom_sf(aes(fill = percent), col = "#b6cfde") +
-  scale_fill_gradient(high  ="#0C6291", low = "#e5e5e5")+
-  #scale_color_gradient(high ="#e5e5e5", low = "#e5e5e5") +
-  guides(fill = guide_colourbar(barheight = 0.5, barwidth = 25,title.position = "top", direction = "horizontal"))+
-  facet_wrap(~goals, nrow = 1)+
-  theme_minimal()+
-  labs(color = "", fill = "% of non-vaccinations by regions")+
-  theme(
-    legend.position = "bottom",
-    legend.title = element_text(size = 9, face = "bold"),
-    legend.text = element_text(size = 8),
-    panel.grid = element_blank(),
-    strip.text = element_text(size = 9, face = "bold"),
-    axis.text = element_text(size = 5))
+figure_2b1 <- ggplot() +
+  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = syphilis_prop), col = "#b6cfde") +
+  scale_fill_gradient(
+    high = "#0C6291", 
+    low = "#e5e5e5", 
+    limits = c(0,1), 
+    breaks = seq(0,1, by = 0.1),
+    labels = c("0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")
+  )+
+  labs(fill= "Goal 1") 
+ggsave("Figure_2b1.png",plot = figure_2b1, width = 8, height = 4, dpi = 300)
 
 
+##Goal 2
+
+figure_2b2 <- ggplot() +
+  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = congenital_prop), col = "#b6cfde") +
+  scale_fill_gradient(
+    high = "#0C6291", 
+    low = "#e5e5e5", 
+    limits = c(10.00, 0), 
+    breaks = seq(10.00, 0, by = -1.0),
+    labels = c("0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%"),
+    trans = "reverse"
+  )+
+  labs(fill= "Goal 2") 
+
+ggsave("Figure_2b2.png",plot = figure_2b2, width = 8, height = 4, dpi = 300)
 
 
 
@@ -294,4 +293,5 @@ figura_metas_total<-
   scale_x_upset(n_intersections= 4) +
   scale_y_continuous(breaks = NULL)
 print(figura_metas_total)
+
 
