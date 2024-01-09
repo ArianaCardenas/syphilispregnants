@@ -52,10 +52,15 @@ congenital_2018 <- data_congenital %>%
   group_by(NOMBDEP) %>% 
   summarise(congenital_prop = mean(rate, na.rm = TRUE)) 
 
-congenital_2022 <- data_congenital %>% 
+pre_congenital_2022 <- data_congenital %>% 
   filter(year==2022) %>% 
   group_by(NOMBDEP) %>% 
   summarise(congenital_prop = mean(rate, na.rm = TRUE)) 
+
+congenital_2022 <- data_congenital %>% 
+  filter(year==2022) %>% 
+  select(geometry) %>% 
+  left_join(pre_congenital_2022, by = "NOMBDEP") 
 
 congenital_total <- data_congenital %>% 
   group_by(NOMBDEP) %>% 
@@ -93,8 +98,8 @@ combined_data_2022 <- congenital_2022 %>%
   left_join(combined_data_maternal, by = "NOMBDEP") 
 
 GOALS_2022 <- combined_data_2022 %>% 
-  
-  mutate(
+ 
+    mutate(
     goal1 = ifelse(syphilis_prop>=0.95, 1,0),
     goal2 = ifelse(congenital_prop<0.5,1,0),
     goal3 = ifelse(rest_porcent >=45,1,0),
@@ -123,7 +128,7 @@ figure_2a<-
   scale_y_continuous(breaks = NULL)
 print(figure_2a)
 
-ggsave("Figure_2a.png",plot = figura_metas_2022, width = 8, height = 4, dpi = 300)
+#ggsave("Figure_2a.png",plot = figure_2a, width = 8, height = 4, dpi = 300)
 
 #Goal 1
 
@@ -136,8 +141,10 @@ figure_2b1 <- ggplot() +
     breaks = seq(0,1, by = 0.1),
     labels = c("0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")
   )+
-  labs(fill= "Goal 1") 
-ggsave("Figure_2b1.png",plot = figure_2b1, width = 8, height = 4, dpi = 300)
+  labs(fill= "Goal 1") +
+  theme_minimal()
+print(figure_2b1)
+#ggsave("Figure_2b1.png",plot = figure_2b1, width = 8, height = 4, dpi = 300)
 
 
 ##Goal 2
@@ -152,9 +159,11 @@ figure_2b2 <- ggplot() +
     labels = c("0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%"),
     trans = "reverse"
   )+
-  labs(fill= "Goal 2") 
+  labs(fill= "Goal 2") +
+  theme_minimal()
+print(figure_2b2)
 
-ggsave("Figure_2b2.png",plot = figure_2b2, width = 8, height = 4, dpi = 300)
+#ggsave("Figure_2b2.png",plot = figure_2b2, width = 8, height = 4, dpi = 300)
 
 #Goal 3
 
@@ -183,11 +192,12 @@ figure_2b3 <- ggplot() +
     breaks = seq(0,100, by = 10),
     labels = c("0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")
   )+
-  labs(fill= "Goal 3") 
+  labs(fill= "Goal 3") +
+  theme_minimal()
 
 print(figure_2b3)
 
-ggsave("Figure_2b3.png",plot = figure_2b3, width = 8, height = 4, dpi = 300)
+#ggsave("Figure_2b3.png",plot = figure_2b3, width = 8, height = 4, dpi = 300)
 
 figure_2b<-cowplot::plot_grid(figure_2b1,figure_2b2, figure_2b3, ncol = 3, rel_heights = c(0.6,0.4))
 
