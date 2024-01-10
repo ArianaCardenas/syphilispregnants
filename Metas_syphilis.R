@@ -52,10 +52,15 @@ congenital_2018 <- data_congenital %>%
   group_by(NOMBDEP) %>% 
   summarise(congenital_prop = mean(rate, na.rm = TRUE)) 
 
-congenital_2022 <- data_congenital %>% 
+pre_congenital_2022 <- data_congenital %>% 
   filter(year==2022) %>% 
   group_by(NOMBDEP) %>% 
   summarise(congenital_prop = mean(rate, na.rm = TRUE)) 
+
+congenital_2022 <- data_congenital %>% 
+  filter(year==2022) %>% 
+  select(geometry) %>% 
+  left_join(pre_congenital_2022, by = "NOMBDEP") 
 
 congenital_total <- data_congenital %>% 
   group_by(NOMBDEP) %>% 
@@ -93,8 +98,8 @@ combined_data_2022 <- congenital_2022 %>%
   left_join(combined_data_maternal, by = "NOMBDEP") 
 
 GOALS_2022 <- combined_data_2022 %>% 
-  
-  mutate(
+ 
+    mutate(
     goal1 = ifelse(syphilis_prop>=0.95, 1,0),
     goal2 = ifelse(congenital_prop<0.5,1,0),
     goal3 = ifelse(rest_porcent >=45,1,0),
@@ -109,7 +114,7 @@ GOALS_2022 <- combined_data_2022 %>%
                                                              ifelse(syphilis_prop<0.95 & congenital_prop<0.50 & rest_porcent>=45, list(c("Goal 2", "Goal 3")), NA)
                ))))))))
 
-figura_metas_2022<-
+figure_2a<-
   ggplot(GOALS_2022) +
   aes(x = goals)+
   geom_bar(fill = "#506D84")+
@@ -121,177 +126,90 @@ figura_metas_2022<-
   labs(x = "Goals", y = "")+
   scale_x_upset(n_intersections= 8) +
   scale_y_continuous(breaks = NULL)
-print(figura_metas_2022)
+print(figure_2a)
 
-#ggsave("Fig_goals2022.png", width = 8, height = 4)
+#ggsave("Figure_2a.png",plot = figure_2a, width = 8, height = 4, dpi = 300)
 
-figura_metas_2022b <- GOALS_2022 %>% 
-  select(NOMBDEP, syphilis_prop, congenital_prop, rest_porcent, goals) %>% 
-  pivot_longer(cols = c(syphilis_prop, congenital_prop, rest_porcent), names_to = "Goals") %>% 
-  filter(value == 0) %>% 
-  #group_by(NOMBDEP, goals) %>% 
-  summarise(numero = n()) %>% 
-  mutate(goals = recode(goals, "goal1" = "Goal 1",
-                        "goal2" = "Goal 2",
-                        "goal3" = "Goal 3"),
-         percent = round((numero/sum(numero)*100)),
-         goals = factor(goals, levels = c("Goal 1", "Goal 2", "Goal 3"))) %>% 
-  left_join(region_shape) %>% 
-  st_as_sf %>% 
+#Goal 1
 
-  ggplot()+
-  geom_sf(aes(fill = percent), col = "#b6cfde") +
-  scale_fill_gradient(high  ="#0C6291", low = "#e5e5e5")+
-  #scale_color_gradient(high ="#e5e5e5", low = "#e5e5e5") +
-  guides(fill = guide_colourbar(barheight = 0.5, barwidth = 25,title.position = "top", direction = "horizontal"))+
-  facet_wrap(~goals, nrow = 1)+
-  theme_minimal()+
-  labs(color = "", fill = "% of non-vaccinations by regions")+
-  theme(
-    legend.position = "bottom",
-    legend.title = element_text(size = 9, face = "bold"),
-    legend.text = element_text(size = 8),
-    panel.grid = element_blank(),
-    strip.text = element_text(size = 9, face = "bold"),
-    axis.text = element_text(size = 5))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Extra
-
-
-
-##Hasta aquí está lista la figura###
-
-#Figura 2018
-
-# Convertir a mayuscula en la tabla freq_screening_2022
-freq_screening_2018 <- freq_screening_2018 %>%
-  mutate(departament = toupper(departament))
-
-# Luego, realizar la fusión
-combined_data_2018 <- congenital_2018 %>%
-  left_join(freq_screening_2018, by = c("NOMBDEP" = "departament"))
-
-METAS_2018 <- combined_data_2018 %>% 
-  
-  mutate(
-    meta1 = ifelse(syphilis_prop>=0.95, 1,0),
-    meta2 = ifelse(congenital_prop<0.5,1,0),
-    
-    metas = ifelse(syphilis_prop>=0.95 & congenital_prop<0.50, list(c ("Meta 1", "Meta 2")),
-                   ifelse(syphilis_prop<0.95 & congenital_prop>=0.50, list(c(NA)),
-                          ifelse(syphilis_prop>=0.95 & congenital_prop>=0.50, list(c("Meta 1")),
-                                 ifelse(syphilis_prop<0.95 & congenital_prop<0.50, list(c("Meta 2")), NA)
-                          ))))
-
-figura_metas_2018<-
-  ggplot(METAS_2018) +
-  aes(x = metas)+
-  geom_bar(fill = "#506D84")+
-  geom_text(stat='count', aes(label=after_stat(count)), vjust=-1, size = 4) +
-  theme_minimal()+
-  theme(
-    panel.grid = element_blank()
+figure_2b1 <- ggplot() +
+  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = syphilis_prop), col = "#b6cfde") +
+  scale_fill_gradient(
+    high = "#0C6291", 
+    low = "#e5e5e5", 
+    limits = c(0,1), 
+    breaks = seq(0,1, by = 0.1),
+    labels = c("0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")
   )+
-  labs(x = "Goals", y = "")+
-  scale_x_upset(n_intersections= 4) +
-  scale_y_continuous(breaks = NULL)
-print(figura_metas_2018)
-
-#Figura 2014
-
-# Convertir a mayuscula en la tabla freq_screening_2022
-freq_screening_2014 <- freq_screening_2014 %>%
-  mutate(departament = toupper(departament))
-
-# Luego, realizar la fusión
-combined_data_2014 <- congenital_2014 %>%
-  left_join(freq_screening_2014, by = c("NOMBDEP" = "departament"))
-
-METAS_2014 <- combined_data_2014 %>% 
-  
-  mutate(
-    meta1 = ifelse(syphilis_prop>=0.95, 1,0),
-    meta2 = ifelse(congenital_prop<0.5,1,0),
-    
-    metas = ifelse(syphilis_prop>=0.95 & congenital_prop<0.50, list(c ("Meta 1", "Meta 2")),
-                   ifelse(syphilis_prop<0.95 & congenital_prop>=0.50, list(c(NA)),
-                          ifelse(syphilis_prop>=0.95 & congenital_prop>=0.50, list(c("Meta 1")),
-                                 ifelse(syphilis_prop<0.95 & congenital_prop<0.50, list(c("Meta 2")), NA)
-                          ))))
+  labs(fill= "Goal 1") +
+  theme_minimal()
+print(figure_2b1)
+#ggsave("Figure_2b1.png",plot = figure_2b1, width = 8, height = 4, dpi = 300)
 
 
-figura_metas_2014<-
-  ggplot(METAS_2014) +
-  aes(x = metas)+
-  geom_bar(fill = "#506D84")+
-  geom_text(stat='count', aes(label=after_stat(count)), vjust=-1, size = 4) +
-  theme_minimal()+
-  theme(
-    panel.grid = element_blank()
+##Goal 2
+
+figure_2b2 <- ggplot() +
+  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = congenital_prop), col = "#b6cfde") +
+  scale_fill_gradient(
+    high = "#0C6291", 
+    low = "#e5e5e5", 
+    limits = c(10.00, 0), 
+    breaks = seq(10.00, 0, by = -1.0),
+    labels = c("0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%"),
+    trans = "reverse"
   )+
-  labs(x = "Goals", y = "")+
-  scale_x_upset(n_intersections= 4) +
-  scale_y_continuous(breaks = NULL)
-print(figura_metas_2014)
+  labs(fill= "Goal 2") +
+  theme_minimal()
+print(figure_2b2)
 
-#Figura total
+#ggsave("Figure_2b2.png",plot = figure_2b2, width = 8, height = 4, dpi = 300)
 
-# Convertir a mayuscula en la tabla 
-freq_screening_total <- freq_screening_total %>%
-  mutate(departament = toupper(departament))
+#Goal 3
 
-# Luego, realizar la fusión
-combined_data_total <- congenital_total %>%
-  left_join(freq_screening_total, by = c("NOMBDEP" = "departament"))
+GOALS_2022 <- GOALS_2022 %>% 
+  mutate(goal_maternal = ifelse(rest_porcent >= 45, "100",
+                                ifelse(rest_porcent >=35 & rest_porcent<45, "90",
+                                       ifelse(rest_porcent >=25 & rest_porcent<35, "80",
+                                              ifelse(rest_porcent >=15 & rest_porcent <25, "70",
+                                                     ifelse(rest_porcent >=5 & rest_porcent <15, "60",
+                                                            ifelse(rest_porcent >= -5 & rest_porcent <5, "50",
+                                                                   ifelse(rest_porcent >= -15 & rest_porcent < -5, "40",
+                                                                          ifelse(rest_porcent >= -25 & rest_porcent < -15, "30",
+                                                                                 ifelse(rest_porcent >= -35 & rest_porcent < -25, "20",
+                                                                                        ifelse(rest_porcent>= -45 & rest_porcent< -35, "10",
+                                                                                               ifelse(rest_porcent >= -55 & rest_porcent < -45, "0", NA))))))))))))
 
-METAS_total <- combined_data_total %>% 
-  
-  mutate(
-    meta1 = ifelse(syphilis_prop>=0.95, 1,0),
-    meta2 = ifelse(congenital_prop<0.5,1,0),
-    
-    metas = ifelse(syphilis_prop>=0.95 & congenital_prop<0.50, list(c ("Meta 1", "Meta 2")),
-                   ifelse(syphilis_prop<0.95 & congenital_prop>=0.50, list(c(NA)),
-                          ifelse(syphilis_prop>=0.95 & congenital_prop>=0.50, list(c("Meta 1")),
-                                 ifelse(syphilis_prop<0.95 & congenital_prop<0.50, list(c("Meta 2")), NA)
-                          ))))
 
-figura_metas_total<-
-  ggplot(METAS_total) +
-  aes(x = metas)+
-  geom_bar(fill = "#506D84")+
-  geom_text(stat='count', aes(label=after_stat(count)), vjust=-1, size = 4) +
-  theme_minimal()+
-  theme(
-    panel.grid = element_blank()
+GOALS_2022$goal_maternal <- as.numeric(as.character(GOALS_2022$goal_maternal))
+
+figure_2b3 <- ggplot() +
+  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = goal_maternal), col = "#b6cfde") +
+  scale_fill_gradient(
+    high = "#0C6291", 
+    low = "#e5e5e5", 
+    limits = c(0,100), 
+    breaks = seq(0,100, by = 10),
+    labels = c("0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")
   )+
-  labs(x = "Goals", y = "")+
-  scale_x_upset(n_intersections= 4) +
-  scale_y_continuous(breaks = NULL)
-print(figura_metas_total)
+  labs(fill= "Goal 3") +
+  theme_minimal()
+
+print(figure_2b3)
+
+#ggsave("Figure_2b3.png",plot = figure_2b3, width = 8, height = 4, dpi = 300)
+
+figure_2b<-cowplot::plot_grid(figure_2b1,figure_2b2, figure_2b3, ncol = 3, rel_heights = c(0.6,0.4))
+
+figure2<-cowplot::plot_grid(figure_2a,figure_2b, ncol = 1, labels = c("a","b"), rel_heights = c(0.6,0.4))
+
+print(figure2)
+
+#ggsave("Figure2.png", plot = figure2, width = 8, height = 4, dpi = 300)
+
+
+
+
+
+
 
