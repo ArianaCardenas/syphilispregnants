@@ -83,10 +83,12 @@ options(survey.lonely.psu="adjust")
 syphilis_year<- svyby(~syphilis_screening,~NOMBDEP+year+ZONA,svymean,design=design,na.rm=TRUE)
 syphilis_total<- svyby(~syphilis_screening,~NOMBDEP+ZONA,svymean,design=design,na.rm=TRUE)
 syphilis_provincias<- svyby(~syphilis_screening,~NOMBPROV+year+ZONA,svymean,design=design,na.rm=TRUE)
+syphilis_general <- svyby(~syphilis_screening,~year,svymean,design=design,na.rm=TRUE)
 
 syphilis_year = as.data.frame(syphilis_year)
 syphilis_total = as.data.frame(syphilis_total)
 syphilis_provincias = as.data.frame(syphilis_provincias)
+syphilis_general = as.data.frame(syphilis_general)
 ```
 
 ```{r}
@@ -324,17 +326,10 @@ ggplot(dtotal, aes(x = syphilis_screening, y = reorder(NOMBDEP,ZONA))) +
 ```
 
 
-#Grafico dumbbell provincias
+#Grafico líneas general
 
 ```{r,fig.height=6}
-norte_prov = data_grafico_prov%>%
-  filter(year==2018|year==2022) %>%
-  filter(ZONA=="CENTRO")
-
-ggplot(norte_prov, aes(x = syphilis_screening, y = NOMBPROV)) +
-  geom_line() +
-  geom_point(aes(color = year), size = 3) +
-  xlab("Syphilis screening")+
-  ylab("Provincia")
+ggplot(data = syphilis_general, aes(x=year,y = syphilis_screening)) + 
+  geom_point()  + geom_line()
 ```
 
