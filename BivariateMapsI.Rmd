@@ -1,0 +1,505 @@
+---
+title: "Bivariate maps"
+author: "CardenasA"
+date: "2024-01-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(sf)
+library(purrr)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+library(readr)
+library(survey)
+install.packages("ggspatial",repos = 'http://cran.us.r-project.org')
+library(ggspatial)
+install.packages(c("cowplot", "sf"),repos = 'http://cran.us.r-project.org')
+library(cowplot)
+library(sf)
+install.packages("biscale", dependencies = TRUE,repos = 'http://cran.us.r-project.org')
+library(biscale)
+```
+
+```{r setup-chunk, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	cache = TRUE,
+	dev = "png",
+	dpi = 300
+)
+
+setwd("/Users/arianacardenas/Documents/GitHub/syphilispregnants")
+```
+Uploading ENDES data:
+ 
+```{r, echo =FALSE}
+
+data_ubigeo <- read_csv("Data_final/data_ubigeo_innovalab.csv")
+data_ubigeo_2022_innova <- read_csv("Data_final/data_ubigeo_2022_innova.csv")
+
+data_ubigeo_2022_innova = data_ubigeo_2022_innova[,c(2:6,1,7:9)]
+data_ubigeo = data_ubigeo[,c(1:6,8,10,12)]
+
+data_ubigeo_2022_innova = rename(data_ubigeo_2022_innova, c("NOMBDEP"="DEPARTAMEN","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
+
+data_ubigeo = rbind(data_ubigeo,data_ubigeo_2022_innova)
+
+departamentos <- read_sf("Límites - mapas/DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp")
+data_syphilis <- read_csv("Data_final/data_syphilis.csv")
+
+data_total <- data_syphilis%>% 
+  left_join(data_ubigeo, by = c("caseid","year"))
+
+data_total <- data_total %>%
+  left_join(departamentos, by = c( "NOMBDEP"))
+```
+
+Uploading MINSA data (maternal syphilis):
+
+```{r, echo=FALSE}
+data_ins_long <- read_csv("Data_final/ins_final_long.csv")
+newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
+
+data_ins_long = rename(
+  data_ins_long, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
+newborn = rename(
+  newborn, c("NOMBDEP"="departamento","NOMBPROV"="provincia","year"="years"))
+
+newborn <- newborn %>%
+  group_by(NOMBDEP, year) %>%
+  summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
+  ungroup()
+
+matsyphilis <- data_ins_long %>%
+  group_by(NOMBDEP, year) %>%
+  filter( year > 2013) %>%
+  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
+  ungroup()
+
+#Calculating rates of maternal syphilis 
+
+matsyphilis <- matsyphilis %>%
+  left_join(newborn, by = c("NOMBDEP","year")) %>%
+  mutate(rate = (tamizaje_reactivo/newborntotal)*1000) %>%
+  left_join(departamentos, by = c("NOMBDEP"))
+```
+
+## Maternal syphilis and health insurance coverage
+
+```{r, echo=FALSE}
+# Filtrar los datos
+insurance_filtered <- data_total %>%
+  filter(!is.na(health_insurance))%>%
+  mutate(
+    health_insurance=ifelse(health_insurance=="Yes",1,0)
+  ) %>%
+  filter(year > "2013")
+
+insurance_filtered$NOMBDEP = as.factor(insurance_filtered$NOMBDEP)
+insurance_filtered$year = as.factor(insurance_filtered$year)
+insurance_filtered$health_insurance = as.factor(insurance_filtered$health_insurance)
+
+# Crear el diseño de muestreo estratificado
+design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = insurance_filtered)
+
+options(survey.lonely.psu="adjust")
+
+syphilis_insurance<- svyby(~health_insurance,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+
+syphilis_insurance = as.data.frame(syphilis_insurance) 
+syphilis_insurance <- syphilis_insurance %>%
+  mutate(year = as.character(year)) %>%
+  mutate(year=as.numeric(year))
+
+```
+# Bivariate graphic of the rate of maternal syphilis and health insurance coverage
+in the departments of Peru
+
+```{r, echo=FALSE, fig.height=8, fig.width=10}
+syphilis_insurance <- syphilis_insurance %>%
+  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+
+datamap <- bi_class(syphilis_insurance, x = rate, y = health_insurance0, style = "quantile", dim = 3)
+
+map <- ggplot() +
+  geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
+          color = "white", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = "GrPink", dim = 3) +
+  labs(
+    title = "Rate of maternal syphilis in pregnants without health insurance"
+  ) +
+  bi_theme() +
+  theme(plot.title = element_text(size = rel(0.65))) 
+  
+
+legend <- bi_legend(pal = "GrPink",
+                    dim = 3,
+                    xlab = "Higher rate",
+                    ylab = "Less insurance coverage",
+                    size = 8)
+
+# combine map with legend
+finalPlot <- ggdraw() +
+  draw_plot(map, 0, 0, 1, 1) +
+  draw_plot(legend, .75, .6, .2, .2)
+
+finalPlot
+```
+
+## Maternal syphilis and syphilis screening
+
+```{r, echo=FALSE}
+# Filtrar los datos
+screening_filtered <- data_total %>%
+  filter(!is.na(syphilis_screening))%>%
+  mutate(
+    syphilis_screening=ifelse(syphilis_screening=="Yes",1,0)
+  ) %>%
+  filter(year > "2013")
+
+screening_filtered$NOMBDEP = as.factor(screening_filtered$NOMBDEP)
+screening_filtered$year = as.factor(screening_filtered$year)
+screening_filtered$syphilis_screening = as.factor(screening_filtered$syphilis_screening)
+
+# Crear el diseño de muestreo estratificado
+design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = screening_filtered)
+
+options(survey.lonely.psu="adjust")
+
+syphilis_screening <- svyby(~syphilis_screening,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+
+syphilis_screening = as.data.frame(syphilis_screening) 
+syphilis_screening <- syphilis_screening %>%
+  mutate(year = as.character(year)) %>%
+  mutate(year=as.numeric(year))
+
+```
+# Bivariate graphic of the rate of maternal syphilis and syphilis screening
+in the departments of Peru
+
+```{r, echo=FALSE, fig.height=8, fig.width=10}
+syphilis_screening <- syphilis_screening %>%
+  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+
+datamap <- bi_class(syphilis_screening, x = rate, y = syphilis_screening0, style = "quantile", dim = 3)
+
+map <- ggplot() +
+  geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
+          color = "white", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = "GrPink", dim = 3) +
+  labs(
+    title = "Rate of maternal syphilis in pregnants without syphilis screening"
+  ) +
+  bi_theme() +
+  theme(plot.title = element_text(size = rel(0.65))) 
+  
+
+legend <- bi_legend(pal = "GrPink",
+                    dim = 3,
+                    xlab = "Higher rate",
+                    ylab = "No syphilis screening",
+                    size = 8)
+
+# combine map with legend
+finalPlot <- ggdraw() +
+  draw_plot(map, 0, 0, 1, 1) +
+  draw_plot(legend, .75, .6, .2, .2)
+
+finalPlot
+```
+## Maternal syphilis and ethnicity
+
+```{r, echo=FALSE}
+# Filtrar los datos
+ethnicity_filtered <- data_total %>%
+  filter(!is.na(ethnicity))%>%
+  filter(year > "2013")
+
+ethnicity_filtered$NOMBDEP = as.factor(ethnicity_filtered$NOMBDEP)
+ethnicity_filtered$year = as.factor(ethnicity_filtered$year)
+ethnicity_filtered$ethnicity = as.factor(ethnicity_filtered$ethnicity)
+
+# Crear el diseño de muestreo estratificado
+design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = ethnicity_filtered)
+
+options(survey.lonely.psu="adjust")
+
+syphilis_ethnicity<- svyby(~ethnicity,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+
+syphilis_ethnicity = as.data.frame(syphilis_ethnicity) 
+syphilis_ethnicity <- syphilis_ethnicity %>%
+  mutate(year = as.character(year)) %>%
+  mutate(year=as.numeric(year))
+
+```
+# Bivariate graphic of the rate of maternal syphilis and ethnicity
+
+```{r, echo=FALSE, fig.height=8, fig.width=10}
+syphilis_ethnicity<- syphilis_ethnicity %>%
+  left_join(matsyphilis, by = c("NOMBDEP", "year")) %>%
+  mutate(nonSpanish = 1 - ethnicitySpanish) %>%
+  mutate(round(nonSpanish, 5))
+         
+datamap <- bi_class(syphilis_ethnicity, x = rate, y = nonSpanish, style = "quantile", dim = 3)
+
+map <- ggplot() +
+  geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
+          color = "white", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = "GrPink", dim = 3) +
+  labs(
+    title = "Rate of maternal syphilis in non native Spanish speakers pregnants"
+  ) +
+  bi_theme() +
+  theme(plot.title = element_text(size = rel(0.65))) 
+  
+
+legend <- bi_legend(pal = "GrPink",
+                    dim = 3,
+                    xlab = "Higher rate",
+                    ylab = "non-native spanish language",
+                    size = 8)
+
+# combine map with legend
+finalPlot <- ggdraw() +
+  draw_plot(map, 0, 0, 1, 1) +
+  draw_plot(legend, .75, .6, .2, .2)
+
+finalPlot
+```
+
+## Maternal syphilis and wealth index
+
+```{r, echo=FALSE}
+# Filtrar los datos
+poverty_filtered <- data_total %>%
+  filter(!is.na(wealth_index))%>%
+  filter(year > "2013")
+
+poverty_filtered$NOMBDEP = as.factor(poverty_filtered$NOMBDEP)
+poverty_filtered$year = as.factor(poverty_filtered$year)
+poverty_filtered$wealth_index = as.factor(poverty_filtered$wealth_index)
+
+# Crear el diseño de muestreo estratificado
+design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = poverty_filtered)
+
+options(survey.lonely.psu="adjust")
+
+syphilis_poverty<- svyby(~wealth_index,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+
+syphilis_poverty = as.data.frame(syphilis_poverty) 
+syphilis_poverty <- syphilis_poverty %>%
+  mutate(year = as.character(year)) %>%
+  mutate(year=as.numeric(year))
+
+```
+# Bivariate graphic of the rate of maternal syphilis and extreme poverty
+in the departments of Peru
+
+```{r, echo=FALSE, fig.height=8, fig.width=10}
+syphilis_poverty <- syphilis_poverty %>%
+  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+
+datamap <- bi_class(syphilis_poverty, x = rate, y = wealth_indexPoorest, style = "quantile", dim = 3)
+
+map <- ggplot() +
+  geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
+          color = "white", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = "GrPink", dim = 3) +
+  labs(
+    title = "Rate of maternal syphilis in pregnants without health insurance"
+  ) +
+  bi_theme() +
+  theme(plot.title = element_text(size = rel(0.65))) 
+  
+
+legend <- bi_legend(pal = "GrPink",
+                    dim = 3,
+                    xlab = "Higher rate",
+                    ylab = "Extreme poverty",
+                    size = 8)
+
+# combine map with legend
+finalPlot <- ggdraw() +
+  draw_plot(map, 0, 0, 1, 1) +
+  draw_plot(legend, .75, .6, .2, .2)
+
+finalPlot
+```
+
+## Maternal syphilis and education
+
+```{r, echo=FALSE}
+# Filtrar los datos
+education_filtered <- data_total %>%
+  filter(!is.na(education_level))%>%
+  filter(year > "2013")
+
+education_filtered$NOMBDEP = as.factor(education_filtered$NOMBDEP)
+education_filtered$year = as.factor(education_filtered$year)
+education_filtered$education_level = as.factor(education_filtered$education_level)
+
+# Crear el diseño de muestreo estratificado
+design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = education_filtered)
+
+options(survey.lonely.psu="adjust")
+
+syphilis_education<- svyby(~education_level,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+
+syphilis_education = as.data.frame(syphilis_education) 
+syphilis_education <- syphilis_education %>%
+  mutate(year = as.character(year)) %>%
+  mutate(year=as.numeric(year))
+
+```
+# Bivariate graphic of the rate of maternal syphilis and level of education
+in the departments of Peru
+
+```{r, echo=FALSE, fig.height=8, fig.width=10}
+syphilis_education <- syphilis_education %>%
+  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+
+datamap <- bi_class(syphilis_education, x = rate, y = education_levelPrimary, style = "quantile", dim = 3)
+
+map <- ggplot() +
+  geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
+          color = "white", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = "GrPink", dim = 3) +
+  labs(
+    title = "Rate of maternal syphilis in pregnants with only primary education"
+  ) +
+  bi_theme() +
+  theme(plot.title = element_text(size = rel(0.65))) 
+  
+
+legend <- bi_legend(pal = "GrPink",
+                    dim = 3,
+                    xlab = "Higher rate",
+                    ylab = "Only primary",
+                    size = 8)
+
+# combine map with legend
+finalPlot <- ggdraw() +
+  draw_plot(map, 0, 0, 1, 1) +
+  draw_plot(legend, .75, .6, .2, .2)
+
+finalPlot
+```
+## Maternal syphilis and knowing of syphilis
+
+```{r, echo=FALSE}
+# Filtrar los datos
+knowsyphilis_filtered <- data_total %>%
+  filter(!is.na(know_syphilis))%>%
+  filter(year > "2013")
+
+knowsyphilis_filtered$NOMBDEP = as.factor(knowsyphilis_filtered$NOMBDEP)
+knowsyphilis_filtered$year = as.factor(knowsyphilis_filtered$year)
+knowsyphilis_filtered$know_syphilis = as.factor(knowsyphilis_filtered$know_syphilis)
+
+# Crear el diseño de muestreo estratificado
+design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = knowsyphilis_filtered)
+
+options(survey.lonely.psu="adjust")
+
+syphilis_knowsyphilis<- svyby(~know_syphilis,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+
+syphilis_knowsyphilis = as.data.frame(syphilis_knowsyphilis) 
+syphilis_knowsyphilis <- syphilis_knowsyphilis %>%
+  mutate(year = as.character(year)) %>%
+  mutate(year=as.numeric(year))
+
+```
+# Bivariate graphic of the rate of maternal syphilis and level of knowledge of Syphilis
+in the departments of Peru
+
+```{r, echo=FALSE, fig.height=8, fig.width=10}
+syphilis_knowsyphilis <- syphilis_knowsyphilis %>%
+  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+
+datamap <- bi_class(syphilis_knowsyphilis, x = rate, y = know_syphilisNo, style = "quantile", dim = 3)
+
+map <- ggplot() +
+  geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
+          color = "white", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = "GrPink", dim = 3) +
+  labs(
+    title = "Rate of maternal syphilis in pregnants with any knowledge of Syphilis"
+  ) +
+  bi_theme() +
+  theme(plot.title = element_text(size = rel(0.65))) 
+  
+
+legend <- bi_legend(pal = "GrPink",
+                    dim = 3,
+                    xlab = "Higher rate",
+                    ylab = "Less knowledge",
+                    size = 8)
+
+# combine map with legend
+finalPlot <- ggdraw() +
+  draw_plot(map, 0, 0, 1, 1) +
+  draw_plot(legend, .75, .6, .2, .2)
+
+finalPlot
+```
+
+## Maternal syphilis and emotional violence
+
+```{r, echo=FALSE}
+# Filtrar los datos
+violence_filtered <- data_total %>%
+  filter(!is.na(emotional_violence))%>%
+  filter(year > "2013")
+
+violence_filtered$NOMBDEP = as.factor(violence_filtered$NOMBDEP)
+violence_filtered$year = as.factor(violence_filtered$year)
+violence_filtered$emotional_violence = as.factor(violence_filtered$emotional_violence)
+
+# Crear el diseño de muestreo estratificado
+design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = violence_filtered)
+
+options(survey.lonely.psu="adjust")
+
+syphilis_violence<- svyby(~emotional_violence,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+
+syphilis_violence = as.data.frame(syphilis_violence) 
+syphilis_violence <- syphilis_violence %>%
+  mutate(year = as.character(year)) %>%
+  mutate(year=as.numeric(year))
+
+```
+# Bivariate graphic of the rate of maternal syphilis and history of emotional violence
+in the departments of Peru
+
+```{r, echo=FALSE, fig.height=8, fig.width=10}
+syphilis_violence <- syphilis_violence %>%
+  #left_join(matsyphilis, by = c("NOMBDEP", "year"))
+
+datamap <- bi_class(syphilis_violence, x = rate, y = emotional_violenceYes, style = "quantile", dim = 3)
+
+map <- ggplot() +
+  geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
+          color = "white", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = "GrPink", dim = 3) +
+  labs(
+    title = "Rate of maternal syphilis in pregnants who had received any kind of emotional violence"
+  ) +
+  bi_theme() +
+  theme(plot.title = element_text(size = rel(0.65))) 
+  
+
+legend <- bi_legend(pal = "GrPink",
+                    dim = 3,
+                    xlab = "Higher rate",
+                    ylab = "Higher violence",
+                    size = 8)
+
+# combine map with legend
+finalPlot <- ggdraw() +
+  draw_plot(map, 0, 0, 1, 1) +
+  draw_plot(legend, .75, .6, .2, .2)
+
+finalPlot
+```
