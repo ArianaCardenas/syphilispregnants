@@ -55,6 +55,9 @@ data_total <- data_syphilis%>%
 data_total <- data_total %>%
   left_join(departamentos, by = c( "NOMBDEP"))
 ```
+```{r include=FALSE}
+rm(data_ubigeo, data_ubigeo_2022_innova, data_syphilis)
+```
 
 Uploading MINSA data (maternal syphilis):
 
@@ -85,6 +88,9 @@ matsyphilis <- matsyphilis %>%
   mutate(rate = (tamizaje_reactivo/newborntotal)*1000) %>%
   left_join(departamentos, by = c("NOMBDEP"))
 ```
+```{r include=FALSE}
+rm(data_ins_long, newborn, departamentos)
+```
 
 ## Maternal syphilis and health insurance coverage
 
@@ -114,6 +120,11 @@ syphilis_insurance <- syphilis_insurance %>%
   mutate(year=as.numeric(year))
 
 ```
+```{r include=FALSE}
+rm(insurance_filtered)
+```
+
+
 # Bivariate graphic of the rate of maternal syphilis and health insurance coverage
 in the departments of Peru
 
@@ -176,6 +187,11 @@ syphilis_screening <- syphilis_screening %>%
   mutate(year=as.numeric(year))
 
 ```
+```{r include=FALSE}
+rm(screening_filtered)
+```
+
+
 # Bivariate graphic of the rate of maternal syphilis and syphilis screening
 in the departments of Peru
 
@@ -234,6 +250,10 @@ syphilis_ethnicity <- syphilis_ethnicity %>%
   mutate(year=as.numeric(year))
 
 ```
+```{r include=FALSE}
+rm(ethnicity_filtered)
+```
+
 # Bivariate graphic of the rate of maternal syphilis and ethnicity
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
@@ -294,6 +314,10 @@ syphilis_poverty <- syphilis_poverty %>%
   mutate(year=as.numeric(year))
 
 ```
+```{r include=FALSE}
+rm(poverty_filtered)
+```
+
 # Bivariate graphic of the rate of maternal syphilis and extreme poverty
 in the departments of Peru
 
@@ -353,6 +377,10 @@ syphilis_education <- syphilis_education %>%
   mutate(year=as.numeric(year))
 
 ```
+```{r include=FALSE}
+rm(education_filtered)
+```
+
 # Bivariate graphic of the rate of maternal syphilis and level of education
 in the departments of Peru
 
@@ -411,6 +439,10 @@ syphilis_knowsyphilis <- syphilis_knowsyphilis %>%
   mutate(year=as.numeric(year))
 
 ```
+```{r include=FALSE}
+rm(knowsyphilis_filtered)
+```
+
 # Bivariate graphic of the rate of maternal syphilis and level of knowledge of Syphilis
 in the departments of Peru
 
@@ -425,7 +457,7 @@ map <- ggplot() +
           color = "white", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = "GrPink", dim = 3) +
   labs(
-    title = "Rate of maternal syphilis in pregnants with any knowledge of Syphilis"
+    title = "Rate of maternal syphilis in pregnants without knowledge of Syphilis"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(0.65))) 
@@ -470,12 +502,16 @@ syphilis_violence <- syphilis_violence %>%
   mutate(year=as.numeric(year))
 
 ```
+```{r include=FALSE}
+rm(violence_filtered)
+```
+
 # Bivariate graphic of the rate of maternal syphilis and history of emotional violence
 in the departments of Peru
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 syphilis_violence <- syphilis_violence %>%
-  #left_join(matsyphilis, by = c("NOMBDEP", "year"))
+  left_join(matsyphilis, by = c("NOMBDEP", "year"))
 
 datamap <- bi_class(syphilis_violence, x = rate, y = emotional_violenceYes, style = "quantile", dim = 3)
 
@@ -494,6 +530,73 @@ legend <- bi_legend(pal = "GrPink",
                     dim = 3,
                     xlab = "Higher rate",
                     ylab = "Higher violence",
+                    size = 8)
+
+# combine map with legend
+finalPlot <- ggdraw() +
+  draw_plot(map, 0, 0, 1, 1) +
+  draw_plot(legend, .75, .6, .2, .2)
+
+finalPlot
+```
+
+## Maternal syphilis and prenatal care visits
+
+```{r, echo=FALSE}
+# Filtrar los datos
+prenatalcare_filtered <- data_total %>%
+  filter(!is.na(number_prenatal_visits_2))%>%
+  filter(year > "2013")
+
+prenatalcare_filtered$NOMBDEP = as.factor(prenatalcare_filtered$NOMBDEP)
+prenatalcare_filtered$year = as.factor(prenatalcare_filtered$year)
+prenatalcare_filtered$number_prenatal_visits_2 = as.factor(prenatalcare_filtered$number_prenatal_visits_2)
+
+# Crear el diseño de muestreo estratificado
+design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = prenatalcare_filtered)
+
+options(survey.lonely.psu="adjust")
+
+syphilis_prenatalcare<- svyby(~number_prenatal_visits_2,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+
+syphilis_prenatalcare = as.data.frame(syphilis_prenatalcare) 
+syphilis_prenatalcare <- syphilis_prenatalcare %>%
+  mutate(year = as.character(year)) %>%
+  mutate(year=as.numeric(year)) 
+
+syphilis_prenatalcare <- rename(
+  syphilis_prenatalcare, "number_prenatal_visits_20_6"="number_prenatal_visits_20-6")
+
+```
+
+```{r include=FALSE}
+rm(prenatalcare_filtered)
+```
+
+# Bivariate graphic of the rate of maternal syphilis and completition of basic prenatal care
+in the departments of Peru
+
+```{r, echo=FALSE, fig.height=8, fig.width=10}
+syphilis_prenatalcare <- syphilis_prenatalcare %>%
+  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+
+datamap <- bi_class(syphilis_prenatalcare, x = rate, y = number_prenatal_visits_20_6, style = "quantile", dim = 3)
+
+map <- ggplot() +
+  geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
+          color = "white", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = "GrPink", dim = 3) +
+  labs(
+    title = "Rate of maternal syphilis in pregnants who have fewer than 6 prenatal care visits"
+  ) +
+  bi_theme() +
+  theme(plot.title = element_text(size = rel(0.65))) 
+  
+
+legend <- bi_legend(pal = "GrPink",
+                    dim = 3,
+                    xlab = "Higher rate",
+                    ylab = "Fewer visits",
                     size = 8)
 
 # combine map with legend
