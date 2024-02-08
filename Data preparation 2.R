@@ -291,7 +291,7 @@ datafinal <- list %>%
                                        ((m14<6 & pc_screening!=6) |(m14<6 & pc_screening==6) | (m14>=6 & pc_screening!=6)) ~ "No"),
     
     prenatal_care_education= case_when((m14>=6 & m43==1) ~"Yes",
-                                       ((m14<6 & m43!=1)|(m14<6 & m43==1)|(m14>=14 & m43!=1)) ~ "No"),
+                                       ((m14<6 & m43!=1)|(m14<6 & m43==1)|(m14>=6 & m43!=1)) ~ "No"),
     
     iron_supplement = case_when(is.na(m45) ~ NA,
                                 (m45==0) ~ "No",
