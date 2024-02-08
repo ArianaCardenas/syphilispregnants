@@ -82,6 +82,7 @@ datafinal <- list %>%
          s411g,
          s411h,
          s411b,
+         s411f,
          s411ba,
          s411ca,
          s411da,
@@ -232,19 +233,26 @@ datafinal <- list %>%
     
     natural_region = factor(sregion, levels = c(1:4), labels = c("Lima Metropolitan","Rest of Coast","Highland","Jungle")),
     
-    prenatal_care_provider = case_when((m2a==1) ~ "Doctor",
-                                       (m2c==1) ~ "Obstetrician",
-                                       (m2b==1) ~ "Nurse",
-                                       (m2d==1 | m2e==1 | m2f==1) ~ "technitian/other health provider",
-                                       (m2g==1 | m2h==1 | m2k==1) ~ "Midwife/other",
-                                       (m2n==1)~ "None"),
+    prenatal_care_provider_1 = case_when((m2a==1) ~ "Doctor",
+                                         (m2c==1) ~ "Obstetrician",
+                                         (m2b==1) ~ "Nurse",
+                                         (m2d==1 | m2e==1 | m2f==1) ~ "technitian/other health provider",
+                                         (m2g==1 | m2h==1 | m2k==1) ~ "Midwife/other",
+                                         (m2n==1)~ "None"),
     
-    prenatal_care_provider_childbirth = case_when((m3a==1) ~ "Doctor",
+    prenatal_care_provider_2 = case_when ((m2a==1 | m2c==1 | m2b==1) ~ "Skilled",
+                                          (m2d==1 | m2e==1 | m2f==1 | m2g==1 | m2h==1 | m2k==1 | m2n==1) ~ "Unskilled"),
+                                       
+    provider_childbirth_1 = case_when((m3a==1) ~ "Doctor",
                                                   (m3c==1) ~ "Obstetrician",
                                                   (m3b==1) ~ "Nurse",
                                                   (m3d==1 | m3e==1 | m3f==1) ~ "technitian/other health provider",
                                                   (m3g==1 | m3h==1 | m3k==1) ~ "Midwife/other",
                                                   (m3n==1)~ "None"),
+    
+    provider_childbirth_2 = case_when((m3a==1 | m3c==1 | m3b==1) ~ "Skilled",
+                                      (m3d==1 | m3e==1 | m3f==1 | m3g==1 | m3h==1 | m3k==1 | m3n==1) ~ "Unskilled"),
+                                                    
     
     first_prenatal_visit_1 = factor(m13,levels = c(0,1,2,3,4,5,6,7,8,9)),
     
@@ -258,8 +266,8 @@ datafinal <- list %>%
     number_prenatal_visits_1 = factor(m14, levels = c (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20)),
     
     number_prenatal_visits_2 = case_when(is.na(m14) ~ NA,
-                                         (m14<=6) ~ "0-6",
-                                         (m14>=7 & m14<=9) ~ "7-9",
+                                         (m14<6) ~ "0-5",
+                                         (m14>=6 & m14<=9) ~ "6-9",
                                          TRUE ~ "More than 9"),
     
     place_childbirth = case_when(is.na(m15) ~ NA,
@@ -277,6 +285,13 @@ datafinal <- list %>%
                                     (basic_prenatal_care==6) ~ "Complete",
                                     (basic_prenatal_care>6 & basic_prenatal_care<=47) ~ "Incomplete", 
                                     (basic_prenatal_care>=48) ~ "Don´t know"),
+    
+    pc_screening = (m42a+s411b+m42c+m42d+m42e+s411f),
+    prenatal_care_screening= case_when((m14>=6 & pc_screening==6) ~"Yes",
+                                       (m14<6 & pc_screening!=6) ~ "No"),
+    
+    prenatal_care_education= case_when((m14>=6 & m43==1) ~"Yes",
+                                       (m14<6 & m43!=1) ~ "No"),
     
     iron_supplement = case_when(is.na(m45) ~ NA,
                                 (m45==0) ~ "No",

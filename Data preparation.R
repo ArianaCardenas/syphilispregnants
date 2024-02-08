@@ -81,7 +81,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI, S119D,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2022/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411F, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA, S426FA,QI411_M,
                                   QI411F) %>%
   clean_names() %>% 
@@ -204,7 +204,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI, S119D,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2021/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411F, S411G, S411H, S411BA, 
                                 S411CA, S411DA, S411EA, S426FA,QI411_M,
                                 QI411F) %>%
   clean_names() %>% 
@@ -322,7 +322,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI, S119D,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2020/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411F, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA, S426FA,QI411_M,
                                   QI411F) %>%
   clean_names() %>% 
@@ -437,7 +437,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI, S119D,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2019/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411F, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA, S426FA,QI411_M,
                                   QI411F) %>%
   clean_names() %>% 
@@ -551,7 +551,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI, S119D,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2018/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411F, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA, S426FA,QI411_M,
                                   QI411F) %>%
   clean_names() %>% 
@@ -664,7 +664,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI, S119D,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2017/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411F, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA, S426FA) %>%
   clean_names() %>% 
   mutate(hhid = as.double(str_sub(caseid,-12,-4 )))
@@ -775,7 +775,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2016/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411F, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA, S426FA) %>%
   clean_names() %>% 
   mutate(hhid = as.double(str_sub(caseid,-12,-4 )))
@@ -879,7 +879,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2015/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411F, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA, S426FA) %>%
   clean_names() %>% 
   mutate(hhid = as.double(str_sub(caseid,-12,-4 )))
@@ -985,7 +985,7 @@ ITS <- ITS %>% select(CASEID, S108N, sregion, SPROVIN, SDISTRI,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2014/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411F, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA) %>%
   clean_names() %>% 
   mutate(hhid = as.double(str_sub(caseid,-12,-4 )))
@@ -1089,7 +1089,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI,
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2013/REC94.sav")
 prenatal2 <- prenatal2[!duplicated(prenatal2$CASEID), ]
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411F, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA) %>%
   clean_names() %>% 
   mutate(hhid = as.double(str_sub(caseid,-12,-4 )))
@@ -1191,7 +1191,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2012/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411F, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA) %>%
   clean_names() %>% 
   mutate(hhid = as.double(str_sub(caseid,-12,-4 )))
@@ -1296,7 +1296,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2011/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411F, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA) %>%
   clean_names() %>% 
   mutate(hhid = as.double(str_sub(caseid,-12,-4 )))
@@ -1397,7 +1397,7 @@ ITS <- ITS %>% select(CASEID, S108N, SREGION, SPROVIN, SDISTRI,
                       S816AH, S816AI, S816AJ, S816AK, S816AL, S816AW) %>%
   clean_names() 
 prenatal2 <- read_sav("./Data_endes/2010/REC94.sav")
-prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411G, S411H, S411BA, 
+prenatal2 <- prenatal2 %>% select(CASEID, IDX94, S410B, S411B, S411F, S411G, S411H, S411BA, 
                                   S411CA, S411DA, S411EA) %>%
   clean_names() %>% 
   mutate(hhid = as.double(str_sub(caseid,-12,-4 )))
