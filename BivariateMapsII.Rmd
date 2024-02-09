@@ -1,7 +1,7 @@
 ---
-title: "Bivariate maps I - Maternal Syphilis"
+title: "Bivariate maps II - Congenital syphilis"
 author: "CardenasA"
-date: "2024-01-24"
+date: "2024-02-09"
 output: html_document
 ---
 
@@ -29,8 +29,8 @@ knitr::opts_chunk$set(
 	dev = "png",
 	dpi = 300
 )
-
 ```
+
 Uploading ENDES data:
  
 ```{r, echo =FALSE}
@@ -54,44 +54,55 @@ data_total <- data_syphilis%>%
 data_total <- data_total %>%
   left_join(departamentos, by = c( "NOMBDEP"))
 ```
+
 ```{r include=FALSE}
 rm(data_ubigeo, data_ubigeo_2022_innova, data_syphilis)
 ```
 
-Uploading MINSA data (maternal syphilis):
+Uploading MINSA data (congenital syphilis):
 
 ```{r, echo=FALSE}
-data_ins_long <- read_csv("Data_final/ins_final_long.csv")
+congenital <- read_csv("Data_final/syphilis_congenital.csv")
 newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
 
-data_ins_long = rename(
-  data_ins_long, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
+congenital = rename(
+  congenital, c("NOMBDEP"="DEPARTAMENTO","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
 newborn = rename(
   newborn, c("NOMBDEP"="departamento","NOMBPROV"="provincia","year"="years"))
 
 newborn <- newborn %>%
   group_by(NOMBDEP, year) %>%
   summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
-  ungroup()
+  ungroup() %>%
+  mutate(year = as.character(year)) 
 
-matsyphilis <- data_ins_long %>%
+congenital <- congenital %>%
+  select(c(1:16)) %>%
+  select(!c(4:7))
+
+congenital_long <- pivot_longer(congenital, cols = c(4:12), 
+                                names_to = "year", values_to = "congenital")
+
+congenital_long <- congenital_long %>%
   group_by(NOMBDEP, year) %>%
-  filter( year > 2013) %>%
-  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
-  ungroup()
+  summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  unnest(congenital) %>%
+  drop_na()
 
 #Calculating rates of maternal syphilis 
 
-matsyphilis <- matsyphilis %>%
+data_congenital <- congenital_long %>%
   left_join(newborn, by = c("NOMBDEP","year")) %>%
-  mutate(rate = (tamizaje_reactivo/newborntotal)*1000) %>%
+  mutate(rate = (congenital/newborntotal)*1000) %>% 
+  mutate_if(is.numeric, round, 2) %>%
   left_join(departamentos, by = c("NOMBDEP"))
 ```
+
 ```{r include=FALSE}
-rm(data_ins_long, newborn, departamentos)
+rm(congenital, congenital_long, newborn, departamentos)
 ```
 
-## Maternal syphilis and health insurance coverage
+## Congenital syphilis and health insurance coverage
 
 ```{r, echo=FALSE}
 # Filtrar los datos
@@ -115,21 +126,20 @@ syphilis_insurance<- svyby(~health_insurance,~NOMBDEP+year,svymean,design=design
 
 syphilis_insurance = as.data.frame(syphilis_insurance) 
 syphilis_insurance <- syphilis_insurance %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year))
+  mutate(year = as.character(year)) 
 
 ```
+
 ```{r include=FALSE}
 rm(insurance_filtered)
 ```
 
-
-# Bivariate graphic of the rate of maternal syphilis and health insurance coverage
+# Bivariate graphic of the rate of congenital syphilis and health insurance coverage
 in the departments of Peru
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 syphilis_insurance <- syphilis_insurance %>%
-  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+  left_join(data_congenital, by = c("NOMBDEP", "year"))
 
 datamap <- bi_class(syphilis_insurance, x = rate, y = health_insurance0, style = "quantile", dim = 3)
 
@@ -138,7 +148,7 @@ map <- ggplot() +
           color = "white", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = "GrPink", dim = 3) +
   labs(
-    title = "Rate of maternal syphilis in pregnants without health insurance"
+    title = "Rate of congenital syphilis in pregnants without health insurance"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(0.65))) 
@@ -158,7 +168,7 @@ finalPlot <- ggdraw() +
 finalPlot
 ```
 
-## Maternal syphilis and syphilis screening
+## Congenital syphilis and syphilis screening
 
 ```{r, echo=FALSE}
 # Filtrar los datos
@@ -182,21 +192,20 @@ syphilis_screening <- svyby(~syphilis_screening,~NOMBDEP+year,svymean,design=des
 
 syphilis_screening = as.data.frame(syphilis_screening) 
 syphilis_screening <- syphilis_screening %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year))
+  mutate(year = as.character(year)) 
 
 ```
+
 ```{r include=FALSE}
 rm(screening_filtered)
 ```
 
-
-# Bivariate graphic of the rate of maternal syphilis and syphilis screening
+# Bivariate graphic of the rate of congenital syphilis and syphilis screening
 in the departments of Peru
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 syphilis_screening <- syphilis_screening %>%
-  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+  left_join(data_congenital, by = c("NOMBDEP", "year"))
 
 datamap <- bi_class(syphilis_screening, x = rate, y = syphilis_screening0, style = "quantile", dim = 3)
 
@@ -205,7 +214,7 @@ map <- ggplot() +
           color = "white", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = "GrPink", dim = 3) +
   labs(
-    title = "Rate of maternal syphilis in pregnants without syphilis screening"
+    title = "Rate of congenital syphilis in pregnants without syphilis screening"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(0.65))) 
@@ -224,7 +233,7 @@ finalPlot <- ggdraw() +
 
 finalPlot
 ```
-## Maternal syphilis and ethnicity
+## Congenital syphilis and ethnicity
 
 ```{r, echo=FALSE}
 # Filtrar los datos
@@ -245,19 +254,19 @@ syphilis_ethnicity<- svyby(~ethnicity,~NOMBDEP+year,svymean,design=design,deff=T
 
 syphilis_ethnicity = as.data.frame(syphilis_ethnicity) 
 syphilis_ethnicity <- syphilis_ethnicity %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year))
+  mutate(year = as.character(year))
 
 ```
+
 ```{r include=FALSE}
 rm(ethnicity_filtered)
 ```
 
-# Bivariate graphic of the rate of maternal syphilis and ethnicity
+# Bivariate graphic of the rate of congenital syphilis and ethnicity
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 syphilis_ethnicity<- syphilis_ethnicity %>%
-  left_join(matsyphilis, by = c("NOMBDEP", "year")) %>%
+  left_join(data_congenital, by = c("NOMBDEP", "year")) %>%
   mutate(nonSpanish = 1 - ethnicitySpanish) %>%
   mutate(round(nonSpanish, 5))
          
@@ -268,7 +277,7 @@ map <- ggplot() +
           color = "white", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = "GrPink", dim = 3) +
   labs(
-    title = "Rate of maternal syphilis in non native Spanish speakers pregnants"
+    title = "Rate of congenital syphilis in non native Spanish speakers pregnants"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(0.65))) 
@@ -288,7 +297,7 @@ finalPlot <- ggdraw() +
 finalPlot
 ```
 
-## Maternal syphilis and type of residence
+## Congenital syphilis and type of residence
 
 ```{r, echo=FALSE}
 # Filtrar los datos
@@ -309,8 +318,7 @@ syphilis_residence <- svyby(~type_residence,~NOMBDEP+year,svymean,design=design,
 
 syphilis_residence = as.data.frame(syphilis_residence) 
 syphilis_residence <- syphilis_residence %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year))
+  mutate(year = as.character(year))
 
 ```
 
@@ -318,11 +326,11 @@ syphilis_residence <- syphilis_residence %>%
 rm(residence_filtered)
 ```
 
-# Bivariate graphic of the rate of maternal syphilis and type of residence
+# Bivariate graphic of the rate of congenital syphilis and type of residence
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 syphilis_residence<- syphilis_residence %>%
-  left_join(matsyphilis, by = c("NOMBDEP", "year")) 
+  left_join(data_congenital, by = c("NOMBDEP", "year")) 
 
 datamap <- bi_class(syphilis_residence, x = rate, y = type_residenceRural, style = "quantile", dim = 3)
 
@@ -331,7 +339,7 @@ map <- ggplot() +
           color = "white", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = "GrPink", dim = 3) +
   labs(
-    title = "Rate of maternal syphilis in pregnants who live in Rural areas"
+    title = "Rate of congenital syphilis in pregnants who live in Rural areas"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(0.65))) 
@@ -351,7 +359,7 @@ finalPlot <- ggdraw() +
 finalPlot
 ```
 
-## Maternal syphilis and wealth index
+## Congenital syphilis and wealth index
 
 ```{r, echo=FALSE}
 # Filtrar los datos
@@ -372,20 +380,20 @@ syphilis_poverty<- svyby(~wealth_index,~NOMBDEP+year,svymean,design=design,deff=
 
 syphilis_poverty = as.data.frame(syphilis_poverty) 
 syphilis_poverty <- syphilis_poverty %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year))
+  mutate(year = as.character(year)) 
 
 ```
+
 ```{r include=FALSE}
 rm(poverty_filtered)
 ```
 
-# Bivariate graphic of the rate of maternal syphilis and extreme poverty
+# Bivariate graphic of the rate of congenital syphilis and extreme poverty
 in the departments of Peru
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 syphilis_poverty <- syphilis_poverty %>%
-  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+  left_join(data_congenital, by = c("NOMBDEP", "year"))
 
 datamap <- bi_class(syphilis_poverty, x = rate, y = wealth_indexPoorest, style = "quantile", dim = 3)
 
@@ -394,7 +402,7 @@ map <- ggplot() +
           color = "white", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = "GrPink", dim = 3) +
   labs(
-    title = "Rate of maternal syphilis in extremely poor pregnants"
+    title = "Rate of congenital syphilis in extremely poor pregnants"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(0.65))) 
@@ -414,7 +422,7 @@ finalPlot <- ggdraw() +
 finalPlot
 ```
 
-## Maternal syphilis and marital status
+## Congenital syphilis and marital status
 
 ```{r, echo=FALSE}
 # Filtrar los datos
@@ -436,7 +444,6 @@ syphilis_maritalstatus <- svyby(~marital_status,~NOMBDEP+year,svymean,design=des
 syphilis_maritalstatus = as.data.frame(syphilis_maritalstatus) 
 syphilis_maritalstatus <- syphilis_maritalstatus %>%
   mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year)) %>%
   mutate(marital_statusNonMarried = marital_statusSingle + `marital_statusWidowed/Divorced/Separated`)
 
 ```
@@ -445,11 +452,11 @@ syphilis_maritalstatus <- syphilis_maritalstatus %>%
 rm(maritalstatus_filtered)
 ```
 
-# Bivariate graphic of the rate of maternal syphilis and marital status
+# Bivariate graphic of the rate of congenital syphilis and marital status
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 syphilis_maritalstatus <- syphilis_maritalstatus %>%
-  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+  left_join(data_congenital, by = c("NOMBDEP", "year"))
 
 datamap <- bi_class(syphilis_maritalstatus, x = rate, y = marital_statusNonMarried, style = "quantile", dim = 3)
 
@@ -458,7 +465,7 @@ map <- ggplot() +
           color = "white", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = "GrPink", dim = 3) +
   labs(
-    title = "Rate of maternal syphilis in Non-married pregnants"
+    title = "Rate of congenital syphilis in Non-married pregnants"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(0.65))) 
@@ -478,7 +485,7 @@ finalPlot <- ggdraw() +
 finalPlot
 ```
 
-## Maternal syphilis and education
+## Congenital syphilis and education
 
 ```{r, echo=FALSE}
 # Filtrar los datos
@@ -500,7 +507,6 @@ syphilis_education<- svyby(~education_level,~NOMBDEP+year,svymean,design=design,
 syphilis_education = as.data.frame(syphilis_education) 
 syphilis_education <- syphilis_education %>%
   mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year)) %>%
   mutate(education_levelNone_Primary = `education_levelNone/Preschool`+ education_levelPrimary)
 
 ```
@@ -509,12 +515,12 @@ syphilis_education <- syphilis_education %>%
 rm(education_filtered)
 ```
 
-# Bivariate graphic of the rate of maternal syphilis and level of education
+# Bivariate graphic of the rate of congenital syphilis and level of education
 in the departments of Peru
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 syphilis_education <- syphilis_education %>%
-  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+  left_join(data_congenital, by = c("NOMBDEP", "year"))
 
 datamap <- bi_class(syphilis_education, x = rate, y = education_levelNone_Primary, style = "quantile", dim = 3)
 
@@ -542,7 +548,8 @@ finalPlot <- ggdraw() +
 
 finalPlot
 ```
-## Maternal syphilis and knowing of syphilis
+
+## Congenital syphilis and knowing of syphilis
 
 ```{r, echo=FALSE}
 # Filtrar los datos
@@ -563,20 +570,20 @@ syphilis_knowsyphilis<- svyby(~know_syphilis,~NOMBDEP+year,svymean,design=design
 
 syphilis_knowsyphilis = as.data.frame(syphilis_knowsyphilis) 
 syphilis_knowsyphilis <- syphilis_knowsyphilis %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year))
+  mutate(year = as.character(year))
 
 ```
+
 ```{r include=FALSE}
 rm(knowsyphilis_filtered)
 ```
 
-# Bivariate graphic of the rate of maternal syphilis and level of knowledge of Syphilis
+# Bivariate graphic of the rate of congenital syphilis and level of knowledge of Syphilis
 in the departments of Peru
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 syphilis_knowsyphilis <- syphilis_knowsyphilis %>%
-  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+  left_join(data_congenital, by = c("NOMBDEP", "year"))
 
 datamap <- bi_class(syphilis_knowsyphilis, x = rate, y = know_syphilisNo, style = "quantile", dim = 3)
 
@@ -585,7 +592,7 @@ map <- ggplot() +
           color = "white", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = "GrPink", dim = 3) +
   labs(
-    title = "Rate of maternal syphilis in pregnants without knowledge of Syphilis"
+    title = "Rate of congenital syphilis in pregnants without knowledge of Syphilis"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(0.65))) 
@@ -605,7 +612,7 @@ finalPlot <- ggdraw() +
 finalPlot
 ```
 
-## Maternal syphilis and emotional violence
+## Congenital syphilis and emotional violence
 
 ```{r, echo=FALSE}
 # Filtrar los datos
@@ -626,20 +633,20 @@ syphilis_violence<- svyby(~emotional_violence,~NOMBDEP+year,svymean,design=desig
 
 syphilis_violence = as.data.frame(syphilis_violence) 
 syphilis_violence <- syphilis_violence %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year))
+  mutate(year = as.character(year)) 
 
 ```
+
 ```{r include=FALSE}
 rm(violence_filtered)
 ```
 
-# Bivariate graphic of the rate of maternal syphilis and history of emotional violence
+# Bivariate graphic of the rate of congenital syphilis and history of emotional violence
 in the departments of Peru
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 syphilis_violence <- syphilis_violence %>%
-  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+  left_join(data_congenital, by = c("NOMBDEP", "year"))
 
 datamap <- bi_class(syphilis_violence, x = rate, y = emotional_violenceYes, style = "quantile", dim = 3)
 
@@ -648,7 +655,7 @@ map <- ggplot() +
           color = "white", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = "GrPink", dim = 3) +
   labs(
-    title = "Rate of maternal syphilis in pregnants who had received any kind of emotional violence"
+    title = "Rate of congenital syphilis in pregnants who had received any kind of emotional violence"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(0.65))) 
@@ -668,7 +675,7 @@ finalPlot <- ggdraw() +
 finalPlot
 ```
 
-## Maternal syphilis and prenatal care visits
+## Congenital syphilis and prenatal care visits
 
 ```{r, echo=FALSE}
 # Filtrar los datos
@@ -689,8 +696,7 @@ syphilis_prenatalcare<- svyby(~number_prenatal_visits_2,~NOMBDEP+year,svymean,de
 
 syphilis_prenatalcare = as.data.frame(syphilis_prenatalcare) 
 syphilis_prenatalcare <- syphilis_prenatalcare %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year)) 
+  mutate(year = as.character(year)) 
 
 syphilis_prenatalcare <- rename(
   syphilis_prenatalcare, "number_prenatal_visits_20_5"="number_prenatal_visits_20-5")
@@ -701,21 +707,21 @@ syphilis_prenatalcare <- rename(
 rm(prenatalcare_filtered)
 ```
 
-# Bivariate graphic of the rate of maternal syphilis and completition of basic prenatal care
+# Bivariate graphic of the rate of congenital syphilis and completition of basic prenatal care
 in the departments of Peru
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 syphilis_prenatalcare <- syphilis_prenatalcare %>%
-  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+  left_join(data_congenital, by = c("NOMBDEP", "year"))
 
-datamap <- bi_class(syphilis_prenatalcare, x = rate, y = number_prenatal_visits_20_6, style = "quantile", dim = 3)
+datamap <- bi_class(syphilis_prenatalcare, x = rate, y = number_prenatal_visits_20_5, style = "quantile", dim = 3)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "white", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = "GrPink", dim = 3) +
   labs(
-    title = "Rate of maternal syphilis in pregnants who have fewer than 6 prenatal care visits"
+    title = "Rate of congenital syphilis in pregnants who have fewer than 6 prenatal care visits"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(0.65))) 
@@ -735,7 +741,7 @@ finalPlot <- ggdraw() +
 finalPlot
 ```
 
-## Maternal syphilis and childbirth provider unskilled
+## Congenital syphilis and childbirth provider unskilled
 
 ```{r, echo=FALSE}
 # Filtrar los datos
@@ -756,8 +762,7 @@ syphilis_childbirth_provider<- svyby(~provider_childbirth_2,~NOMBDEP+year,svymea
 
 syphilis_childbirth_provider = as.data.frame(syphilis_childbirth_provider) 
 syphilis_childbirth_provider <- syphilis_childbirth_provider %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year)) 
+  mutate(year = as.character(year)) 
 
 ```
 
@@ -765,11 +770,11 @@ syphilis_childbirth_provider <- syphilis_childbirth_provider %>%
 rm(unskilled_filtered)
 ```
 
-# Bivariate graphic of the rate of maternal syphilis and qualification of childbirth provider
+# Bivariate graphic of the rate of congenital syphilis and qualification of childbirth provider
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 syphilis_childbirth_provider <- syphilis_childbirth_provider %>%
-  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+  left_join(data_congenital, by = c("NOMBDEP", "year"))
 
 datamap <- bi_class(syphilis_childbirth_provider, x = rate, y = provider_childbirth_2Unskilled, style = "quantile", dim = 3)
 
@@ -778,7 +783,7 @@ map <- ggplot() +
           color = "white", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = "GrPink", dim = 3) +
   labs(
-    title = "Rate of maternal syphilis in pregnants who were attended by a non-qualified chilbirth provider"
+    title = "Rate of congenital syphilis in pregnants who were attended by a non-qualified chilbirth provider"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(0.65))) 
@@ -798,7 +803,7 @@ finalPlot <- ggdraw() +
 finalPlot
 ```
 
-## Maternal syphilis and non-efective prenatal care education
+## Congenital syphilis and non-efective prenatal care education
 
 ```{r, echo=FALSE}
 # Filtrar los datos
@@ -819,8 +824,7 @@ syphilis_prenatal_edu<- svyby(~prenatal_care_education,~NOMBDEP+year,svymean,des
 
 syphilis_prenatal_edu = as.data.frame(syphilis_prenatal_edu) 
 syphilis_prenatal_edu <- syphilis_prenatal_edu %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year)) 
+  mutate(year = as.character(year)) 
 
 ```
 
@@ -828,11 +832,11 @@ syphilis_prenatal_edu <- syphilis_prenatal_edu %>%
 rm(prenatal_edu_filtered)
 ```
 
-# Bivariate graphic of the rate of maternal syphilis and non-efective prenatal education
+# Bivariate graphic of the rate of congenital syphilis and non-efective prenatal education
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 syphilis_prenatal_edu <- syphilis_prenatal_edu %>%
-  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+  left_join(data_congenital, by = c("NOMBDEP", "year"))
 
 datamap <- bi_class(syphilis_prenatal_edu, x = rate, y = prenatal_care_educationNo, style = "quantile", dim = 3)
 
@@ -841,7 +845,7 @@ map <- ggplot() +
           color = "white", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = "GrPink", dim = 3) +
   labs(
-    title = "Rate of maternal syphilis in pregnants with non-efective prenatal education"
+    title = "Rate of congenital syphilis in pregnants with non-efective prenatal education"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(0.65))) 
@@ -861,7 +865,7 @@ finalPlot <- ggdraw() +
 finalPlot
 ```
 
-## Maternal syphilis and non-efective prenatal care screening
+## Congenital syphilis and non-efective prenatal care screening
 
 ```{r, echo=FALSE}
 # Filtrar los datos
@@ -882,8 +886,7 @@ syphilis_prenatal_screening<- svyby(~prenatal_care_screening,~NOMBDEP+year,svyme
 
 syphilis_prenatal_screening = as.data.frame(syphilis_prenatal_screening) 
 syphilis_prenatal_screening <- syphilis_prenatal_screening %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year)) 
+  mutate(year = as.character(year)) 
 
 ```
 
@@ -891,11 +894,11 @@ syphilis_prenatal_screening <- syphilis_prenatal_screening %>%
 rm(prenatal_screening_filtered)
 ```
 
-# Bivariate graphic of the rate of maternal syphilis and non-efective prenatal screening
+# Bivariate graphic of the rate of congenital syphilis and non-efective prenatal screening
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 syphilis_prenatal_screening <- syphilis_prenatal_screening %>%
-  left_join(matsyphilis, by = c("NOMBDEP", "year"))
+  left_join(data_congenital, by = c("NOMBDEP", "year"))
 
 datamap <- bi_class(syphilis_prenatal_screening, x = rate, y = prenatal_care_screeningNo, style = "quantile", dim = 3)
 
@@ -904,7 +907,7 @@ map <- ggplot() +
           color = "white", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = "GrPink", dim = 3) +
   labs(
-    title = "Rate of maternal syphilis in pregnants with non-efective prenatal screening"
+    title = "Rate of congenital syphilis in pregnants with non-efective prenatal screening"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(0.65))) 
