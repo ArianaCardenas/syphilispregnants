@@ -16,10 +16,7 @@ df<-
                   .f = ~svydesign(id =~ v001, strata =~ v022, weights=~v005, data=.x))
   )
 options(survey.lonely.psu="remove")
-```
 
-
-```{r}
 syphilis_df<-
   df %>% 
   mutate(
@@ -40,9 +37,9 @@ syphilis_df<-
   unnest(c(sypci,sypprop)) %>% 
   
   mutate(
-    var = case_when(var == "as.factor(syphilis_screening_2)Missing" ~ "Missing",
-                    var == "as.factor(syphilis_screening_2)YES" ~ "Yes",
-                    var == "as.factor(syphilis_screening_2)NO" ~ "No")
+    var = case_when(var == "as.factor(syphilis_screening_2)NA" ~ "Missing",
+                    var == "as.factor(syphilis_screening_2)Yes" ~ "Yes",
+                    var == "as.factor(syphilis_screening_2)No" ~ "No")
   )  
 
 
@@ -53,13 +50,13 @@ syphilis_df %>%
     across(.cols = sypprop:`97.5 %`, .fns = ~round(.*100,1))
   ) %>% 
   DT::datatable()
-```
 
-### grafico HIV 1
-```{r}
+
+### grafico syphilis 1
+
 syphi<-
   ggplot(syphilis_df %>%
-           filter(var != "Missing"), aes(x = year, y = sypprop*100, ymin = `2.5 %`*100, ymax = `97.5 %`*100, group = var)) + 
+           filter(var== "No" | var== "Yes"), aes(x = year, y = sypprop*100, ymin = `2.5 %`*100, ymax = `97.5 %`*100, group = var)) + 
   geom_line(size = 1.2, aes(col = var))+
   geom_ribbon(aes(fill = var), alpha = 0.1)+
   #geom_errorbar(aes(color=var), width = 0.2, alpha = 0.35) +
@@ -88,4 +85,4 @@ syphi<-
 
 print(syphi)
 
-ggsave("figure_curva_syp_screening.png", dpi = 300, width = 10)
+#ggsave("figure_curva_syp_screening.png", dpi = 300, width = 10)
