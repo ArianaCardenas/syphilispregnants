@@ -1,0 +1,151 @@
+---
+title: "Metas nacionales"
+output: html_document
+date: "2024-02-12"
+---
+
+```{r}
+library(sf)
+library(purrr)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+library(readr)
+library(survey)
+library(ggpmisc)
+```
+
+#ENDES
+
+```{r}
+data_ubigeo <- read_csv("Data_final/data_ubigeo_innovalab.csv")
+data_ubigeo_2022_innova <- read_csv("Data_final/data_ubigeo_2022_innova.csv")
+data_syphilis <- read_csv("Data_final/data_syphilis.csv")
+```
+
+```{r}
+data_ubigeo_2022_innova = data_ubigeo_2022_innova[,c(2:6,1,7:9)]
+data_ubigeo = data_ubigeo[,c(1:6,8,10,12)]
+
+data_ubigeo_2022_innova = rename(data_ubigeo_2022_innova, c("NOMBDEP"="DEPARTAMEN","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
+
+data_ubigeo = rbind(data_ubigeo,data_ubigeo_2022_innova)
+```
+
+```{r}
+data_ubigeo_macroregion = data_ubigeo %>%
+mutate(
+  Macrozona = ifelse(NOMBDEP=="TUMBES"|NOMBDEP=="PIURA"|NOMBDEP=="LAMBAYEQUE"|NOMBDEP=="LA LIBERTAD"|NOMBDEP=="ANCASH"| NOMBDEP=="CAJAMARCA"&NOMBPROV!="SAN IGNACIO"|NOMBDEP=="CAJAMARCA"&NOMBPROV!="JAEN"| NOMBDEP=="AMAZONAS"&NOMBPROV=="LUYA"|NOMBDEP=="AMAZONAS"&NOMBPROV=="CHACHAPOYAS", "Norte", ifelse(NOMBDEP=="LORETO"|NOMBDEP=="UCAYALI"|NOMBDEP=="SAN MARTIN"|NOMBDEP=="MADRE DE DIOS"|NOMBDEP=="CAJAMARCA"&NOMBPROV=="SAN IGNACIO"|NOMBDEP=="CAJAMARCA"&NOMBPROV=="JAEN"| NOMBDEP=="AMAZONAS"&NOMBPROV!="LUYA"|NOMBDEP=="AMAZONAS"&NOMBPROV!="CHACHAPOYAS"|NOMBDEP=="HUANUCO"&NOMBPROV=="MARAÑON"|NOMBDEP=="HUANUCO"&NOMBPROV=="LEONCIO PRADO"|NOMBDEP=="HUANUCO"&NOMBPROV=="PUERTO INCA"|NOMBDEP=="PASCO"&NOMBPROV=="OXAPAMPA"|NOMBDEP=="JUNIN"&NOMBPROV=="CHANCHAMAYO"|NOMBDEP=="JUNIN"&NOMBPROV=="SATIPO"|NOMBDEP=="CUSCO"&NOMBPROV==" LA CONVECION","Selva", ifelse(NOMBDEP=="HUANCAVELICA"|NOMBDEP=="LIMA"&NOMBPROV!="LIMA"|NOMBDEP=="HUANUCO"&NOMBPROV!="MARAÑON"|NOMBDEP=="HUANUCO"&NOMBPROV!="LEONCIO PRADO"|NOMBDEP=="HUANUCO"&NOMBPROV!="PUERTO INCA"|NOMBDEP=="PASCO"&NOMBPROV!="OXAPAMPA"|NOMBDEP=="JUNIN"&NOMBPROV!="CHANCHAMAYO"|NOMBDEP=="JUNIN"&NOMBPROV!="SATIPO","Centro", ifelse(NOMBDEP=="LIMA"&NOMBPROV=="LIMA"|NOMBDEP=="CALLAO","Lima Metropolitana",         ifelse(NOMBDEP=="ICA"|NOMBDEP=="AYACUCHO"|NOMBDEP=="AREQUIPA"|NOMBDEP=="MOQUEGUA"|NOMBDEP=="TACNA"|NOMBDEP=="PUNO"|NOMBDEP=="APURIMAC"|NOMBDEP=="CUSCO"&NOMBPROV!=" LA CONVENCION","Sur","Por definir"))))),
+  ZONA= ifelse(NOMBDEP=="TUMBES"|NOMBDEP=="PIURA"|NOMBDEP=="LAMBAYEQUE"|NOMBDEP=="LA LIBERTAD"|NOMBDEP=="CAJAMARCA"|NOMBDEP=="AMAZONAS",1,ifelse(NOMBDEP=="ANCASH"|NOMBDEP=="HUANUCO"|NOMBDEP=="PASCO"|NOMBDEP=="JUNIN"|NOMBDEP=="HUANCAVELICA"|NOMBDEP=="ICA"|NOMBDEP=="LIMA"|NOMBDEP=="CALLAO",2,ifelse(NOMBDEP=="AYACUCHO"|NOMBDEP=="AREQUIPA"|NOMBDEP=="APURIMAC"|NOMBDEP=="CUSCO"|NOMBDEP=="PUNO"|NOMBDEP=="MOQUEGUA"|NOMBDEP=="TACNA",3,ifelse(NOMBDEP=="LORETO"|NOMBDEP=="SAN MARTIN"|NOMBDEP=="UCAYALI"|NOMBDEP=="MADRE DE DIOS",4,NA)))),
+  
+  )
+```
+
+```{r}
+rm(data_ubigeo_2022_innova)
+```
+
+```{r}
+data_total <- data_syphilis%>% 
+  left_join(data_ubigeo_macroregion, by = c("caseid","year"))
+```
+
+```{r}
+rm(data_ubigeo_macroregion,data_ubigeo,data_syphilis)
+```
+
+```{r}
+# Filtrar los datos
+data_filtered <- data_total %>%
+  mutate(
+    syphilis_screening=ifelse(syphilis_screening=="Yes",1, 0)
+  )
+
+data_filtered$syphilis_screening <- ifelse(is.na(data_filtered$syphilis_screening),0,data_filtered$syphilis_screening)
+
+data_filtered$NOMBDEP = as.factor(data_filtered$NOMBDEP)
+data_filtered$year = as.factor(data_filtered$year)
+
+data_filtered = data_filtered %>%
+  filter(year!=2010&year!=2011&year!=2012&year!=2013)
+
+# Crear el diseño de muestreo estratificado
+design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_filtered, na.rm = TRUE)
+
+options(survey.lonely.psu="adjust")
+
+syphilis_general <- svyby(~syphilis_screening,~year,svymean,design=design,na.rm=TRUE)
+
+syphilis_general = as.data.frame(syphilis_general)
+```
+
+```{r}
+ggplot(syphilis_general, aes(x=year, y=syphilis_screening,group=1,label = round(syphilis_screening*100,1))) +
+  geom_point() + geom_line(color="blue") + geom_label(size=3)
+```
+#INS
+
+```{r}
+data_ins_long <- read_csv("Data_final/ins_final_long.csv")
+data_ins_wide <- read_csv("Data_final/ins_final_wide.csv")
+pobfem <- read_csv("Data_final/pobfem_year.csv")
+newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
+```
+
+```{r}
+data_ins_long = rename(
+  data_ins_long, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito")) %>%
+  mutate(year = as.character(year)) 
+
+data_ins_wide = rename(
+  data_ins_wide, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito")) %>%
+  mutate(year = as.character(year)) 
+
+newborn <- newborn %>%
+  rename(c("NOMBDEP"="departamento","NOMBPROV"="provincia", "year"="years")) %>%
+  mutate(year = as.character(year)) 
+
+pobfem <- pobfem %>%
+  group_by(year) %>%
+  summarise(
+  POBFEM = sum(POBFEM)) 
+
+pobfem <- pobfem %>%
+  mutate(year = as.character(year)) %>%
+  filter(year > "2013") 
+```
+
+```{r}
+prepplot <- data_ins_long %>%
+  group_by(year) %>%
+  summarise(ntest =sum(test_number)) %>%
+  filter(year>2013)
+
+prepplot2 <- data_ins_long %>%
+  group_by(year) %>%
+  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
+  filter(year>2013)
+
+newborn <- newborn %>%
+  group_by(year) %>%
+  summarise(newborntotal =sum(n, na.rm = TRUE))
+```
+
+```{r}
+data_total_ntest <- prepplot %>%
+  left_join(pobfem, by = c("year")) %>%
+  mutate(rate = (ntest/POBFEM)*1000)
+
+data_total_reactivos <- prepplot2 %>%
+  left_join(newborn, by = c("year")) %>%
+  mutate(rate = (tamizaje_reactivo/newborntotal)*1000) 
+```
+
+```{r}
+ggplot(data_total_ntest, aes(x=year, y=rate,group=1,label = round(rate,2))) +
+  geom_point() + geom_line(color="red") + geom_label(size=3)
+```
+```{r}
+ggplot(data_total_reactivos, aes(x=year, y=rate,group=1,label = round(rate,2))) +
+  geom_point() + geom_line(color="purple") + geom_label(size=3)
+```
