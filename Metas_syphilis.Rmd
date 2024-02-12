@@ -1,3 +1,11 @@
+---
+title: "Goals_syphilis"
+author: "Jazmín Qquellon"
+date: "2024-02-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
 library(tidyverse)
 library(gtsummary)
 library(survey)
@@ -7,51 +15,20 @@ library(tmap)
 library(ggsci)
 #install.packages("ggupset")
 library(ggupset)
+```
 
-data <- read_csv("Data_final/data_syphilis.csv")
+```{r}
+#Goal 1: Screening of syphilis - 2022
 
- # Recodificar la variable s411g
- data$s411g <- ifelse(data$s411g == 8, 0, data$s411g)
- 
- # Verificar los resultados
- table(data$s411g, useNA = "always")
-#Meta 1 : 95% de las gestantes deben ser tamizadas
- 
-freq_screening_2014 <- data %>% 
-  filter(year==2014) %>% 
-  group_by(departament) %>% 
-  summarise(syphilis_prop = mean(s411g, na.rm = TRUE)) 
-print(frequency)
-            
-freq_screening_2018 <- data %>% 
-  filter(year==2018) %>% 
-  group_by(departament) %>% 
-  summarise(syphilis_prop = mean(s411g, na.rm = TRUE)) 
+#Correr el rmd de Mapas I hasta línea 261
+freq_screening_2022 <- data_grafico_2022 %>%
+  select(NOMBDEP, syphilis_screening)
+```
 
-freq_screening_2022 <- data %>% 
-  filter(year==2022) %>% 
-  group_by(departament) %>% 
-  summarise(syphilis_prop = mean(s411g, na.rm = TRUE)) 
+```{r}
+#Goal 2: Rate of Congenital syphilis < 0.5 per 1000 individuals
 
-freq_screening_total <- data %>% 
-  group_by(departament) %>% 
-  summarise(syphilis_prop = mean(s411g, na.rm = TRUE)) 
-
-#Meta 2 : Menos del 0.5 casos de sífilis congénita
-
-congenital <- read_csv("Data_final/syphilis_congenital.csv")
-#CORRER R script: Congenital_syphilis
-
-congenital_2014 <- data_congenital %>% 
-  filter(year==2014) %>% 
-  group_by(NOMBDEP) %>% 
-  summarise(congenital_prop = mean(rate, na.rm = TRUE)) 
-
-congenital_2018 <- data_congenital %>% 
-  filter(year==2018) %>% 
-  group_by(NOMBDEP) %>% 
-  summarise(congenital_prop = mean(rate, na.rm = TRUE)) 
-
+##Correr el rmd de congenital syphilis hasta línea 177
 pre_congenital_2022 <- data_congenital %>% 
   filter(year==2022) %>% 
   group_by(NOMBDEP) %>% 
@@ -61,13 +38,12 @@ congenital_2022 <- data_congenital %>%
   filter(year==2022) %>% 
   select(geometry) %>% 
   left_join(pre_congenital_2022, by = "NOMBDEP") 
+```
 
-congenital_total <- data_congenital %>% 
-  group_by(NOMBDEP) %>% 
-  summarise(congenital_prop = mean(rate, na.rm = TRUE)) 
+```{r}
+#Goal 3: Decreade in maternal syphilis by 45% between 2018 - 2022
 
-#Meta 3: disminución en un 45% los casos de sífilis materna
-#Correr el rmd de Mapas Syphilis INS.Rmd
+##Correr el rmd de Mapas syphilis INS
 
 maternal_2018<- dntest %>% 
   filter(year==2018) %>% 
@@ -85,17 +61,19 @@ combined_data_maternal <- maternal_2018 %>%
 combined_data_maternal <-  combined_data_maternal %>% 
   mutate(rest= maternal_prop_18 - maternal_prop_22) %>% 
   mutate(rest_porcent = (100 - ((maternal_prop_22/maternal_prop_18)*100)))
-  
-#Figura 2022
 
-# Seleccionar en la tabla freq_screening_2022 las variables del tamizaje y departamento
-freq_screening_2022 <- data_grafico_2022 %>%
-  select(NOMBDEP, syphilis_screening)
+```
 
-# Luego, realizar la fusión
+```{r}
+#Combinamos los 3 goals
+
 combined_data_2022 <- congenital_2022 %>%
   left_join(freq_screening_2022, by = c("NOMBDEP")) %>% 
   left_join(combined_data_maternal, by = "NOMBDEP") 
+```
+
+```{r}
+#Figura de columnas -combinaciones
 
 GOALS_2022 <- combined_data_2022 %>% 
  
@@ -129,6 +107,10 @@ figure_2a<-
 print(figure_2a)
 
 #ggsave("Figure_2a.png",plot = figure_2a, width = 8, height = 4, dpi = 300)
+```
+
+```{r}
+#Figuras de mapas
 
 #Goal 1
 
@@ -206,10 +188,5 @@ figure2<-cowplot::plot_grid(figure_2a,figure_2b, ncol = 1, labels = c("a","b"), 
 print(figure2)
 
 #ggsave("Figure2.png", plot = figure2, width = 8, height = 4, dpi = 300)
-
-
-
-
-
-
+```
 
