@@ -326,10 +326,3 @@ ggplot(dtotal, aes(x = syphilis_screening, y = reorder(NOMBDEP,ZONA))) +
 ```
 
 
-#Grafico líneas general
-
-```{r,fig.height=6}
-ggplot(data = syphilis_general, aes(x=year,y = syphilis_screening)) + 
-  geom_point()  + geom_line()
-```
-
