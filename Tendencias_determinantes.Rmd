@@ -1,0 +1,176 @@
+---
+title: "Tendencias_determinantes"
+output: html_document
+date: "2024-02-14"
+---
+
+```{r}
+library(sf)
+library(purrr)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+library(readr)
+library(survey)
+```
+
+```{r}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	cache = FALSE,
+	dev = "png",
+	dpi = 300
+)
+```
+
+Uploading ENDES data:
+ 
+```{r, echo =FALSE}
+
+data_ubigeo <- read_csv("Data_final/data_ubigeo_innovalab.csv")
+data_ubigeo_2022_innova <- read_csv("Data_final/data_ubigeo_2022_innova.csv")
+
+data_ubigeo_2022_innova = data_ubigeo_2022_innova[,c(2:6,1,7:9)]
+data_ubigeo = data_ubigeo[,c(1:6,8,10,12)]
+
+data_ubigeo_2022_innova = rename(data_ubigeo_2022_innova, c("NOMBDEP"="DEPARTAMEN","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
+
+data_ubigeo = rbind(data_ubigeo,data_ubigeo_2022_innova)
+
+departamentos <- read_sf("Límites - mapas/DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp")
+data_syphilis <- read_csv("Data_final/data_syphilis.csv")
+
+data_total <- data_syphilis%>% 
+  left_join(data_ubigeo, by = c("caseid","year"))
+
+data_total <- data_total %>%
+  left_join(departamentos, by = c( "NOMBDEP"))
+```
+```{r include=FALSE}
+rm(data_ubigeo, data_ubigeo_2022_innova, data_syphilis)
+```
+
+Uploading MINSA data (maternal syphilis):
+
+```{r, echo=FALSE}
+data_ins_long <- read_csv("Data_final/ins_final_long.csv")
+newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
+
+data_ins_long = rename(
+  data_ins_long, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
+newborn = rename(
+  newborn, c("NOMBDEP"="departamento","NOMBPROV"="provincia","year"="years"))
+
+newborn_dep <- newborn %>%
+  group_by(NOMBDEP, year) %>%
+  summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
+  ungroup()
+
+matsyphilis_dep <- data_ins_long %>%
+  group_by(NOMBDEP, year) %>%
+  filter( year > 2013) %>%
+  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
+  ungroup()
+
+#Bases nivel nacional
+
+newborn_nac <- newborn %>%
+  group_by(year) %>%
+  summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
+  ungroup()
+
+matsyphilis_nac <- data_ins_long %>%
+  group_by(year) %>%
+  filter( year > 2013) %>%
+  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
+  ungroup()
+
+
+#Calculating rates of maternal syphilis region
+
+matsyphilis_dep <- matsyphilis_dep %>%
+  left_join(newborn_dep, by = c("NOMBDEP","year")) %>%
+  mutate(rate = (tamizaje_reactivo/newborntotal)*1000) %>%
+  left_join(departamentos, by = c("NOMBDEP"))
+
+#Calculating rates of maternal syphilis national
+
+matsyphilis_nac <- matsyphilis_nac %>%
+  left_join(newborn_nac, by = c("year")) %>%
+  mutate(rate = (tamizaje_reactivo/newborntotal)*1000)
+
+```
+```{r include=FALSE}
+rm(data_ins_long, newborn, newborn_dep, newborn_nac, departamentos)
+```
+
+## Maternal syphilis and health insurance coverage
+
+```{r, echo=FALSE}
+# Filtrar los datos
+insurance_filtered <- data_total %>%
+  filter(!is.na(health_insurance))%>%
+  mutate(
+    health_insurance=ifelse(health_insurance=="Yes",1,0)
+  ) %>%
+  filter(year > "2013")
+
+insurance_filtered$NOMBDEP = as.factor(insurance_filtered$NOMBDEP)
+insurance_filtered$year = as.factor(insurance_filtered$year)
+insurance_filtered$health_insurance = as.factor(insurance_filtered$health_insurance)
+
+# Crear el diseño de muestreo estratificado
+design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = insurance_filtered)
+
+options(survey.lonely.psu="adjust")
+
+syphilis_insurance_dep <- svyby(~health_insurance,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+syphilis_insurance_nac <- svyby(~health_insurance,~year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+
+syphilis_insurance_dep = as.data.frame(syphilis_insurance_dep) 
+syphilis_insurance_dep <- syphilis_insurance_dep %>%
+  mutate(year = as.character(year)) %>%
+  mutate(year=as.numeric(year))
+
+syphilis_insurance_nac= as.data.frame(syphilis_insurance_nac) 
+syphilis_insurance_nac <- syphilis_insurance_nac %>%
+  mutate(year = as.character(year)) %>%
+  mutate(year=as.numeric(year))
+```
+
+```{r include=FALSE}
+rm(insurance_filtered)
+```
+
+# graph- Maternal syphilis and health insurance coverage
+
+```{r}
+#NATIONAL
+syphilis_insurance_nac <- syphilis_insurance_nac %>%
+  left_join(matsyphilis_nac, by = c("year"))
+
+#REGION
+syphilis_insurance_dep <- syphilis_insurance_dep %>%
+  left_join(matsyphilis_dep, by = c("NOMBDEP", "year"))
+
+syphilis_insurance_1 = syphilis_insurance_dep%>% 
+filter(NOMBDEP=="AMAZONAS")
+
+#PLOT NATIONAL
+ggplot(syphilis_insurance_nac, aes(x=year, y =rate)) +
+  geom_line(aes(y = health_insurance1, color = "health_insurance1")) +
+  geom_ribbon(aes(ymin = health_insurance1 - sd(health_insurance1), ymax = health_insurance1 + sd(health_insurance1)), alpha = 0.1, fill = "blue") +
+  geom_line(aes(y = health_insurance0, color = "health_insurance0")) +
+   geom_ribbon(aes(ymin = health_insurance0 - sd(health_insurance0), ymax = health_insurance0 + sd(health_insurance0)), alpha = 0.1, fill = "red") +
+  geom_hline(yintercept = 0.95, linetype = "dashed", color = "black", size = 1) + 
+  theme(legend.title = element_blank())
+
+#PLOT REGION
+ggplot(syphilis_insurance_1, aes(x=year, y=rate)) +
+  geom_line(aes(y = health_insurance1, color = "health_insurance1")) +
+  geom_ribbon(aes(ymin = health_insurance1 - sd(health_insurance1), ymax = health_insurance1 + sd(health_insurance1)), alpha = 0.1, fill = "blue") +
+  geom_line(aes(y = health_insurance0, color = "health_insurance0")) +
+   geom_ribbon(aes(ymin = health_insurance0 - sd(health_insurance0), ymax = health_insurance0 + sd(health_insurance0)), alpha = 0.1, fill = "red") +
+  geom_hline(yintercept = 0.95, linetype = "dashed", color = "black", size = 1) + 
+  theme(legend.title = element_blank())
+```
