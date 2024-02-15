@@ -114,14 +114,30 @@ print(figure_2a)
 
 #Goal 1
 
+GOALS_2022 <- GOALS_2022 %>% 
+  mutate(goal_screening = ifelse(syphilis_screening >= 0.95, "100",
+                                ifelse(syphilis_screening >=0.90 & syphilis_screening<0.95, "90",
+                                       ifelse(syphilis_screening >=0.85 & syphilis_screening<0.90, "80",
+                                              ifelse(syphilis_screening >=0.80 & syphilis_screening <0.85, "70",
+                                                     ifelse(syphilis_screening >=0.75 & syphilis_screening <0.80, "60",
+                                                            ifelse(syphilis_screening >=0.70 & syphilis_screening <0.75, "50",
+                                                                   ifelse(syphilis_screening >=0.65 & syphilis_screening <0.70, "40",
+                                                                          ifelse(syphilis_screening >=0.60  & syphilis_screening <0.65, "30",
+                                                                                 ifelse(syphilis_screening >=0.55 & syphilis_screening <0.60, "20",
+                                                                                        ifelse(syphilis_screening>=0.50 & syphilis_screening<0.55, "10",
+                                                                                               ifelse(syphilis_screening <0.50, "0", NA))))))))))))
+
+
+GOALS_2022$goal_screening <- as.numeric(as.character(GOALS_2022$goal_screening))
+
 figure_2b1 <- ggplot() +
-  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = syphilis_screening), col = "#FAEBD7") +
+  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = goal_screening), col = "#FAEBD7") +
   scale_fill_gradient(
     high = "darkred", 
     low = "darkgoldenrod1", 
-    limits = c(0,1), 
-    breaks = seq(0,1, by = 0.1),
-    labels = c("0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")
+    limits = c(0,100), 
+    breaks = seq(0,100, by = 20),
+    labels = c("0%", "20%", "40%", "60%", "80%",  "100%")
   )+
   labs(fill= "Goal 1") +
   theme_minimal()
@@ -131,15 +147,30 @@ print(figure_2b1)
 
 ##Goal 2
 
+GOALS_2022 <- GOALS_2022 %>% 
+  mutate(goal_congenital = ifelse(congenital_prop <= 0.50, "100",
+                                ifelse(congenital_prop<= 0.55 & congenital_prop>0.50, "90",
+                                       ifelse(congenital_prop<= 0.60 & congenital_prop>0.55, "80",
+                                              ifelse(congenital_prop<= 0.65 & congenital_prop >0.60, "70",
+                                                     ifelse(congenital_prop<= 0.70 & congenital_prop >0.65, "60",
+                                                            ifelse(congenital_prop<= 0.75 & congenital_prop >0.70, "50",
+                                                                   ifelse(congenital_prop<= 0.80 & congenital_prop >0.75, "40",
+                                                                          ifelse(congenital_prop<= 0.85  & congenital_prop >0.80, "30",
+                                                                                 ifelse(congenital_prop<= 0.90 & congenital_prop >0.85, "20",
+                                                                                        ifelse(congenital_prop<= 0.95 & congenital_prop>0.90, "10",
+                                                                                               ifelse(congenital_prop>0.95, "0", NA))))))))))))
+
+
+GOALS_2022$goal_congenital <- as.numeric(as.character(GOALS_2022$goal_congenital))
+
 figure_2b2 <- ggplot() +
-  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = congenital_prop), col = "#FAEBD7") +
+  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = goal_congenital), col = "#FAEBD7") +
   scale_fill_gradient(
     high = "darkred", 
     low = "darkgoldenrod1", 
-    limits = c(10.00, 0), 
-    breaks = seq(10.00, 0, by = -1.0),
-    labels = c("0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%"),
-    trans = "reverse"
+    limits = c(0,100), 
+    breaks = seq(0,100, by = 20),
+    labels = c("0%", "20%", "40%", "60%", "80%",  "100%")
   )+
   labs(fill= "Goal 2") +
   theme_minimal()
@@ -151,16 +182,16 @@ print(figure_2b2)
 
 GOALS_2022 <- GOALS_2022 %>% 
   mutate(goal_maternal = ifelse(rest_porcent >= 45, "100",
-                                ifelse(rest_porcent >=35 & rest_porcent<45, "90",
-                                       ifelse(rest_porcent >=25 & rest_porcent<35, "80",
-                                              ifelse(rest_porcent >=15 & rest_porcent <25, "70",
-                                                     ifelse(rest_porcent >=5 & rest_porcent <15, "60",
-                                                            ifelse(rest_porcent >= -5 & rest_porcent <5, "50",
-                                                                   ifelse(rest_porcent >= -15 & rest_porcent < -5, "40",
-                                                                          ifelse(rest_porcent >= -25 & rest_porcent < -15, "30",
-                                                                                 ifelse(rest_porcent >= -35 & rest_porcent < -25, "20",
-                                                                                        ifelse(rest_porcent>= -45 & rest_porcent< -35, "10",
-                                                                                               ifelse(rest_porcent < -45, "0", NA))))))))))))
+                                ifelse(rest_porcent >=40 & rest_porcent<45, "90",
+                                       ifelse(rest_porcent >=35 & rest_porcent<40, "80",
+                                              ifelse(rest_porcent >=30 & rest_porcent <35, "70",
+                                                     ifelse(rest_porcent >=25 & rest_porcent <30, "60",
+                                                            ifelse(rest_porcent >=20 & rest_porcent <25, "50",
+                                                                   ifelse(rest_porcent >=15 & rest_porcent <20, "40",
+                                                                          ifelse(rest_porcent >=10  & rest_porcent <15, "30",
+                                                                                 ifelse(rest_porcent >=5 & rest_porcent <10, "20",
+                                                                                        ifelse(rest_porcent>=0 & rest_porcent<5, "10",
+                                                                                               ifelse(rest_porcent < 0, "0", NA))))))))))))
 
 
 GOALS_2022$goal_maternal <- as.numeric(as.character(GOALS_2022$goal_maternal))
@@ -171,8 +202,8 @@ figure_2b3 <- ggplot() +
     high = "darkred", 
     low = "darkgoldenrod1", 
     limits = c(0,100), 
-    breaks = seq(0,100, by = 10),
-    labels = c("0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")
+    breaks = seq(0,100, by = 20),
+    labels = c("0%", "20%", "40%", "60%", "80%",  "100%")
   )+
   labs(fill= "Goal 3") +
   theme_minimal()
