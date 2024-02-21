@@ -12,6 +12,8 @@ library(ggplot2)
 library(ggrepel)
 library(readr)
 library(survey)
+library(gridExtra)
+library(cowplot)
 ```
 
 ```{r}
@@ -50,127 +52,100 @@ data_total <- data_total %>%
 rm(data_ubigeo, data_ubigeo_2022_innova, data_syphilis)
 ```
 
-Uploading MINSA data (maternal syphilis):
-
-```{r, echo=FALSE}
-data_ins_long <- read_csv("Data_final/ins_final_long.csv")
-newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
-
-data_ins_long = rename(
-  data_ins_long, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
-newborn = rename(
-  newborn, c("NOMBDEP"="departamento","NOMBPROV"="provincia","year"="years"))
-
-newborn_dep <- newborn %>%
-  group_by(NOMBDEP, year) %>%
-  summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
-  ungroup()
-
-matsyphilis_dep <- data_ins_long %>%
-  group_by(NOMBDEP, year) %>%
-  filter( year > 2013) %>%
-  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
-  ungroup()
-
-#Bases nivel nacional
-
-newborn_nac <- newborn %>%
-  group_by(year) %>%
-  summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
-  ungroup()
-
-matsyphilis_nac <- data_ins_long %>%
-  group_by(year) %>%
-  filter( year > 2013) %>%
-  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
-  ungroup()
-
-
-#Calculating rates of maternal syphilis region
-
-matsyphilis_dep <- matsyphilis_dep %>%
-  left_join(newborn_dep, by = c("NOMBDEP","year")) %>%
-  mutate(rate = (tamizaje_reactivo/newborntotal)*1000) %>%
-  left_join(departamentos, by = c("NOMBDEP"))
-
-#Calculating rates of maternal syphilis national
-
-matsyphilis_nac <- matsyphilis_nac %>%
-  left_join(newborn_nac, by = c("year")) %>%
-  mutate(rate = (tamizaje_reactivo/newborntotal)*1000)
-
-```
-```{r include=FALSE}
-rm(data_ins_long, newborn, newborn_dep, newborn_nac, departamentos)
-```
-
-## Maternal syphilis and health insurance coverage
+## wealth_index and syphilis screeming 
 
 ```{r, echo=FALSE}
 # Filtrar los datos
-insurance_filtered <- data_total %>%
-  filter(!is.na(health_insurance))%>%
-  mutate(
-    health_insurance=ifelse(health_insurance=="Yes",1,0)
-  ) %>%
+poverty_filtered <- data_total %>%
+  filter(!is.na(wealth_index))%>%
   filter(year > "2013")
 
-insurance_filtered$NOMBDEP = as.factor(insurance_filtered$NOMBDEP)
-insurance_filtered$year = as.factor(insurance_filtered$year)
-insurance_filtered$health_insurance = as.factor(insurance_filtered$health_insurance)
+poverty_filtered$NOMBDEP = as.factor(poverty_filtered$NOMBDEP)
+poverty_filtered$year = as.factor(poverty_filtered$year)
+poverty_filtered$wealth_index = as.factor(poverty_filtered$wealth_index)
 
 # Crear el diseño de muestreo estratificado
-design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = insurance_filtered)
+design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = poverty_filtered)
 
 options(survey.lonely.psu="adjust")
 
-syphilis_insurance_dep <- svyby(~health_insurance,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
-syphilis_insurance_nac <- svyby(~health_insurance,~year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+poverty_filtered_dep <- svyby(~wealth_index,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+poverty_filtered_nac <- svyby(~wealth_index,~year,svymean,design=design,deff=TRUE,na.rm=TRUE)
 
-syphilis_insurance_dep = as.data.frame(syphilis_insurance_dep) 
-syphilis_insurance_dep <- syphilis_insurance_dep %>%
+poverty_filtered_dep = as.data.frame(poverty_filtered_dep) 
+poverty_filtered_dep <- poverty_filtered_dep %>%
   mutate(year = as.character(year)) %>%
   mutate(year=as.numeric(year))
 
-syphilis_insurance_nac= as.data.frame(syphilis_insurance_nac) 
-syphilis_insurance_nac <- syphilis_insurance_nac %>%
+poverty_filtered_nac= as.data.frame(poverty_filtered_nac) 
+poverty_filtered_nac <- poverty_filtered_nac %>%
   mutate(year = as.character(year)) %>%
   mutate(year=as.numeric(year))
 ```
 
 ```{r include=FALSE}
-rm(insurance_filtered)
+rm(poverty_filtered)
 ```
 
 # graph- Maternal syphilis and health insurance coverage
 
 ```{r}
-#NATIONAL
-syphilis_insurance_nac <- syphilis_insurance_nac %>%
-  left_join(matsyphilis_nac, by = c("year"))
-
-#REGION
-syphilis_insurance_dep <- syphilis_insurance_dep %>%
-  left_join(matsyphilis_dep, by = c("NOMBDEP", "year"))
-
-syphilis_insurance_1 = syphilis_insurance_dep%>% 
-filter(NOMBDEP=="AMAZONAS")
-
 #PLOT NATIONAL
-ggplot(syphilis_insurance_nac, aes(x=year, y =rate)) +
-  geom_line(aes(y = health_insurance1, color = "health_insurance1")) +
-  geom_ribbon(aes(ymin = health_insurance1 - sd(health_insurance1), ymax = health_insurance1 + sd(health_insurance1)), alpha = 0.1, fill = "blue") +
-  geom_line(aes(y = health_insurance0, color = "health_insurance0")) +
-   geom_ribbon(aes(ymin = health_insurance0 - sd(health_insurance0), ymax = health_insurance0 + sd(health_insurance0)), alpha = 0.1, fill = "red") +
+peru = ggplot(poverty_filtered_nac, aes(x=year)) +
+  geom_line(aes(y = wealth_indexPoorest, color = "Poorest")) +
+  geom_ribbon(aes(ymin = wealth_indexPoorest - sd(wealth_indexPoorest), ymax = wealth_indexPoorest + sd(wealth_indexPoorest)), alpha = 0.1) +
+  geom_line(aes(y = wealth_indexPoor, color = "Poor")) +
+   geom_ribbon(aes(ymin = wealth_indexPoor - sd(wealth_indexPoor), ymax = wealth_indexPoor + sd(wealth_indexPoor)), alpha = 0.1) +
+   geom_line(aes(y = wealth_indexMiddle, color = "Middle")) +
+   geom_ribbon(aes(ymin = wealth_indexMiddle - sd(wealth_indexMiddle), ymax = wealth_indexMiddle + sd(wealth_indexMiddle)), alpha = 0.1) +
+   geom_line(aes(y = wealth_indexRich, color = "Rich")) +
+   geom_ribbon(aes(ymin = wealth_indexRich - sd(wealth_indexRich), ymax = wealth_indexRich + sd(wealth_indexRich)), alpha = 0.1) +
+     geom_line(aes(y = wealth_indexRichest, color = "Richest")) +
+   geom_ribbon(aes(ymin = wealth_indexRichest - sd(wealth_indexRichest), ymax = wealth_indexRichest + sd(wealth_indexRichest)), alpha = 0.1) +
   geom_hline(yintercept = 0.95, linetype = "dashed", color = "black", size = 1) + 
-  theme(legend.title = element_blank())
+  theme(legend.title = element_blank(),axis.title.y = element_blank())
 
 #PLOT REGION
-ggplot(syphilis_insurance_1, aes(x=year, y=rate)) +
-  geom_line(aes(y = health_insurance1, color = "health_insurance1")) +
-  geom_ribbon(aes(ymin = health_insurance1 - sd(health_insurance1), ymax = health_insurance1 + sd(health_insurance1)), alpha = 0.1, fill = "blue") +
-  geom_line(aes(y = health_insurance0, color = "health_insurance0")) +
-   geom_ribbon(aes(ymin = health_insurance0 - sd(health_insurance0), ymax = health_insurance0 + sd(health_insurance0)), alpha = 0.1, fill = "red") +
+
+poverty_filtered_1 = poverty_filtered_dep%>% 
+filter(NOMBDEP=="AMAZONAS")
+
+amazonas = ggplot(poverty_filtered_1, aes(x=year)) +
+  geom_line(aes(y = wealth_indexPoorest, color = "Poorest")) +
+  geom_ribbon(aes(ymin = wealth_indexPoorest - sd(wealth_indexPoorest), ymax = wealth_indexPoorest + sd(wealth_indexPoorest)), alpha = 0.1) +
+  geom_line(aes(y = wealth_indexPoor, color = "Poor")) +
+   geom_ribbon(aes(ymin = wealth_indexPoor - sd(wealth_indexPoor), ymax = wealth_indexPoor + sd(wealth_indexPoor)), alpha = 0.1) +
+   geom_line(aes(y = wealth_indexMiddle, color = "Middle")) +
+   geom_ribbon(aes(ymin = wealth_indexMiddle - sd(wealth_indexMiddle), ymax = wealth_indexMiddle + sd(wealth_indexMiddle)), alpha = 0.1) +
+   geom_line(aes(y = wealth_indexRich, color = "Rich")) +
+   geom_ribbon(aes(ymin = wealth_indexRich - sd(wealth_indexRich), ymax = wealth_indexRich + sd(wealth_indexRich)), alpha = 0.1) +
+     geom_line(aes(y = wealth_indexRichest, color = "Richest")) +
+   geom_ribbon(aes(ymin = wealth_indexRichest - sd(wealth_indexRichest), ymax = wealth_indexRichest + sd(wealth_indexRichest)), alpha = 0.1) +
   geom_hline(yintercept = 0.95, linetype = "dashed", color = "black", size = 1) + 
-  theme(legend.title = element_blank())
+  theme(legend.position = "none", axis.title.y = element_blank(), axis.title.x = element_blank(),axis.text.x = element_blank())
+
+poverty_filtered_2 = poverty_filtered_dep%>% 
+filter(NOMBDEP=="ANCASH")
+
+ancash = ggplot(poverty_filtered_2, aes(x=year)) +
+  geom_line(aes(y = wealth_indexPoorest, color = "Poorest")) +
+  geom_ribbon(aes(ymin = wealth_indexPoorest - sd(wealth_indexPoorest), ymax = wealth_indexPoorest + sd(wealth_indexPoorest)), alpha = 0.1) +
+  geom_line(aes(y = wealth_indexPoor, color = "Poor")) +
+   geom_ribbon(aes(ymin = wealth_indexPoor - sd(wealth_indexPoor), ymax = wealth_indexPoor + sd(wealth_indexPoor)), alpha = 0.1) +
+   geom_line(aes(y = wealth_indexMiddle, color = "Middle")) +
+   geom_ribbon(aes(ymin = wealth_indexMiddle - sd(wealth_indexMiddle), ymax = wealth_indexMiddle + sd(wealth_indexMiddle)), alpha = 0.1) +
+   geom_line(aes(y = wealth_indexRich, color = "Rich")) +
+   geom_ribbon(aes(ymin = wealth_indexRich - sd(wealth_indexRich), ymax = wealth_indexRich + sd(wealth_indexRich)), alpha = 0.1) +
+     geom_line(aes(y = wealth_indexRichest, color = "Richest")) +
+   geom_ribbon(aes(ymin = wealth_indexRichest - sd(wealth_indexRichest), ymax = wealth_indexRichest + sd(wealth_indexRichest)), alpha = 0.1) +
+  geom_hline(yintercept = 0.95, linetype = "dashed", color = "black", size = 1) + 
+  theme(legend.position = "none", axis.title.y = element_blank())
+
+final_plot = ggdraw() +
+  draw_plot(peru, 0, 0, .5, .95) +
+  draw_plot(amazonas, .5, .5, .5, .4) +
+  draw_plot(ancash, .5, 0, .5, .45) +
+  draw_plot_label(c("Peru","Amazonas","Ancash"),c(0,.5,.5),c(.99,.95,.49),size=10)
+
+final_plot
 ```
