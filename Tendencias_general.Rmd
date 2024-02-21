@@ -1,5 +1,34 @@
-syphilis <- read_csv("Data_final/data_syphilis.csv")
+---
+title: "Tendencias_general"
+author: "Jazmín Qquellon"
+date: "2024-02-21"
+output: html_document
+---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r cars}
+library(sf)
+library(purrr)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+library(readr)
+library(survey)
+library(gridExtra)
+library(cowplot)
+```
+
+## Trend of syphilis screening (2014 - 2022)
+
+```{r pressure, echo=FALSE}
+syphilis <- read_csv("Data_final/data_syphilis.csv")
+```
+
+```{r}
 df<-
   syphilis %>% 
   mutate(
@@ -16,7 +45,9 @@ df<-
                   .f = ~svydesign(id =~ v001, strata =~ v022, weights=~v005, data=.x))
   )
 options(survey.lonely.psu="remove")
+```
 
+```{r}
 syphilis_df<-
   df %>% 
   mutate(
@@ -41,19 +72,19 @@ syphilis_df<-
                     var == "as.factor(syphilis_screening_2)Yes" ~ "Yes",
                     var == "as.factor(syphilis_screening_2)No" ~ "No")
   )  
+```
 
-
-
+```{r}
 syphilis_df %>% 
   select(year,var,sypprop,`2.5 %`,`97.5 %`) %>% 
   mutate(
     across(.cols = sypprop:`97.5 %`, .fns = ~round(.*100,1))
   ) %>% 
   DT::datatable()
+```
 
-
-### grafico syphilis 1
-
+### grafico syphilis
+```{r}
 syphi<-
   ggplot(syphilis_df %>%
            filter(var== "No" | var== "Yes"), aes(x = year, y = sypprop*100, ymin = `2.5 %`*100, ymax = `97.5 %`*100, group = var)) + 
@@ -86,3 +117,82 @@ syphi<-
 print(syphi)
 
 #ggsave("figure_curva_syp_screening.png", dpi = 300, width = 10)
+```
+
+#Trend of syphilis congenital
+
+```{r}
+congenital <- read_csv("Data_final/syphilis_congenital.csv")
+newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
+```
+
+```{r}
+congenital <- congenital %>%
+  select(c(1:16)) %>%
+  select(!c(4:7))
+
+congenital_long <- pivot_longer(congenital, cols = c(4:12), 
+                                names_to = "year", values_to = "congenital") 
+
+congenital_long <- congenital_long %>%
+  group_by(year) %>%
+  summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  unnest(congenital) %>% 
+  mutate(year = as.double(year))
+
+newborn <- newborn %>%
+  rename(c("year"="years")) %>% 
+  group_by(year) %>% 
+  summarise(n=sum(n, na.rm = TRUE)) %>% 
+  mutate(year = as.double(year))
+```
+
+#Final data of congenital syphilis
+```{r}
+data_congenital <- congenital_long %>%
+  left_join(newborn, by = "year") %>%
+  mutate(rate = (congenital/n)*1000) %>% 
+  mutate_if(is.numeric, round, 2)
+  
+```
+
+```{r}
+confidence_interval <- t.test(data_congenital$rate)$conf.int
+
+data_congenital$ci_lower <- confidence_interval[1]
+data_congenital$ci_upper <- confidence_interval[2]
+```
+
+```{r}
+congenital_line <- data_congenital %>% 
+  ggplot(aes(x = year, y=rate)) + 
+  geom_line(size = 1.2)+
+  geom_ribbon(data = data_congenital, aes(x = year, ymin = min(rate), ymax = max(rate)), alpha = 0.1) +
+  xlab("Years") +
+  ylab("Rate") +
+  scale_x_continuous(expand = c(0, 0), breaks = c(2014:2022), limits = c(2014,2022.1))+
+  theme_minimal() +
+  
+  theme_bw()+
+  
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", linewidth = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  ) 
+
+print(congenital_line)
+```
+
+```{r}
+
+```
+
