@@ -412,6 +412,8 @@ finalPlot <- ggdraw() +
   draw_plot(legend, .75, .6, .2, .2)
 
 finalPlot
+
+
 ```
 
 ## Maternal syphilis and marital status

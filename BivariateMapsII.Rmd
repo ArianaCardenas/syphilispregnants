@@ -529,7 +529,7 @@ map <- ggplot() +
           color = "white", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = "GrPink", dim = 3) +
   labs(
-    title = "Rate of maternal syphilis in pregnants with primary or no education"
+    title = "Rate of congenital syphilis in pregnants with primary or no education"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(0.65))) 
