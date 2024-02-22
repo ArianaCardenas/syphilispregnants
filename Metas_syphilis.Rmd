@@ -1,0 +1,223 @@
+---
+title: "Goals_syphilis"
+author: "Jazmín Qquellon"
+date: "2024-02-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(gtsummary)
+library(survey)
+library(RColorBrewer)
+library(sf)
+library(tmap)
+library(ggsci)
+#install.packages("ggupset")
+library(ggupset)
+```
+
+```{r}
+#Goal 1: Screening of syphilis - 2022
+
+#Correr el rmd de Mapas I hasta línea 261
+freq_screening_2022 <- data_grafico_2022 %>%
+  select(NOMBDEP, syphilis_screening)
+```
+
+```{r}
+#Goal 2: Rate of Congenital syphilis < 0.5 per 1000 individuals
+
+##Correr el rmd de congenital syphilis hasta línea 177
+pre_congenital_2022 <- data_congenital %>% 
+  filter(year==2022) %>% 
+  group_by(NOMBDEP) %>% 
+  summarise(congenital_prop = mean(rate, na.rm = TRUE)) 
+
+congenital_2022 <- data_congenital %>% 
+  filter(year==2022) %>% 
+  select(geometry) %>% 
+  left_join(pre_congenital_2022, by = "NOMBDEP") 
+```
+
+```{r}
+#Goal 3: Decreade in maternal syphilis by 45% between 2018 - 2022
+
+##Correr el rmd de Mapas syphilis INS
+
+maternal_2018<- dntest %>% 
+  filter(year==2018) %>% 
+  group_by(NOMBDEP) %>% 
+  summarise(maternal_prop_18 = mean(rate, na.rm = TRUE))
+
+maternal_2022<- dntest %>% 
+  filter(year==2022) %>% 
+  group_by(NOMBDEP) %>% 
+  summarise(maternal_prop_22 = mean(rate, na.rm = TRUE))
+
+combined_data_maternal <- maternal_2018 %>% 
+  left_join(maternal_2022, by = c("NOMBDEP"))
+
+combined_data_maternal <-  combined_data_maternal %>% 
+  mutate(rest= maternal_prop_18 - maternal_prop_22) %>% 
+  mutate(rest_porcent = (100 - ((maternal_prop_22/maternal_prop_18)*100)))
+
+```
+
+```{r}
+#Combinamos los 3 goals
+
+combined_data_2022 <- congenital_2022 %>%
+  left_join(freq_screening_2022, by = c("NOMBDEP")) %>% 
+  left_join(combined_data_maternal, by = "NOMBDEP") 
+```
+
+```{r}
+#Figura de columnas -combinaciones
+
+GOALS_2022 <- combined_data_2022 %>% 
+ 
+    mutate(
+    goal1 = ifelse(syphilis_screening>=0.95, 1,0),
+    goal2 = ifelse(congenital_prop<0.5,1,0),
+    goal3 = ifelse(rest_porcent >=45,1,0),
+    
+    goals = ifelse(syphilis_screening>=0.95 & congenital_prop<0.50 & rest_porcent>=45, list(c ("Goal 1", "Goal 2", "Goal 3")),
+                   ifelse(syphilis_screening<0.95 & congenital_prop>=0.50 & rest_porcent<45, list(c(NA)),
+                          ifelse(syphilis_screening>=0.95 & congenital_prop>=0.50 & rest_porcent<45, list(c("Goal 1")),
+                                 ifelse(syphilis_screening<0.95 & congenital_prop<0.50 & rest_porcent<45, list(c("Goal 2")),
+                                        ifelse(syphilis_screening<0.95 & congenital_prop>=0.50 & rest_porcent>=45, list(c("Goal 3")),
+                                               ifelse(syphilis_screening>=0.95 & congenital_prop<0.50 & rest_porcent<45, list(c("Goal 1", "Goal 2")),
+                                                      ifelse(syphilis_screening>=0.95 & congenital_prop>=0.50 & rest_porcent>=45, list(c("Goal 1", "Goal 3")),
+                                                             ifelse(syphilis_screening<0.95 & congenital_prop<0.50 & rest_porcent>=45, list(c("Goal 2", "Goal 3")), NA)
+               ))))))))
+
+figure_2a<-
+  ggplot(GOALS_2022) +
+  aes(x = goals)+
+  geom_bar(fill = "#CDB38B")+
+  geom_text(stat='count', aes(label=after_stat(count)), vjust=-1, size = 4) +
+  theme_minimal()+
+  theme(
+    panel.grid = element_blank()
+  )+
+  labs(x = "Goals", y = "")+
+  scale_x_upset(n_intersections= 8) +
+  scale_y_continuous(breaks = NULL)
+print(figure_2a)
+
+#ggsave("Figure_2a.png",plot = figure_2a, width = 8, height = 4, dpi = 300)
+```
+
+```{r}
+#Figuras de mapas
+
+#Goal 1
+
+GOALS_2022 <- GOALS_2022 %>% 
+  mutate(goal_screening = ifelse(syphilis_screening >= 0.95, "100",
+                                ifelse(syphilis_screening >=0.90 & syphilis_screening<0.95, "90",
+                                       ifelse(syphilis_screening >=0.85 & syphilis_screening<0.90, "80",
+                                              ifelse(syphilis_screening >=0.80 & syphilis_screening <0.85, "70",
+                                                     ifelse(syphilis_screening >=0.75 & syphilis_screening <0.80, "60",
+                                                            ifelse(syphilis_screening >=0.70 & syphilis_screening <0.75, "50",
+                                                                   ifelse(syphilis_screening >=0.65 & syphilis_screening <0.70, "40",
+                                                                          ifelse(syphilis_screening >=0.60  & syphilis_screening <0.65, "30",
+                                                                                 ifelse(syphilis_screening >=0.55 & syphilis_screening <0.60, "20",
+                                                                                        ifelse(syphilis_screening>=0.50 & syphilis_screening<0.55, "10",
+                                                                                               ifelse(syphilis_screening <0.50, "0", NA))))))))))))
+
+
+GOALS_2022$goal_screening <- as.numeric(as.character(GOALS_2022$goal_screening))
+
+figure_2b1 <- ggplot() +
+  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = goal_screening), col = "#FAEBD7") +
+  scale_fill_gradient(
+    high = "darkred", 
+    low = "darkgoldenrod1", 
+    limits = c(0,100), 
+    breaks = seq(0,100, by = 20),
+    labels = c("0%", "20%", "40%", "60%", "80%",  "100%")
+  )+
+  labs(fill= "Goal 1") +
+  theme_minimal()
+print(figure_2b1)
+#ggsave("Figure_2b1.png",plot = figure_2b1, width = 8, height = 4, dpi = 300)
+
+
+##Goal 2
+
+GOALS_2022 <- GOALS_2022 %>% 
+  mutate(goal_congenital = ifelse(congenital_prop <= 0.50, "100",
+                                ifelse(congenital_prop<= 0.55 & congenital_prop>0.50, "90",
+                                       ifelse(congenital_prop<= 0.60 & congenital_prop>0.55, "80",
+                                              ifelse(congenital_prop<= 0.65 & congenital_prop >0.60, "70",
+                                                     ifelse(congenital_prop<= 0.70 & congenital_prop >0.65, "60",
+                                                            ifelse(congenital_prop<= 0.75 & congenital_prop >0.70, "50",
+                                                                   ifelse(congenital_prop<= 0.80 & congenital_prop >0.75, "40",
+                                                                          ifelse(congenital_prop<= 0.85  & congenital_prop >0.80, "30",
+                                                                                 ifelse(congenital_prop<= 0.90 & congenital_prop >0.85, "20",
+                                                                                        ifelse(congenital_prop<= 0.95 & congenital_prop>0.90, "10",
+                                                                                               ifelse(congenital_prop>0.95, "0", NA))))))))))))
+
+
+GOALS_2022$goal_congenital <- as.numeric(as.character(GOALS_2022$goal_congenital))
+
+figure_2b2 <- ggplot() +
+  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = goal_congenital), col = "#FAEBD7") +
+  scale_fill_gradient(
+    high = "darkred", 
+    low = "darkgoldenrod1", 
+    limits = c(0,100), 
+    breaks = seq(0,100, by = 20),
+    labels = c("0%", "20%", "40%", "60%", "80%",  "100%")
+  )+
+  labs(fill= "Goal 2") +
+  theme_minimal()
+print(figure_2b2)
+
+#ggsave("Figure_2b2.png",plot = figure_2b2, width = 8, height = 4, dpi = 300)
+
+#Goal 3
+
+GOALS_2022 <- GOALS_2022 %>% 
+  mutate(goal_maternal = ifelse(rest_porcent >= 45, "100",
+                                ifelse(rest_porcent >=40 & rest_porcent<45, "90",
+                                       ifelse(rest_porcent >=35 & rest_porcent<40, "80",
+                                              ifelse(rest_porcent >=30 & rest_porcent <35, "70",
+                                                     ifelse(rest_porcent >=25 & rest_porcent <30, "60",
+                                                            ifelse(rest_porcent >=20 & rest_porcent <25, "50",
+                                                                   ifelse(rest_porcent >=15 & rest_porcent <20, "40",
+                                                                          ifelse(rest_porcent >=10  & rest_porcent <15, "30",
+                                                                                 ifelse(rest_porcent >=5 & rest_porcent <10, "20",
+                                                                                        ifelse(rest_porcent>=0 & rest_porcent<5, "10",
+                                                                                               ifelse(rest_porcent < 0, "0", NA))))))))))))
+
+
+GOALS_2022$goal_maternal <- as.numeric(as.character(GOALS_2022$goal_maternal))
+
+figure_2b3 <- ggplot() +
+  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = goal_maternal), col = "#FAEBD7") +
+  scale_fill_gradient(
+    high = "darkred", 
+    low = "darkgoldenrod1", 
+    limits = c(0,100), 
+    breaks = seq(0,100, by = 20),
+    labels = c("0%", "20%", "40%", "60%", "80%",  "100%")
+  )+
+  labs(fill= "Goal 3") +
+  theme_minimal()
+
+print(figure_2b3)
+
+#ggsave("Figure_2b3.png",plot = figure_2b3, width = 8, height = 4, dpi = 300)
+
+figure_2b<-cowplot::plot_grid(figure_2b1,figure_2b2, figure_2b3, ncol = 3, rel_heights = c(0.6,0.4))
+
+figure2<-cowplot::plot_grid(figure_2a,figure_2b, ncol = 1, labels = c("a","b"), rel_heights = c(0.6,0.4))
+
+print(figure2)
+
+#ggsave("Figure2.png", plot = figure2, width = 8, height = 4, dpi = 300)
+```
+

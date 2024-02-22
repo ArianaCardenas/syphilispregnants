@@ -1,0 +1,151 @@
+---
+title: "Tendencias_determinantes"
+output: html_document
+date: "2024-02-14"
+---
+
+```{r}
+library(sf)
+library(purrr)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+library(readr)
+library(survey)
+library(gridExtra)
+library(cowplot)
+```
+
+```{r}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	cache = FALSE,
+	dev = "png",
+	dpi = 300
+)
+```
+
+Uploading ENDES data:
+ 
+```{r, echo =FALSE}
+
+data_ubigeo <- read_csv("Data_final/data_ubigeo_innovalab.csv")
+data_ubigeo_2022_innova <- read_csv("Data_final/data_ubigeo_2022_innova.csv")
+
+data_ubigeo_2022_innova = data_ubigeo_2022_innova[,c(2:6,1,7:9)]
+data_ubigeo = data_ubigeo[,c(1:6,8,10,12)]
+
+data_ubigeo_2022_innova = rename(data_ubigeo_2022_innova, c("NOMBDEP"="DEPARTAMEN","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
+
+data_ubigeo = rbind(data_ubigeo,data_ubigeo_2022_innova)
+
+departamentos <- read_sf("Límites - mapas/DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp")
+data_syphilis <- read_csv("Data_final/data_syphilis.csv")
+
+data_total <- data_syphilis%>% 
+  left_join(data_ubigeo, by = c("caseid","year"))
+
+data_total <- data_total %>%
+  left_join(departamentos, by = c( "NOMBDEP"))
+```
+```{r include=FALSE}
+rm(data_ubigeo, data_ubigeo_2022_innova, data_syphilis)
+```
+
+## wealth_index and syphilis screeming 
+
+```{r, echo=FALSE}
+# Filtrar los datos
+poverty_filtered <- data_total %>%
+  filter(!is.na(wealth_index))%>%
+  filter(year > "2013")
+
+poverty_filtered$NOMBDEP = as.factor(poverty_filtered$NOMBDEP)
+poverty_filtered$year = as.factor(poverty_filtered$year)
+poverty_filtered$wealth_index = as.factor(poverty_filtered$wealth_index)
+
+# Crear el diseño de muestreo estratificado
+design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = poverty_filtered)
+
+options(survey.lonely.psu="adjust")
+
+poverty_filtered_dep <- svyby(~wealth_index,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+poverty_filtered_nac <- svyby(~wealth_index,~year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+
+poverty_filtered_dep = as.data.frame(poverty_filtered_dep) 
+poverty_filtered_dep <- poverty_filtered_dep %>%
+  mutate(year = as.character(year)) %>%
+  mutate(year=as.numeric(year))
+
+poverty_filtered_nac= as.data.frame(poverty_filtered_nac) 
+poverty_filtered_nac <- poverty_filtered_nac %>%
+  mutate(year = as.character(year)) %>%
+  mutate(year=as.numeric(year))
+```
+
+```{r include=FALSE}
+rm(poverty_filtered)
+```
+
+# graph- Maternal syphilis and health insurance coverage
+
+```{r}
+#PLOT NATIONAL
+peru = ggplot(poverty_filtered_nac, aes(x=year)) +
+  geom_line(aes(y = wealth_indexPoorest, color = "Poorest")) +
+  geom_ribbon(aes(ymin = wealth_indexPoorest - sd(wealth_indexPoorest), ymax = wealth_indexPoorest + sd(wealth_indexPoorest)), alpha = 0.1) +
+  geom_line(aes(y = wealth_indexPoor, color = "Poor")) +
+   geom_ribbon(aes(ymin = wealth_indexPoor - sd(wealth_indexPoor), ymax = wealth_indexPoor + sd(wealth_indexPoor)), alpha = 0.1) +
+   geom_line(aes(y = wealth_indexMiddle, color = "Middle")) +
+   geom_ribbon(aes(ymin = wealth_indexMiddle - sd(wealth_indexMiddle), ymax = wealth_indexMiddle + sd(wealth_indexMiddle)), alpha = 0.1) +
+   geom_line(aes(y = wealth_indexRich, color = "Rich")) +
+   geom_ribbon(aes(ymin = wealth_indexRich - sd(wealth_indexRich), ymax = wealth_indexRich + sd(wealth_indexRich)), alpha = 0.1) +
+     geom_line(aes(y = wealth_indexRichest, color = "Richest")) +
+   geom_ribbon(aes(ymin = wealth_indexRichest - sd(wealth_indexRichest), ymax = wealth_indexRichest + sd(wealth_indexRichest)), alpha = 0.1) +
+  geom_hline(yintercept = 0.95, linetype = "dashed", color = "black", size = 1) + 
+  theme(legend.title = element_blank(),axis.title.y = element_blank())
+
+#PLOT REGION
+
+poverty_filtered_1 = poverty_filtered_dep%>% 
+filter(NOMBDEP=="AMAZONAS")
+
+amazonas = ggplot(poverty_filtered_1, aes(x=year)) +
+  geom_line(aes(y = wealth_indexPoorest, color = "Poorest")) +
+  geom_ribbon(aes(ymin = wealth_indexPoorest - sd(wealth_indexPoorest), ymax = wealth_indexPoorest + sd(wealth_indexPoorest)), alpha = 0.1) +
+  geom_line(aes(y = wealth_indexPoor, color = "Poor")) +
+   geom_ribbon(aes(ymin = wealth_indexPoor - sd(wealth_indexPoor), ymax = wealth_indexPoor + sd(wealth_indexPoor)), alpha = 0.1) +
+   geom_line(aes(y = wealth_indexMiddle, color = "Middle")) +
+   geom_ribbon(aes(ymin = wealth_indexMiddle - sd(wealth_indexMiddle), ymax = wealth_indexMiddle + sd(wealth_indexMiddle)), alpha = 0.1) +
+   geom_line(aes(y = wealth_indexRich, color = "Rich")) +
+   geom_ribbon(aes(ymin = wealth_indexRich - sd(wealth_indexRich), ymax = wealth_indexRich + sd(wealth_indexRich)), alpha = 0.1) +
+     geom_line(aes(y = wealth_indexRichest, color = "Richest")) +
+   geom_ribbon(aes(ymin = wealth_indexRichest - sd(wealth_indexRichest), ymax = wealth_indexRichest + sd(wealth_indexRichest)), alpha = 0.1) +
+  geom_hline(yintercept = 0.95, linetype = "dashed", color = "black", size = 1) + 
+  theme(legend.position = "none", axis.title.y = element_blank(), axis.title.x = element_blank(),axis.text.x = element_blank())
+
+poverty_filtered_2 = poverty_filtered_dep%>% 
+filter(NOMBDEP=="ANCASH")
+
+ancash = ggplot(poverty_filtered_2, aes(x=year)) +
+  geom_line(aes(y = wealth_indexPoorest, color = "Poorest")) +
+  geom_ribbon(aes(ymin = wealth_indexPoorest - sd(wealth_indexPoorest), ymax = wealth_indexPoorest + sd(wealth_indexPoorest)), alpha = 0.1) +
+  geom_line(aes(y = wealth_indexPoor, color = "Poor")) +
+   geom_ribbon(aes(ymin = wealth_indexPoor - sd(wealth_indexPoor), ymax = wealth_indexPoor + sd(wealth_indexPoor)), alpha = 0.1) +
+   geom_line(aes(y = wealth_indexMiddle, color = "Middle")) +
+   geom_ribbon(aes(ymin = wealth_indexMiddle - sd(wealth_indexMiddle), ymax = wealth_indexMiddle + sd(wealth_indexMiddle)), alpha = 0.1) +
+   geom_line(aes(y = wealth_indexRich, color = "Rich")) +
+   geom_ribbon(aes(ymin = wealth_indexRich - sd(wealth_indexRich), ymax = wealth_indexRich + sd(wealth_indexRich)), alpha = 0.1) +
+     geom_line(aes(y = wealth_indexRichest, color = "Richest")) +
+   geom_ribbon(aes(ymin = wealth_indexRichest - sd(wealth_indexRichest), ymax = wealth_indexRichest + sd(wealth_indexRichest)), alpha = 0.1) +
+  geom_hline(yintercept = 0.95, linetype = "dashed", color = "black", size = 1) + 
+  theme(legend.position = "none", axis.title.y = element_blank())
+
+final_plot = ggdraw() +
+  draw_plot(peru, 0, 0, .5, .95) +
+  draw_plot(amazonas, .5, .5, .5, .4) +
+  draw_plot(ancash, .5, 0, .5, .45) +
+  draw_plot_label(c("Peru","Amazonas","Ancash"),c(0,.5,.5),c(.99,.95,.49),size=10)
+
+final_plot
+```

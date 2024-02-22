@@ -18,6 +18,8 @@ datafinal <- list %>%
          sdistri,
          longitudx,
          latitudy,
+         m1,
+         m1a,
          m2a,
          m2b,
          m2c,
@@ -256,7 +258,7 @@ datafinal <- list %>%
     
     first_prenatal_visit_1 = factor(m13,levels = c(0,1,2,3,4,5,6,7,8,9)),
     
-    first_prenatal_visit_2 = case_when(is.na(v150)~ NA,
+    first_prenatal_visit_2 = case_when(is.na(m13)~ NA,
                                        (m13==0) ~ "0 month",
                                        (m13==1) ~ "Primer",
                                        (m13==2) ~ "Second",
@@ -292,6 +294,14 @@ datafinal <- list %>%
     
     prenatal_care_education= case_when((m14>=6 & m43==1) ~"Yes",
                                        ((m14<6 & m43!=1)|(m14<6 & m43==1)|(m14>=6 & m43!=1)) ~ "No"),
+    
+    prenatal_care_prevention = case_when(is.na(m14 | m1 | m1a | m45)~ NA,
+                                         (m14>=6 & m45==1 & ((m1a>=5 & m1a<8)|(m1>=2 & m1<8))) ~ "Yes",
+                                         TRUE ~ "No"),
+    
+    prenatal_care_prevention = case_when(is.na(m14) & is.na(m1) & is.na(m1a) & is.na(m45) ~ NA_character_,
+               (m14 >= 6 & m45 == 1 & ((m1a >= 5 & m1a < 8) | (m1 >= 2 & m1 < 8))) ~ "Yes",
+               TRUE ~ "No",
     
     iron_supplement = case_when(is.na(m45) ~ NA,
                                 (m45==0) ~ "No",
