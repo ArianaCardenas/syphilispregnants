@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(sf)
 library(purrr)
 library(tidyverse)
+library(dplyr)
 library(ggplot2)
 library(ggrepel)
 library(readr)
@@ -156,22 +157,24 @@ data_congenital <- congenital_long %>%
   
 ```
 
+#Agregando IC 95% de las tasas
 ```{r}
-confidence_interval <- t.test(data_congenital$rate)$conf.int
-
-data_congenital$ci_lower <- confidence_interval[1]
-data_congenital$ci_upper <- confidence_interval[2]
+data_congenital <- data_congenital %>% 
+  mutate(
+    lower_ci = qpois(0.025, lambda = congenital) / n *1000,
+    upper_ci = qpois(0.975, lambda = congenital) / n *1000
+    )
 ```
 
 ```{r}
 congenital_line <- data_congenital %>% 
   ggplot(aes(x = year, y=rate)) + 
-  geom_line(size = 1.2)+
-  geom_ribbon(data = data_congenital, aes(x = year, ymin = min(rate), ymax = max(rate)), alpha = 0.1) +
+  geom_line(size = 1.2, col = "purple")+
+  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), fill = "purple", alpha = 0.1) +
   xlab("Years") +
   ylab("Rate") +
   scale_x_continuous(expand = c(0, 0), breaks = c(2014:2022), limits = c(2014,2022.1))+
-  theme_minimal() +
+  ggsci::scale_color_jama(alpha = 0.8)+
   
   theme_bw()+
   
@@ -191,8 +194,88 @@ congenital_line <- data_congenital %>%
 
 print(congenital_line)
 ```
+#Maternal syphilis rate
+```{r}
+data_ins_long <- read_csv("Data_final/ins_final_long.csv")
+```
 
 ```{r}
+maternal_long <- data_ins_long %>%
+  filter(year>2013) %>% 
+  group_by(year) %>%
+  summarise(maternal = sum(tamizaje_reactivo, na.rm = TRUE)) %>%
+  unnest(maternal) %>% 
+  mutate(year = as.double(year))
 
+data_maternal <- maternal_long %>%
+  left_join(newborn, by = "year") %>%
+  mutate(rate = (maternal/n)*1000) %>% 
+  mutate_if(is.numeric, round, 2)
+```
+
+```{r}
+data_maternal <- data_maternal %>% 
+  mutate(
+    lower_ci = qpois(0.025, lambda = maternal) / n *1000,
+    upper_ci = qpois(0.975, lambda = maternal) / n *1000
+    )
+```
+
+#final maternal graph
+```{r}
+maternal_line <- data_maternal %>% 
+  ggplot(aes(x = year, y=rate)) + 
+  geom_line(size = 1.2, col = "blue")+
+  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), fill = "blue", alpha = 0.1) +
+  xlab("Years") +
+  ylab("Rate") +
+  scale_x_continuous(expand = c(0, 0), breaks = c(2014:2022), limits = c(2014,2022.1))+
+  ggsci::scale_color_jama(alpha = 0.8)+
+  
+  theme_bw()+
+  
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", linewidth = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  ) 
+
+print(maternal_line)
+```
+
+```{r}
+combined_plot <- ggplot() +
+  geom_line(data = data_congenital, aes(x = year, y = rate), color = "purple", size = 1.2) +
+  geom_ribbon(data = data_congenital, aes(x = year, ymin = lower_ci, ymax = upper_ci), fill = "purple", alpha = 0.1) +
+  geom_line(data = data_maternal, aes(x = year, y = rate), color = "blue", size = 1.2) +
+  geom_ribbon(data = data_maternal, aes(x = year, ymin = lower_ci, ymax = upper_ci), fill = "blue", alpha = 0.1) +
+  xlab("Years") +
+  ylab("Rate") +
+  scale_x_continuous(expand = c(0, 0), breaks = c(2014:2022), limits = c(2014, 2022.1)) +
+  ggsci::scale_color_jama(alpha = 0.8) +
+  ggtitle("Tasa de Sífilis Congénita y Materna") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face = "bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text(size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", linewidth = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+print(combined_plot)
 ```
 
