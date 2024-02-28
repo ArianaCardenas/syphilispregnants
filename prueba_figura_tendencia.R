@@ -63,8 +63,8 @@ syphi<-
   xlab("Years") +
   ylab("Prop. %")+
   scale_x_continuous(expand = c(0, 0), breaks = c(2014:2022), limits = c(2014,2022.1))+
-  ggsci::scale_fill_futurama(alpha = 0.8)+
-  ggsci::scale_color_futurama(alpha = 0.8)+
+  ggsci::scale_fill_aaas(alpha = 0.8)+
+  ggsci::scale_color_aaas(alpha = 0.8)+
   
   
   theme_bw()+

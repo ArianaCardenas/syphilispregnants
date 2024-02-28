@@ -1,0 +1,281 @@
+---
+title: "Tendencias_general"
+author: "Jazmín Qquellon"
+date: "2024-02-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r cars}
+library(sf)
+library(purrr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(ggrepel)
+library(readr)
+library(survey)
+library(gridExtra)
+library(cowplot)
+```
+
+## Trend of syphilis screening (2014 - 2022)
+
+```{r pressure, echo=FALSE}
+syphilis <- read_csv("Data_final/data_syphilis.csv")
+```
+
+```{r}
+df<-
+  syphilis %>% 
+  mutate(
+    syphilis_screening_2 = ifelse(is.na(syphilis_screening),"Missing",
+                                   ifelse(syphilis_screening == 1,"Yes",
+                                          ifelse(syphilis_screening == 0 , "No",syphilis_screening))),
+    
+    syphilis_screening_2 = as.factor(syphilis_screening_2)
+  ) %>% 
+  group_by(year) %>% 
+  nest() %>% 
+  mutate(
+    datasvy = map(.x = data,
+                  .f = ~svydesign(id =~ v001, strata =~ v022, weights=~v005, data=.x))
+  )
+options(survey.lonely.psu="remove")
+```
+
+```{r}
+syphilis_df<-
+  df %>% 
+  mutate(
+    
+    syphilis = map(.x = datasvy,
+              .f = ~svymean(~as.factor(syphilis_screening_2), design = .x, na.rm = T)),
+    
+    sypprop = map(.x = syphilis,
+                  .f = ~as.numeric(.x)),
+    
+    sypci = map(.x= syphilis,
+                .f = ~confint(.x) %>% 
+                  as.data.frame() %>%
+                  rownames_to_column("var"))
+    
+  ) %>% 
+  
+  unnest(c(sypci,sypprop)) %>% 
+  
+  mutate(
+    var = case_when(var == "as.factor(syphilis_screening_2)NA" ~ "Missing",
+                    var == "as.factor(syphilis_screening_2)Yes" ~ "Yes",
+                    var == "as.factor(syphilis_screening_2)No" ~ "No")
+  )  
+```
+
+```{r}
+syphilis_df %>% 
+  select(year,var,sypprop,`2.5 %`,`97.5 %`) %>% 
+  mutate(
+    across(.cols = sypprop:`97.5 %`, .fns = ~round(.*100,1))
+  ) %>% 
+  DT::datatable()
+```
+
+### grafico syphilis
+```{r}
+syphi<-
+  ggplot(syphilis_df %>%
+           filter(var== "No" | var== "Yes"), aes(x = year, y = sypprop*100, ymin = `2.5 %`*100, ymax = `97.5 %`*100, group = var)) + 
+  geom_line(size = 1.2, aes(col = var))+
+  geom_ribbon(aes(fill = var), alpha = 0.1)+
+  #geom_errorbar(aes(color=var), width = 0.2, alpha = 0.35) +
+  xlab("Years") +
+  ylab("Prop. %")+
+  scale_x_continuous(expand = c(0, 0), breaks = c(2014:2022), limits = c(2014,2022.1))+
+  ggsci::scale_fill_aaas(alpha = 0.8)+
+  ggsci::scale_color_aaas(alpha = 0.8)+
+  
+  
+  theme_bw()+
+  
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", linewidth = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+print(syphi)
+
+#ggsave("figure_curva_syp_screening.png", dpi = 300, width = 10)
+```
+
+#Trend of syphilis congenital
+
+```{r}
+congenital <- read_csv("Data_final/syphilis_congenital.csv")
+newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
+```
+
+```{r}
+congenital <- congenital %>%
+  select(c(1:16)) %>%
+  select(!c(4:7))
+
+congenital_long <- pivot_longer(congenital, cols = c(4:12), 
+                                names_to = "year", values_to = "congenital") 
+
+congenital_long <- congenital_long %>%
+  group_by(year) %>%
+  summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  unnest(congenital) %>% 
+  mutate(year = as.double(year))
+
+newborn <- newborn %>%
+  rename(c("year"="years")) %>% 
+  group_by(year) %>% 
+  summarise(n=sum(n, na.rm = TRUE)) %>% 
+  mutate(year = as.double(year))
+```
+
+#Final data of congenital syphilis
+```{r}
+data_congenital <- congenital_long %>%
+  left_join(newborn, by = "year") %>%
+  mutate(rate = (congenital/n)*1000) %>% 
+  mutate_if(is.numeric, round, 2)
+  
+```
+
+#Agregando IC 95% de las tasas
+```{r}
+data_congenital <- data_congenital %>% 
+  mutate(
+    lower_ci = qpois(0.025, lambda = congenital) / n *1000,
+    upper_ci = qpois(0.975, lambda = congenital) / n *1000
+    )
+```
+
+```{r}
+congenital_line <- data_congenital %>% 
+  ggplot(aes(x = year, y=rate)) + 
+  geom_line(size = 1.2, col = "purple")+
+  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), fill = "purple", alpha = 0.1) +
+  xlab("Years") +
+  ylab("Rate") +
+  scale_x_continuous(expand = c(0, 0), breaks = c(2014:2022), limits = c(2014,2022.1))+
+  ggsci::scale_color_jama(alpha = 0.8)+
+  
+  theme_bw()+
+  
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", linewidth = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  ) 
+
+print(congenital_line)
+```
+#Maternal syphilis rate
+```{r}
+data_ins_long <- read_csv("Data_final/ins_final_long.csv")
+```
+
+```{r}
+maternal_long <- data_ins_long %>%
+  filter(year>2013) %>% 
+  group_by(year) %>%
+  summarise(maternal = sum(tamizaje_reactivo, na.rm = TRUE)) %>%
+  unnest(maternal) %>% 
+  mutate(year = as.double(year))
+
+data_maternal <- maternal_long %>%
+  left_join(newborn, by = "year") %>%
+  mutate(rate = (maternal/n)*1000) %>% 
+  mutate_if(is.numeric, round, 2)
+```
+
+```{r}
+data_maternal <- data_maternal %>% 
+  mutate(
+    lower_ci = qpois(0.025, lambda = maternal) / n *1000,
+    upper_ci = qpois(0.975, lambda = maternal) / n *1000
+    )
+```
+
+#final maternal graph
+```{r}
+maternal_line <- data_maternal %>% 
+  ggplot(aes(x = year, y=rate)) + 
+  geom_line(size = 1.2, col = "blue")+
+  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), fill = "blue", alpha = 0.1) +
+  xlab("Years") +
+  ylab("Rate") +
+  scale_x_continuous(expand = c(0, 0), breaks = c(2014:2022), limits = c(2014,2022.1))+
+  ggsci::scale_color_jama(alpha = 0.8)+
+  
+  theme_bw()+
+  
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", linewidth = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  ) 
+
+print(maternal_line)
+```
+
+```{r}
+combined_plot <- ggplot() +
+  geom_line(data = data_congenital, aes(x = year, y = rate), color = "purple", size = 1.2) +
+  geom_ribbon(data = data_congenital, aes(x = year, ymin = lower_ci, ymax = upper_ci), fill = "purple", alpha = 0.1) +
+  geom_line(data = data_maternal, aes(x = year, y = rate), color = "blue", size = 1.2) +
+  geom_ribbon(data = data_maternal, aes(x = year, ymin = lower_ci, ymax = upper_ci), fill = "blue", alpha = 0.1) +
+  xlab("Years") +
+  ylab("Rate") +
+  scale_x_continuous(expand = c(0, 0), breaks = c(2014:2022), limits = c(2014, 2022.1)) +
+  ggsci::scale_color_jama(alpha = 0.8) +
+  ggtitle("Tasa de Sífilis Congénita y Materna") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face = "bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text(size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", linewidth = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+print(combined_plot)
+```
+
