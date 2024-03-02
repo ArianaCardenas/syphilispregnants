@@ -21,6 +21,7 @@ library(readr)
 library(survey)
 library(gridExtra)
 library(cowplot)
+library(janitor)
 ```
 
 ## Trend of syphilis screening (2014 - 2022)
@@ -121,6 +122,18 @@ print(syphi)
 ```
 
 #Trend of syphilis congenital
+
+```{r}
+#nacimientos_reniec <- read_csv("Data_final/Nacimientos_reniec.csv")
+#nacimientos_reniec <- reshape(nacimientos_reniec, varying = c("2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022"), v.names = "n", timevar = "years", times = c("2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022"), idvar = c("DEPARTAMENTO", "PROVINCIA"), direction = "long")
+#nacimientos reniec es una nueva data de nacidos vivos (obtenida de la RENIEC)
+
+#nacimientos_reniec <- nacimientos_reniec %>% 
+ # clean_names() %>% 
+ # select(departamento, provincia, years, n)
+
+#write.csv(nacimientos_reniec,"./data_final/Nacidos_vivos_long.csv", row.names = F)
+```
 
 ```{r}
 congenital <- read_csv("Data_final/syphilis_congenital.csv")

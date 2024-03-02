@@ -64,8 +64,8 @@ congenital_long <- congenital_long %>%
   unnest(congenital)
 
 newborn <- newborn %>%
-  rename(c("NOMBDEP"="departamento","NOMBPROV"="provincia", "year"="years")) %>%
-  mutate(year = as.character(year)) 
+ rename(c("NOMBDEP"="departamento","NOMBPROV"="provincia", "year"="years")) %>%
+ mutate(year = as.character(year)) 
 
 ```
 
@@ -76,7 +76,6 @@ data_congenital <- congenital_long %>%
   left_join(newborn, by = c("NOMBDEP","NOMBPROV","year")) %>%
   mutate(rate = (congenital/n)*1000) %>% 
   mutate_if(is.numeric, round, 2) %>%
-  filter(rate < 100.0)  %>% 
   left_join(provincias, by = c("NOMBDEP","NOMBPROV"))
 ```
 ## Casos de sífilis congénita por 1000 nacidos vivos por departamento.
