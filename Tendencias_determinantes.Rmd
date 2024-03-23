@@ -161,95 +161,166 @@ data_endes$syphilis_screening = as.factor(data_endes$syphilis_screening)
 
 ## wealth_index 
 
-```{r, echo=FALSE}
-# Filtrar los datos
-poverty_filtered <- data_endes %>%
+```{r}
+library(RSQLite)
+poverty = 
+  data_endes %>%
+  left_join(data_maternal_dep, by = c("year","NOMBDEP")) %>%
+  left_join(data_congenital_dep, by = c("year","NOMBDEP")) %>%
+  select(wealth_index,year,NOMBDEP,v001,v022,v005,syphilis_screening,rate_mat,rate_con) %>%
   filter(!is.na(wealth_index))%>%
-  filter(year > "2013")
+  filter(year > "2013") %>%
+  mutate(
+    NOMBDEP = as.factor(NOMBDEP),
+    year = as.factor(year),
+    wealth_index = as.factor(wealth_index)
+  ) %>%
+  group_by(year) %>%
+  nest() %>%
+  mutate(
+    df = map(.x=data,
+             .f = ~svydesign(id = ~ v001, strata = ~ v022, weights = ~ v005, data = .x))
+  )
 
-poverty_filtered$NOMBDEP = as.factor(poverty_filtered$NOMBDEP)
-poverty_filtered$year = as.factor(poverty_filtered$year)
-poverty_filtered$wealth_index = as.factor(poverty_filtered$wealth_index)
-
-# Crear el diseño de muestreo estratificado
-design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = poverty_filtered)
-
-options(survey.lonely.psu="adjust")
-
-en_poverty_dep <- svyby(~syphilis_screening,~wealth_index+NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
-en_poverty_nac <- svyby(~syphilis_screening,~wealth_index+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
-
-in_poverty_dep <- svyby(~wealth_index,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
-in_poverty_nac <- svyby(~wealth_index,~year,svymean,design=design,deff=TRUE,na.rm=TRUE)
-
-en_poverty_dep = as.data.frame(en_poverty_dep) 
-en_poverty_dep <- en_poverty_dep %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year))
-
-in_poverty_dep = as.data.frame(in_poverty_dep) 
-in_poverty_dep <- in_poverty_dep %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year))
-
-in_poverty_dep <- in_poverty_dep %>%
-  left_join(data_maternal_dep, by = c("NOMBDEP", "year"))%>%
-  left_join(data_congenital_dep, by = c("NOMBDEP", "year","newborntotal"))
-
-en_poverty_nac= as.data.frame(en_poverty_nac) 
-en_poverty_nac <- en_poverty_nac %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year))
-
-in_poverty_nac= as.data.frame(in_poverty_nac) 
-in_poverty_nac <- in_poverty_nac %>%
-  mutate(year = as.character(year)) %>%
-  mutate(year=as.numeric(year))
-
-in_poverty_nac <- in_poverty_nac %>%
-  left_join(data_maternal_nac, by = c("year"))%>%
-  left_join(data_congenital_nac, by = c("year","newborntotal"))
+options(survey.lonely.psu="remove")
 ```
 
-```{r include=FALSE}
-rm(poverty_filtered)
-```
+Wealth index objective 1
+```{r}
+poverty_sc = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    syphilis = map(.x = df,
+              .f = ~svyby(~as.factor(syphilis_screening), by = ~wealth_index, design = .x, FUN =svyciprop, vartype=c('se','ci')) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(syphilis) 
+options(survey.lonely.psu="remove")
 
-# graph- Maternal syphilis and health insurance coverage
+poverty_sc %>% 
+  mutate(
+    across(`as.factor(syphilis_screening)`:ci_u,.fns = ~round(.,3)*100)) %>% 
+  
+    DT::datatable()
+```
 
 ```{r}
-#PLOT NATIONAL
-peru1 = ggplot(en_poverty_nac,aes(x=year,y=syphilis_screening1,ymin = syphilis_screening1 - sd(syphilis_screening1), ymax = syphilis_screening1 + sd(syphilis_screening1), group = wealth_index)) +
-  geom_line(aes(col = wealth_index))+
-  geom_ribbon(aes(fill = wealth_index), alpha = 0.1) +
-  geom_hline(yintercept = 0.95, linetype = "dashed", color = "black", size = 1) + 
-  theme(legend.position = "none", axis.title.y = element_blank())
+poverty_scg =
+  ggplot(data = poverty_sc,aes(x = year, y = `as.factor(syphilis_screening)`, ymin = ci_l, ymax = ci_u, group = wealth_index))+
+  geom_line(size = 1.2, aes(col = wealth_index))+
+  geom_ribbon(aes(fill = wealth_index), alpha = 0.1)+
+  xlab("Years") +
+  ylab("Prop. %") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+```
 
-peru2 = ggplot(in_poverty_nac,aes(x=year,y=rate_con)) +
-   geom_line(aes(y = wealth_indexPoorest, color = "Poorest")) +
-  geom_ribbon(aes(ymin = wealth_indexPoorest - sd(wealth_indexPoorest), ymax = wealth_indexPoorest + sd(wealth_indexPoorest)), alpha = 0.1) +
-  geom_line(aes(y = wealth_indexPoor, color = "Poor")) +
-   geom_ribbon(aes(ymin = wealth_indexPoor - sd(wealth_indexPoor), ymax = wealth_indexPoor + sd(wealth_indexPoor)), alpha = 0.1) +
-   geom_line(aes(y = wealth_indexMiddle, color = "Middle")) +
-   geom_ribbon(aes(ymin = wealth_indexMiddle - sd(wealth_indexMiddle), ymax = wealth_indexMiddle + sd(wealth_indexMiddle)), alpha = 0.1) +
-   geom_line(aes(y = wealth_indexRich, color = "Rich")) +
-   geom_ribbon(aes(ymin = wealth_indexRich - sd(wealth_indexRich), ymax = wealth_indexRich + sd(wealth_indexRich)), alpha = 0.1) +
-     geom_line(aes(y = wealth_indexRichest, color = "Richest")) +
-   geom_ribbon(aes(ymin = wealth_indexRichest - sd(wealth_indexRichest), ymax = wealth_indexRichest + sd(wealth_indexRichest)), alpha = 0.1)+ 
-  theme(legend.position = "bottom", axis.title.y = element_blank())
+Wealth index objective 2
 
-peru3 = ggplot(in_poverty_nac,aes(x=year,y=rate_mat)) +
-   geom_line(aes(y = wealth_indexPoorest, color = "Poorest")) +
-  geom_ribbon(aes(ymin = wealth_indexPoorest - sd(wealth_indexPoorest), ymax = wealth_indexPoorest + sd(wealth_indexPoorest)), alpha = 0.1) +
-  geom_line(aes(y = wealth_indexPoor, color = "Poor")) +
-   geom_ribbon(aes(ymin = wealth_indexPoor - sd(wealth_indexPoor), ymax = wealth_indexPoor + sd(wealth_indexPoor)), alpha = 0.1) +
-   geom_line(aes(y = wealth_indexMiddle, color = "Middle")) +
-   geom_ribbon(aes(ymin = wealth_indexMiddle - sd(wealth_indexMiddle), ymax = wealth_indexMiddle + sd(wealth_indexMiddle)), alpha = 0.1) +
-   geom_line(aes(y = wealth_indexRich, color = "Rich")) +
-   geom_ribbon(aes(ymin = wealth_indexRich - sd(wealth_indexRich), ymax = wealth_indexRich + sd(wealth_indexRich)), alpha = 0.1) +
-     geom_line(aes(y = wealth_indexRichest, color = "Richest")) +
-   geom_ribbon(aes(ymin = wealth_indexRichest - sd(wealth_indexRichest), ymax = wealth_indexRichest + sd(wealth_indexRichest)), alpha = 0.1)+ 
-  theme(legend.position = "none", axis.title.y = element_blank())
+```{r}
+poverty_mr = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~wealth_index, by =~rate_mat , design = .x, FUN =svymean) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+poverty_mr = poverty_mr %>%  
+  mutate(
+    wealth_index = ifelse(wealth_indexRichest > wealth_indexRich & wealth_indexRichest > wealth_indexMiddle & wealth_indexRichest > wealth_indexPoor & wealth_indexRichest > wealth_indexPoorest, "Richest", ifelse(wealth_indexRich > wealth_indexRichest & wealth_indexRich > wealth_indexMiddle & wealth_indexRich > wealth_indexPoor & wealth_indexRich > wealth_indexPoorest, "Rich", ifelse(wealth_indexMiddle > wealth_indexRichest & wealth_indexMiddle > wealth_indexRich & wealth_indexMiddle > wealth_indexPoor & wealth_indexMiddle > wealth_indexPoorest,"Middle",ifelse(wealth_indexPoor > wealth_indexRichest & wealth_indexPoor > wealth_indexRich & wealth_indexPoor > wealth_indexMiddle & wealth_indexPoor > wealth_indexPoorest,"Poor", ifelse(wealth_indexPoorest > wealth_indexRichest & wealth_indexPoorest > wealth_indexRich & wealth_indexPoorest > wealth_indexMiddle & wealth_indexPoorest > wealth_indexPoor,"Poorest", NA ))))))
+
+poverty_mr %>% 
+  mutate(
+    across(wealth_indexMiddle:wealth_indexRichest,.fns = ~round(.,3)*100)) %>%
+  
+    DT::datatable()
+```
+
+```{r}
+poverty_mrg =
+  ggplot(data = poverty_mr,aes(x = year, y = rate_mat, group = wealth_index))+
+  geom_line(size = 1.2, aes(col = wealth_index))+
+  xlab("Years") +
+  ylab("Prop. %") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+```
+
+Wealth index objective 3
+
+```{r}
+poverty_cr = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~wealth_index, by =~rate_con , design = .x, FUN =svymean) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+poverty_cr = poverty_cr %>%  
+  mutate(
+    wealth_index = ifelse(wealth_indexRichest > wealth_indexRich & wealth_indexRichest > wealth_indexMiddle & wealth_indexRichest > wealth_indexPoor & wealth_indexRichest > wealth_indexPoorest, "Richest", ifelse(wealth_indexRich > wealth_indexRichest & wealth_indexRich > wealth_indexMiddle & wealth_indexRich > wealth_indexPoor & wealth_indexRich > wealth_indexPoorest, "Rich", ifelse(wealth_indexMiddle > wealth_indexRichest & wealth_indexMiddle > wealth_indexRich & wealth_indexMiddle > wealth_indexPoor & wealth_indexMiddle > wealth_indexPoorest,"Middle",ifelse(wealth_indexPoor > wealth_indexRichest & wealth_indexPoor > wealth_indexRich & wealth_indexPoor > wealth_indexMiddle & wealth_indexPoor > wealth_indexPoorest,"Poor", ifelse(wealth_indexPoorest > wealth_indexRichest & wealth_indexPoorest > wealth_indexRich & wealth_indexPoorest > wealth_indexMiddle & wealth_indexPoorest > wealth_indexPoor,"Poorest", NA ))))))
+
+poverty_cr %>% 
+  mutate(
+    across(wealth_indexMiddle:wealth_indexRichest,.fns = ~round(.,3)*100)) %>%
+  
+    DT::datatable()
+```
+
+```{r}
+poverty_crg =
+  ggplot(data = poverty_cr,aes(x = year, y = rate_con, group = wealth_index))+
+  geom_line(size = 1.2, aes(col = wealth_index))+
+  xlab("Years") +
+  ylab("Prop. %") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+```
 
 final_nac_plot = ggdraw() +
   draw_plot(peru1, 0, .14, .3, .8) +
@@ -258,25 +329,3 @@ final_nac_plot = ggdraw() +
   draw_plot_label(c("Peru objective 1","Peru objective 2","Peru objective 3"),c(0,.3,.6),c(.99,.99,.99),size=10)
 
 final_nac_plot
-```
-
-```{r}
-#PLOT REGION
-poverty_1 = poverty_dep%>% 
-filter(NOMBDEP=="AMAZONAS")
-
-amazonas = ggplot(poverty_1,aes(x=year,y=syphilis_screening1,ymin = syphilis_screening1 - sd(syphilis_screening1), ymax = syphilis_screening1 + sd(syphilis_screening1), group = wealth_index)) +
-  geom_line(size = 1, aes(col = wealth_index))+
-  geom_ribbon(aes(fill = wealth_index), alpha = 0.1) +
-  geom_hline(yintercept = 0.95, linetype = "dashed", color = "black", size = 1) + 
-  theme(legend.position = "none", axis.title.y = element_blank())
-
-poverty_2 = poverty_dep%>% 
-filter(NOMBDEP=="ANCASH")
-
-ancash = ggplot(poverty_2,aes(x=year,y=syphilis_screening1,ymin = syphilis_screening1 - sd(syphilis_screening1), ymax = syphilis_screening1 + sd(syphilis_screening1), group = wealth_index)) +
-  geom_line(size = 1, aes(col = wealth_index))+
-  geom_ribbon(aes(fill = wealth_index), alpha = 0.1) +
-  geom_hline(yintercept = 0.95, linetype = "dashed", color = "black", size = 1) + 
-  theme(legend.position = "none", axis.title.y = element_blank())
-```
