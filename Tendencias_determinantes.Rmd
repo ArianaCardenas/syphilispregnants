@@ -244,18 +244,18 @@ options(survey.lonely.psu="remove")
 
 poverty_mr = poverty_mr %>%  
   mutate(
-    wealth_index = ifelse(wealth_indexRichest > wealth_indexRich & wealth_indexRichest > wealth_indexMiddle & wealth_indexRichest > wealth_indexPoor & wealth_indexRichest > wealth_indexPoorest, "Richest", ifelse(wealth_indexRich > wealth_indexRichest & wealth_indexRich > wealth_indexMiddle & wealth_indexRich > wealth_indexPoor & wealth_indexRich > wealth_indexPoorest, "Rich", ifelse(wealth_indexMiddle > wealth_indexRichest & wealth_indexMiddle > wealth_indexRich & wealth_indexMiddle > wealth_indexPoor & wealth_indexMiddle > wealth_indexPoorest,"Middle",ifelse(wealth_indexPoor > wealth_indexRichest & wealth_indexPoor > wealth_indexRich & wealth_indexPoor > wealth_indexMiddle & wealth_indexPoor > wealth_indexPoorest,"Poor", ifelse(wealth_indexPoorest > wealth_indexRichest & wealth_indexPoorest > wealth_indexRich & wealth_indexPoorest > wealth_indexMiddle & wealth_indexPoorest > wealth_indexPoor,"Poorest", NA ))))))
+    wealth_index = ifelse(wealth_indexRichest > wealth_indexRich & wealth_indexRichest > wealth_indexMiddle & wealth_indexRichest > wealth_indexPoor & wealth_indexRichest > wealth_indexPoorest, "Richest", ifelse(wealth_indexRich > wealth_indexRichest & wealth_indexRich > wealth_indexMiddle & wealth_indexRich > wealth_indexPoor & wealth_indexRich > wealth_indexPoorest, "Rich", ifelse(wealth_indexMiddle > wealth_indexRichest & wealth_indexMiddle > wealth_indexRich & wealth_indexMiddle > wealth_indexPoor & wealth_indexMiddle > wealth_indexPoorest,"Middle",ifelse(wealth_indexPoor > wealth_indexRichest & wealth_indexPoor > wealth_indexRich & wealth_indexPoor > wealth_indexMiddle & wealth_indexPoor > wealth_indexPoorest,"Poor", ifelse(wealth_indexPoorest > wealth_indexRichest & wealth_indexPoorest > wealth_indexRich & wealth_indexPoorest > wealth_indexMiddle & wealth_indexPoorest > wealth_indexPoor,"Poorest", NA )))))) %>%
+  group_by(year,wealth_index)%>%
+  summarize(rate_mat_mean=mean(rate_mat))
 
 poverty_mr %>% 
-  mutate(
-    across(wealth_indexMiddle:wealth_indexRichest,.fns = ~round(.,3)*100)) %>%
-  
-    DT::datatable()
-```
+     DT::datatable()
+``` 
+
 
 ```{r}
 poverty_mrg =
-  ggplot(data = poverty_mr,aes(x = year, y = rate_mat, group = wealth_index))+
+  ggplot(data = poverty_mr,aes(x = year, y = rate_mat_mean, group = wealth_index))+
   geom_line(size = 1.2, aes(col = wealth_index))+
   xlab("Years") +
   ylab("Prop. %") +
@@ -291,18 +291,17 @@ options(survey.lonely.psu="remove")
 
 poverty_cr = poverty_cr %>%  
   mutate(
-    wealth_index = ifelse(wealth_indexRichest > wealth_indexRich & wealth_indexRichest > wealth_indexMiddle & wealth_indexRichest > wealth_indexPoor & wealth_indexRichest > wealth_indexPoorest, "Richest", ifelse(wealth_indexRich > wealth_indexRichest & wealth_indexRich > wealth_indexMiddle & wealth_indexRich > wealth_indexPoor & wealth_indexRich > wealth_indexPoorest, "Rich", ifelse(wealth_indexMiddle > wealth_indexRichest & wealth_indexMiddle > wealth_indexRich & wealth_indexMiddle > wealth_indexPoor & wealth_indexMiddle > wealth_indexPoorest,"Middle",ifelse(wealth_indexPoor > wealth_indexRichest & wealth_indexPoor > wealth_indexRich & wealth_indexPoor > wealth_indexMiddle & wealth_indexPoor > wealth_indexPoorest,"Poor", ifelse(wealth_indexPoorest > wealth_indexRichest & wealth_indexPoorest > wealth_indexRich & wealth_indexPoorest > wealth_indexMiddle & wealth_indexPoorest > wealth_indexPoor,"Poorest", NA ))))))
+    wealth_index = ifelse(wealth_indexRichest > wealth_indexRich & wealth_indexRichest > wealth_indexMiddle & wealth_indexRichest > wealth_indexPoor & wealth_indexRichest > wealth_indexPoorest, "Richest", ifelse(wealth_indexRich > wealth_indexRichest & wealth_indexRich > wealth_indexMiddle & wealth_indexRich > wealth_indexPoor & wealth_indexRich > wealth_indexPoorest, "Rich", ifelse(wealth_indexMiddle > wealth_indexRichest & wealth_indexMiddle > wealth_indexRich & wealth_indexMiddle > wealth_indexPoor & wealth_indexMiddle > wealth_indexPoorest,"Middle",ifelse(wealth_indexPoor > wealth_indexRichest & wealth_indexPoor > wealth_indexRich & wealth_indexPoor > wealth_indexMiddle & wealth_indexPoor > wealth_indexPoorest,"Poor", ifelse(wealth_indexPoorest > wealth_indexRichest & wealth_indexPoorest > wealth_indexRich & wealth_indexPoorest > wealth_indexMiddle & wealth_indexPoorest > wealth_indexPoor,"Poorest", NA ))))))%>%
+  group_by(year,wealth_index)%>%
+  summarize(rate_con_mean=mean(rate_con))
 
-poverty_cr %>% 
-  mutate(
-    across(wealth_indexMiddle:wealth_indexRichest,.fns = ~round(.,3)*100)) %>%
-  
-    DT::datatable()
+poverty_mr %>% 
+     DT::datatable()
 ```
 
 ```{r}
 poverty_crg =
-  ggplot(data = poverty_cr,aes(x = year, y = rate_con, group = wealth_index))+
+  ggplot(data = poverty_cr,aes(x = year, y = rate_con_mean, group = wealth_index))+
   geom_line(size = 1.2, aes(col = wealth_index))+
   xlab("Years") +
   ylab("Prop. %") +
