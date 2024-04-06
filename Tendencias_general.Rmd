@@ -142,8 +142,11 @@ newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
 
 ```{r}
 congenital <- congenital %>%
-  select(c(1:16)) %>%
-  select(!c(4:7))
+  select(c(2:13))
+#  select(!c(4:7))
+
+congenital <- rename(
+  congenital, c("NOMBDEP"="DEPARTAMENTO","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
 
 congenital_long <- pivot_longer(congenital, cols = c(4:12), 
                                 names_to = "year", values_to = "congenital") 
@@ -209,21 +212,27 @@ print(congenital_line)
 ```
 #Maternal syphilis rate
 ```{r}
-data_ins_long <- read_csv("Data_final/ins_final_long.csv")
+maternal <- read_csv("Data_final/syphilis_maternal.csv")
 ```
 
 ```{r}
-maternal_long <- data_ins_long %>%
-  filter(year>2013) %>% 
+maternal = rename(
+  maternal, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
+
+maternal_long <- pivot_longer(maternal, cols = c(4:11), 
+                                names_to = "year", values_to = "maternal")
+
+maternal_long <- maternal_long %>%
   group_by(year) %>%
-  summarise(maternal = sum(tamizaje_reactivo, na.rm = TRUE)) %>%
+  summarise(maternal = sum(maternal, na.rm = TRUE)) %>%
   unnest(maternal) %>% 
   mutate(year = as.double(year))
 
 data_maternal <- maternal_long %>%
   left_join(newborn, by = "year") %>%
   mutate(rate = (maternal/n)*1000) %>% 
-  mutate_if(is.numeric, round, 2)
+  mutate_if(is.numeric, round, 2) 
+
 ```
 
 ```{r}
