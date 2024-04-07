@@ -303,6 +303,8 @@ poverty_mrg =
     strip.text = element_text(face = "bold"),
     panel.grid = element_blank()
   )
+
+#ggsave("prov_wealth_obj2.png", plot = poverty_mrg, width = 8, height = 4, dpi = 300)
 ```
 
 Wealth index objective 3
@@ -350,6 +352,8 @@ poverty_crg =
     strip.text = element_text(face = "bold"),
     panel.grid = element_blank()
   )
+
+#ggsave("prov_wealth_obj3.png", plot = poverty_crg, width = 8, height = 4, dpi = 300)
 ```
 
 final_nac_plot = ggdraw() +
