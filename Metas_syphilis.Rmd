@@ -80,16 +80,16 @@ GOALS_2022 <- combined_data_2022 %>%
     mutate(
     goal1 = ifelse(syphilis_screening>=0.95, 1,0),
     goal2 = ifelse(congenital_prop<0.5,1,0),
-    goal3 = ifelse(rest_porcent >=45,1,0),
+    goal3 = ifelse(rest_porcent >=30,1,0),
     
-    goals = ifelse(syphilis_screening>=0.95 & congenital_prop<0.50 & rest_porcent>=45, list(c ("Goal 1", "Goal 2", "Goal 3")),
-                   ifelse(syphilis_screening<0.95 & congenital_prop>=0.50 & rest_porcent<45, list(c(NA)),
-                          ifelse(syphilis_screening>=0.95 & congenital_prop>=0.50 & rest_porcent<45, list(c("Goal 1")),
-                                 ifelse(syphilis_screening<0.95 & congenital_prop<0.50 & rest_porcent<45, list(c("Goal 2")),
-                                        ifelse(syphilis_screening<0.95 & congenital_prop>=0.50 & rest_porcent>=45, list(c("Goal 3")),
-                                               ifelse(syphilis_screening>=0.95 & congenital_prop<0.50 & rest_porcent<45, list(c("Goal 1", "Goal 2")),
-                                                      ifelse(syphilis_screening>=0.95 & congenital_prop>=0.50 & rest_porcent>=45, list(c("Goal 1", "Goal 3")),
-                                                             ifelse(syphilis_screening<0.95 & congenital_prop<0.50 & rest_porcent>=45, list(c("Goal 2", "Goal 3")), NA)
+    goals = ifelse(syphilis_screening>=0.95 & congenital_prop<0.50 & rest_porcent>=30, list(c ("Goal 1", "Goal 2", "Goal 3")),
+                   ifelse(syphilis_screening<0.95 & congenital_prop>=0.50 & rest_porcent<30, list(c(NA)),
+                          ifelse(syphilis_screening>=0.95 & congenital_prop>=0.50 & rest_porcent<30, list(c("Goal 1")),
+                                 ifelse(syphilis_screening<0.95 & congenital_prop<0.50 & rest_porcent<30, list(c("Goal 2")),
+                                        ifelse(syphilis_screening<0.95 & congenital_prop>=0.50 & rest_porcent>=30, list(c("Goal 3")),
+                                               ifelse(syphilis_screening>=0.95 & congenital_prop<0.50 & rest_porcent<30, list(c("Goal 1", "Goal 2")),
+                                                      ifelse(syphilis_screening>=0.95 & congenital_prop>=0.50 & rest_porcent>=30, list(c("Goal 1", "Goal 3")),
+                                                             ifelse(syphilis_screening<0.95 & congenital_prop<0.50 & rest_porcent>=30, list(c("Goal 2", "Goal 3")), NA)
                ))))))))
 
 figure_2a<-
@@ -181,17 +181,17 @@ print(figure_2b2)
 #Goal 3
 
 GOALS_2022 <- GOALS_2022 %>% 
-  mutate(goal_maternal = ifelse(rest_porcent >= 45, "100",
-                                ifelse(rest_porcent >=40 & rest_porcent<45, "90",
-                                       ifelse(rest_porcent >=35 & rest_porcent<40, "80",
-                                              ifelse(rest_porcent >=30 & rest_porcent <35, "70",
-                                                     ifelse(rest_porcent >=25 & rest_porcent <30, "60",
-                                                            ifelse(rest_porcent >=20 & rest_porcent <25, "50",
-                                                                   ifelse(rest_porcent >=15 & rest_porcent <20, "40",
-                                                                          ifelse(rest_porcent >=10  & rest_porcent <15, "30",
-                                                                                 ifelse(rest_porcent >=5 & rest_porcent <10, "20",
-                                                                                        ifelse(rest_porcent>=0 & rest_porcent<5, "10",
-                                                                                               ifelse(rest_porcent < 0, "0", NA))))))))))))
+  mutate(goal_maternal = ifelse(rest_porcent >= 30, "100",
+                                ifelse(rest_porcent >=27 & rest_porcent<30, "90",
+                                       ifelse(rest_porcent >=24 & rest_porcent<27, "80",
+                                              ifelse(rest_porcent >=21 & rest_porcent <24, "70",
+                                                     ifelse(rest_porcent >=18 & rest_porcent <21, "60",
+                                                            ifelse(rest_porcent >=15 & rest_porcent <18, "50",
+                                                                   ifelse(rest_porcent >=12 & rest_porcent <15, "40",
+                                                                          ifelse(rest_porcent >=9  & rest_porcent <12, "30",
+                                                                                 ifelse(rest_porcent >=6 & rest_porcent <9, "20",
+                                                                                        ifelse(rest_porcent>=3 & rest_porcent<6, "10",
+                                                                                               ifelse(rest_porcent < 3, "0", NA))))))))))))
 
 
 GOALS_2022$goal_maternal <- as.numeric(as.character(GOALS_2022$goal_maternal))
