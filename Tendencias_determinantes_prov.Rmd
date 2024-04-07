@@ -75,6 +75,12 @@ congenital <- rename(
 congenital_long <- pivot_longer(congenital, cols = c(4:12), 
                                 names_to = "year", values_to = "congenital")
 
+#Provincial
+newborn_prov <- newborn %>%
+  group_by(NOMBDEP, NOMBPROV, year) %>%
+  summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
+  ungroup()
+
 #Regional
 newborn_dep <- newborn %>%
   group_by(NOMBDEP, year) %>%
@@ -93,6 +99,12 @@ rm(congenital,newborn)
 Maternal 
 
 ```{r}
+data_maternal_prov <- data_ins_long %>%
+  group_by(NOMBDEP, NOMBPROV, year) %>%
+  filter( year > 2013) %>%
+  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
+  ungroup()
+
 data_maternal_dep <- data_ins_long %>%
   group_by(NOMBDEP, year) %>%
   filter( year > 2013) %>%
@@ -106,6 +118,10 @@ data_maternal_nac<- data_ins_long %>%
   ungroup()
 
 #Calculating rates of maternal syphilis 
+data_maternal_prov <- data_maternal_prov %>%
+  left_join(newborn_prov, by = c("NOMBDEP","NOMBPROV","year")) %>%
+  mutate(rate_mat = (tamizaje_reactivo/newborntotal)*1000)
+
 data_maternal_dep <- data_maternal_dep %>%
   left_join(newborn_dep, by = c("NOMBDEP","year")) %>%
   mutate(rate_mat = (tamizaje_reactivo/newborntotal)*1000)
@@ -119,6 +135,18 @@ Congenital:
 
 ```{r}
 congenital_long$year = as.numeric(congenital_long$year) 
+
+#Provincial
+congenital_long_prov <- congenital_long %>%
+  group_by(NOMBDEP,NOMBPROV, year) %>%
+  summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  unnest(congenital)
+
+data_congenital_prov <- congenital_long_prov %>%
+  left_join(newborn_prov, by = c("NOMBDEP","NOMBPROV","year")) %>%
+  mutate(rate_con = (congenital/newborntotal)*1000) %>% 
+  mutate_if(is.numeric, round, 2) %>%
+  filter(rate_con < 100.0)
 
 #Regional
 congenital_long_dep <- congenital_long %>%
@@ -145,7 +173,7 @@ data_congenital_nac <- congenital_long_nac %>%
   mutate(rate_con = (congenital/newborntotal)*1000) %>% 
   mutate_if(is.numeric, round, 2)
 
-rm(congenital_long,congenital_long_dep,congenital_long_nac,newborn_nac,newborn_dep,data_ins_long,newborn_nac,newborn_dep)
+rm(congenital_long,congenital_long_prov,congenital_long_dep,congenital_long_nac,newborn_nac,newborn_dep,newborn_prov,data_ins_long)
 ```
 
 ```{r}
@@ -165,13 +193,14 @@ data_endes$syphilis_screening = as.factor(data_endes$syphilis_screening)
 library(RSQLite)
 poverty = 
   data_endes %>%
-  left_join(data_maternal_dep, by = c("year","NOMBDEP")) %>%
-  left_join(data_congenital_dep, by = c("year","NOMBDEP")) %>%
-  select(wealth_index,year,NOMBDEP,v001,v022,v005,syphilis_screening,rate_mat,rate_con) %>%
+  left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  select(wealth_index,year,NOMBDEP,NOMBPROV,v001,v022,v005,syphilis_screening,rate_mat,rate_con) %>%
   filter(!is.na(wealth_index))%>%
   filter(year > "2013") %>%
   mutate(
     NOMBDEP = as.factor(NOMBDEP),
+    NOMBPROV = as.factor(NOMBPROV),
     year = as.factor(year),
     wealth_index = as.factor(wealth_index)
   ) %>%
@@ -226,8 +255,6 @@ poverty_scg =
     strip.text = element_text(face = "bold"),
     panel.grid = element_blank()
   )
-
-#ggsave("wealth_obj1.png", plot = poverty_scg, width = 8, height = 4, dpi = 300)
 ```
 
 Wealth index objective 2
@@ -248,6 +275,7 @@ poverty_mr = poverty_mr %>%
   mutate(
     wealth_index = ifelse(wealth_indexRichest > wealth_indexRich & wealth_indexRichest > wealth_indexMiddle & wealth_indexRichest > wealth_indexPoor & wealth_indexRichest > wealth_indexPoorest, "Richest", ifelse(wealth_indexRich > wealth_indexRichest & wealth_indexRich > wealth_indexMiddle & wealth_indexRich > wealth_indexPoor & wealth_indexRich > wealth_indexPoorest, "Rich", ifelse(wealth_indexMiddle > wealth_indexRichest & wealth_indexMiddle > wealth_indexRich & wealth_indexMiddle > wealth_indexPoor & wealth_indexMiddle > wealth_indexPoorest,"Middle",ifelse(wealth_indexPoor > wealth_indexRichest & wealth_indexPoor > wealth_indexRich & wealth_indexPoor > wealth_indexMiddle & wealth_indexPoor > wealth_indexPoorest,"Poor", ifelse(wealth_indexPoorest > wealth_indexRichest & wealth_indexPoorest > wealth_indexRich & wealth_indexPoorest > wealth_indexMiddle & wealth_indexPoorest > wealth_indexPoor,"Poorest", NA )))))) %>%
   group_by(year,wealth_index)%>%
+  filter(!is.na(wealth_index))%>%
   summarize(rate_mat_mean=mean(rate_mat))
 
 poverty_mr %>% 
@@ -275,8 +303,6 @@ poverty_mrg =
     strip.text = element_text(face = "bold"),
     panel.grid = element_blank()
   )
-
-#ggsave("dep_wealth_obj2.png", plot = poverty_mrg, width = 8, height = 4, dpi = 300)
 ```
 
 Wealth index objective 3
@@ -297,6 +323,7 @@ poverty_cr = poverty_cr %>%
   mutate(
     wealth_index = ifelse(wealth_indexRichest > wealth_indexRich & wealth_indexRichest > wealth_indexMiddle & wealth_indexRichest > wealth_indexPoor & wealth_indexRichest > wealth_indexPoorest, "Richest", ifelse(wealth_indexRich > wealth_indexRichest & wealth_indexRich > wealth_indexMiddle & wealth_indexRich > wealth_indexPoor & wealth_indexRich > wealth_indexPoorest, "Rich", ifelse(wealth_indexMiddle > wealth_indexRichest & wealth_indexMiddle > wealth_indexRich & wealth_indexMiddle > wealth_indexPoor & wealth_indexMiddle > wealth_indexPoorest,"Middle",ifelse(wealth_indexPoor > wealth_indexRichest & wealth_indexPoor > wealth_indexRich & wealth_indexPoor > wealth_indexMiddle & wealth_indexPoor > wealth_indexPoorest,"Poor", ifelse(wealth_indexPoorest > wealth_indexRichest & wealth_indexPoorest > wealth_indexRich & wealth_indexPoorest > wealth_indexMiddle & wealth_indexPoorest > wealth_indexPoor,"Poorest", NA ))))))%>%
   group_by(year,wealth_index)%>%
+  filter(!is.na(wealth_index))%>%
   summarize(rate_con_mean=mean(rate_con))
 
 poverty_mr %>% 
@@ -323,8 +350,6 @@ poverty_crg =
     strip.text = element_text(face = "bold"),
     panel.grid = element_blank()
   )
-
-#ggsave("dep_wealth_obj3.png", plot = poverty_crg, width = 8, height = 4, dpi = 300)
 ```
 
 final_nac_plot = ggdraw() +
