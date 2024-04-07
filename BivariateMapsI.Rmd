@@ -131,12 +131,12 @@ in the departments of Peru
 syphilis_insurance <- syphilis_insurance %>%
   left_join(matsyphilis, by = c("NOMBDEP", "year"))
 
-datamap <- bi_class(syphilis_insurance, x = rate, y = health_insurance0, style = "quantile", dim = 3)
+datamap <- bi_class(syphilis_insurance, x = rate, y = health_insurance0, style = "quantile", dim = 2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "white", size = 0.1, show.legend = FALSE) +
-  bi_scale_fill(pal = "GrPink", dim = 3) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
   labs(
     title = "Rate of maternal syphilis in pregnants without health insurance"
   ) +
@@ -145,7 +145,7 @@ map <- ggplot() +
   
 
 legend <- bi_legend(pal = "GrPink",
-                    dim = 3,
+                    dim = 2,
                     xlab = "Higher rate",
                     ylab = "Less insurance coverage",
                     size = 8)
@@ -198,12 +198,12 @@ in the departments of Peru
 syphilis_screening <- syphilis_screening %>%
   left_join(matsyphilis, by = c("NOMBDEP", "year"))
 
-datamap <- bi_class(syphilis_screening, x = rate, y = syphilis_screening0, style = "quantile", dim = 3)
+datamap <- bi_class(syphilis_screening, x = rate, y = syphilis_screening0, style = "quantile", dim = 2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "white", size = 0.1, show.legend = FALSE) +
-  bi_scale_fill(pal = "GrPink", dim = 3) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
   labs(
     title = "Rate of maternal syphilis in pregnants without syphilis screening"
   ) +
@@ -212,7 +212,7 @@ map <- ggplot() +
   
 
 legend <- bi_legend(pal = "GrPink",
-                    dim = 3,
+                    dim = 2,
                     xlab = "Higher rate",
                     ylab = "No syphilis screening",
                     size = 8)
@@ -261,12 +261,12 @@ syphilis_ethnicity<- syphilis_ethnicity %>%
   mutate(nonSpanish = 1 - ethnicitySpanish) %>%
   mutate(round(nonSpanish, 5))
          
-datamap <- bi_class(syphilis_ethnicity, x = rate, y = nonSpanish, style = "quantile", dim = 3)
+datamap <- bi_class(syphilis_ethnicity, x = rate, y = nonSpanish, style = "quantile", dim = 2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "white", size = 0.1, show.legend = FALSE) +
-  bi_scale_fill(pal = "GrPink", dim = 3) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
   labs(
     title = "Rate of maternal syphilis in non native Spanish speakers pregnants"
   ) +
@@ -275,7 +275,7 @@ map <- ggplot() +
   
 
 legend <- bi_legend(pal = "GrPink",
-                    dim = 3,
+                    dim = 2,
                     xlab = "Higher rate",
                     ylab = "non-native spanish language",
                     size = 8)
@@ -324,12 +324,12 @@ rm(residence_filtered)
 syphilis_residence<- syphilis_residence %>%
   left_join(matsyphilis, by = c("NOMBDEP", "year")) 
 
-datamap <- bi_class(syphilis_residence, x = rate, y = type_residenceRural, style = "quantile", dim = 3)
+datamap <- bi_class(syphilis_residence, x = rate, y = type_residenceRural, style = "quantile", dim = 2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "white", size = 0.1, show.legend = FALSE) +
-  bi_scale_fill(pal = "GrPink", dim = 3) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
   labs(
     title = "Rate of maternal syphilis in pregnants who live in Rural areas"
   ) +
@@ -338,7 +338,7 @@ map <- ggplot() +
   
 
 legend <- bi_legend(pal = "GrPink",
-                    dim = 3,
+                    dim = 2,
                     xlab = "Higher rate",
                     ylab = "Rural residence",
                     size = 8)
@@ -387,12 +387,12 @@ in the departments of Peru
 syphilis_poverty <- syphilis_poverty %>%
   left_join(matsyphilis, by = c("NOMBDEP", "year"))
 
-datamap <- bi_class(syphilis_poverty, x = rate, y = wealth_indexPoorest, style = "quantile", dim = 3)
+datamap <- bi_class(syphilis_poverty, x = rate, y = wealth_indexPoorest, style = "quantile", dim = 2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "white", size = 0.1, show.legend = FALSE) +
-  bi_scale_fill(pal = "GrPink", dim = 3) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
   labs(
     title = "Rate of maternal syphilis in extremely poor pregnants"
   ) +
@@ -401,7 +401,7 @@ map <- ggplot() +
   
 
 legend <- bi_legend(pal = "GrPink",
-                    dim = 3,
+                    dim = 2,
                     xlab = "Higher rate",
                     ylab = "Extreme poverty",
                     size = 8)
@@ -453,12 +453,12 @@ rm(maritalstatus_filtered)
 syphilis_maritalstatus <- syphilis_maritalstatus %>%
   left_join(matsyphilis, by = c("NOMBDEP", "year"))
 
-datamap <- bi_class(syphilis_maritalstatus, x = rate, y = marital_statusNonMarried, style = "quantile", dim = 3)
+datamap <- bi_class(syphilis_maritalstatus, x = rate, y = marital_statusNonMarried, style = "quantile", dim = 2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "white", size = 0.1, show.legend = FALSE) +
-  bi_scale_fill(pal = "GrPink", dim = 3) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
   labs(
     title = "Rate of maternal syphilis in Non-married pregnants"
   ) +
@@ -467,7 +467,7 @@ map <- ggplot() +
   
 
 legend <- bi_legend(pal = "GrPink",
-                    dim = 3,
+                    dim = 2,
                     xlab = "Higher rate",
                     ylab = "Non-married",
                     size = 8)
@@ -518,12 +518,12 @@ in the departments of Peru
 syphilis_education <- syphilis_education %>%
   left_join(matsyphilis, by = c("NOMBDEP", "year"))
 
-datamap <- bi_class(syphilis_education, x = rate, y = education_levelNone_Primary, style = "quantile", dim = 3)
+datamap <- bi_class(syphilis_education, x = rate, y = education_levelNone_Primary, style = "quantile", dim = 2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "white", size = 0.1, show.legend = FALSE) +
-  bi_scale_fill(pal = "GrPink", dim = 3) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
   labs(
     title = "Rate of maternal syphilis in pregnants with primary or no education"
   ) +
@@ -532,7 +532,7 @@ map <- ggplot() +
   
 
 legend <- bi_legend(pal = "GrPink",
-                    dim = 3,
+                    dim = 2,
                     xlab = "Higher rate",
                     ylab = "Primary or no education",
                     size = 8)
@@ -580,12 +580,12 @@ in the departments of Peru
 syphilis_knowsyphilis <- syphilis_knowsyphilis %>%
   left_join(matsyphilis, by = c("NOMBDEP", "year"))
 
-datamap <- bi_class(syphilis_knowsyphilis, x = rate, y = know_syphilisNo, style = "quantile", dim = 3)
+datamap <- bi_class(syphilis_knowsyphilis, x = rate, y = know_syphilisNo, style = "quantile", dim = 2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "white", size = 0.1, show.legend = FALSE) +
-  bi_scale_fill(pal = "GrPink", dim = 3) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
   labs(
     title = "Rate of maternal syphilis in pregnants without knowledge of Syphilis"
   ) +
@@ -594,7 +594,7 @@ map <- ggplot() +
   
 
 legend <- bi_legend(pal = "GrPink",
-                    dim = 3,
+                    dim = 2,
                     xlab = "Higher rate",
                     ylab = "Less knowledge",
                     size = 8)
@@ -643,12 +643,12 @@ in the departments of Peru
 syphilis_violence <- syphilis_violence %>%
   left_join(matsyphilis, by = c("NOMBDEP", "year"))
 
-datamap <- bi_class(syphilis_violence, x = rate, y = emotional_violenceYes, style = "quantile", dim = 3)
+datamap <- bi_class(syphilis_violence, x = rate, y = emotional_violenceYes, style = "quantile", dim =2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "white", size = 0.1, show.legend = FALSE) +
-  bi_scale_fill(pal = "GrPink", dim = 3) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
   labs(
     title = "Rate of maternal syphilis in pregnants who had received any kind of emotional violence"
   ) +
@@ -657,7 +657,7 @@ map <- ggplot() +
   
 
 legend <- bi_legend(pal = "GrPink",
-                    dim = 3,
+                    dim = 2,
                     xlab = "Higher rate",
                     ylab = "Higher violence",
                     size = 8)
@@ -710,12 +710,12 @@ in the departments of Peru
 syphilis_prenatalcare <- syphilis_prenatalcare %>%
   left_join(matsyphilis, by = c("NOMBDEP", "year"))
 
-datamap <- bi_class(syphilis_prenatalcare, x = rate, y = number_prenatal_visits_20_6, style = "quantile", dim = 3)
+datamap <- bi_class(syphilis_prenatalcare, x = rate, y = number_prenatal_visits_20_5, style = "quantile", dim = 2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "white", size = 0.1, show.legend = FALSE) +
-  bi_scale_fill(pal = "GrPink", dim = 3) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
   labs(
     title = "Rate of maternal syphilis in pregnants who have fewer than 6 prenatal care visits"
   ) +
@@ -724,7 +724,7 @@ map <- ggplot() +
   
 
 legend <- bi_legend(pal = "GrPink",
-                    dim = 3,
+                    dim = 2,
                     xlab = "Higher rate",
                     ylab = "Fewer visits",
                     size = 8)
@@ -773,12 +773,12 @@ rm(unskilled_filtered)
 syphilis_childbirth_provider <- syphilis_childbirth_provider %>%
   left_join(matsyphilis, by = c("NOMBDEP", "year"))
 
-datamap <- bi_class(syphilis_childbirth_provider, x = rate, y = provider_childbirth_2Unskilled, style = "quantile", dim = 3)
+datamap <- bi_class(syphilis_childbirth_provider, x = rate, y = provider_childbirth_2Unskilled, style = "quantile", dim = 2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "white", size = 0.1, show.legend = FALSE) +
-  bi_scale_fill(pal = "GrPink", dim = 3) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
   labs(
     title = "Rate of maternal syphilis in pregnants who were attended by a non-qualified chilbirth provider"
   ) +
@@ -787,7 +787,7 @@ map <- ggplot() +
   
 
 legend <- bi_legend(pal = "GrPink",
-                    dim = 3,
+                    dim = 2,
                     xlab = "Higher rate",
                     ylab = "Unskilled provider",
                     size = 8)
@@ -836,12 +836,12 @@ rm(prenatal_edu_filtered)
 syphilis_prenatal_edu <- syphilis_prenatal_edu %>%
   left_join(matsyphilis, by = c("NOMBDEP", "year"))
 
-datamap <- bi_class(syphilis_prenatal_edu, x = rate, y = prenatal_care_educationNo, style = "quantile", dim = 3)
+datamap <- bi_class(syphilis_prenatal_edu, x = rate, y = prenatal_care_educationNo, style = "quantile", dim = 2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "white", size = 0.1, show.legend = FALSE) +
-  bi_scale_fill(pal = "GrPink", dim = 3) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
   labs(
     title = "Rate of maternal syphilis in pregnants with non-efective prenatal education"
   ) +
@@ -850,7 +850,7 @@ map <- ggplot() +
   
 
 legend <- bi_legend(pal = "GrPink",
-                    dim = 3,
+                    dim = 2,
                     xlab = "Higher rate",
                     ylab = "Non-efective prenatal education",
                     size = 8)
@@ -899,12 +899,12 @@ rm(prenatal_screening_filtered)
 syphilis_prenatal_screening <- syphilis_prenatal_screening %>%
   left_join(matsyphilis, by = c("NOMBDEP", "year"))
 
-datamap <- bi_class(syphilis_prenatal_screening, x = rate, y = prenatal_care_screeningNo, style = "quantile", dim = 3)
+datamap <- bi_class(syphilis_prenatal_screening, x = rate, y = prenatal_care_screeningNo, style = "quantile", dim = 2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "white", size = 0.1, show.legend = FALSE) +
-  bi_scale_fill(pal = "GrPink", dim = 3) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
   labs(
     title = "Rate of maternal syphilis in pregnants with non-efective prenatal screening"
   ) +
@@ -913,7 +913,7 @@ map <- ggplot() +
   
 
 legend <- bi_legend(pal = "GrPink",
-                    dim = 3,
+                    dim = 2,
                     xlab = "Higher rate",
                     ylab = "Non-efective prenatal screening",
                     size = 8)
