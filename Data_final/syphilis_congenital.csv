@@ -1,983 +1,463 @@
-﻿DEPARTAMENTO,PROVINCIA,DISTRITO,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,TOTAL,,,,,,,,,
-AMAZONAS,CHACHAPOYAS,CHACHAPOYAS,,,,1,,,,,,,1,,,2,,,,,,,,,
-AMAZONAS,BAGUA,ARAMANGO,,,,,1,,,,,,,,,1,,,,,,,,,
-AMAZONAS,BAGUA,BAGUA,,,,,,,,,,3,,,,3,,,,,,,,,
-AMAZONAS,BAGUA,IMAZA,,,1,5,1,1,3,,,,,,,11,,,,,,,,,
-AMAZONAS,BAGUA,LA PECA,,,,,1,,,,,,,,,1,,,,,,,,,
-AMAZONAS,BONGARA,FLORIDA,1,,,,,,,,,,,,,1,,,,,,,,,
-AMAZONAS,BONGARA,JAZAN,,,2,,,,,,,,,,,2,,,,,,,,,
-AMAZONAS,BONGARA,SHIPASBAMBA,,,,,1,,,,,,,,,1,,,,,,,,,
-AMAZONAS,CONDORCANQUI,EL CENEPA,,1,1,,,,,,,,,,,2,,,,,,,,,
-AMAZONAS,CONDORCANQUI,NIEVA,,,1,,3,,1,,2,,,,1,8,,,,,,,,,
-AMAZONAS,RODRIGUEZ DE MENDOZA,SAN NICOLAS,,,,,,,,,,,,1,,1,,,,,,,,,
-ANCASH,CASMA,BUENA VISTA ALTA,,1,,,,,,,,,,,,1,,,,,,,,,
-ANCASH,CASMA,CASMA,1,,,,,,,,,,,,1,2,,,,,,,,,
-ANCASH,SANTA,CHIMBOTE,,1,,,,,,,1,,1,,,3,,,,,,,,,
-ANCASH,SANTA,NEPEÑA,,,,,,,,,,,,,1,1,,,,,,,,,
-ANCASH,SANTA,NUEVO CHIMBOTE,,,,1,,,1,1,,,,,3,6,,,,,,,,,
-ANCASH,SANTA,YUNGAY,,,1,,,,,,,,,,,1,,,,,,,,,
-ANCASH,HUARAZ,HUARAZ,,,,1,,,,,,,1,,,2,,,,,,,,,
-ANCASH,HUARAZ,INDEPENDENCIA,,,1,,,,1,,,,,,,2,,,,,,,,,
-ANCASH,RECUAY,PARARIN,,1,,,,,,,,,,,,1,,,,,,,,,
-ANCASH,RECUAY,RECUAY,,,1,,,,,,,,,,,1,,,,,,,,,
-ANCASH,HUAYLAS,CARAZ,,,,,,,,,,1,,1,,2,,,,,,,,,
-ANCASH,BOLOGNESI,CHIQUIAN,,,,,,1,,,,,,,,1,,,,,,,,,
-ANCASH,CARHUAZ,ANTA,,,,,,,1,,,,,,,1,,,,,,,,,
-ANCASH,CARHUAZ,CARHUAZ,,,,,,,,,,,,,1,1,,,,,,,,,
-ANCASH,ASUNCION,CHACAS,1,,,,,,,,,,,,,1,,,,,,,,,
-ANCASH,SIHUAS,SIHUAS,,,,,,,,1,,,,,,1,,,,,,,,,
-ANCASH,MARISCAL LUZURIAGA,CASCA,,,,,,,,,,,,1,,1,,,,,,,,,
-APURIMAC,ABANCAY,ABANCAY,,,1,,,,,1,,1,,,2,5,,,,,,,,,
-APURIMAC,ABANCAY,CURAHUASI,,,,,1,,,,,,,,,1,,,,,,,,,
-APURIMAC,ABANCAY,LAMBRAMA,,,,,,,,,1,,,,,1,,,,,,,,,
-APURIMAC,COTABAMBAS,COYLLURQUI,,,,,2,,,,,,,,,2,,,,,,,,,
-APURIMAC,AYMARAES,CHALHUANCA,,,,,,,1,,,,,,,1,,,,,,,,,
-APURIMAC,AYMARAES,CHAPIMARCA,1,,,,,,,,,,,,,1,,,,,,,,,
-APURIMAC,AYMARAES,COTARUSE,,,,,,,,,,,,,4,4,,,,,,,,,
-APURIMAC,GRAU,CHUQUIBAMBILLA,,,,,1,,,,1,,,,,2,,,,,,,,,
-APURIMAC,GRAU,MARISCAL GAMARRA,,,,,,,,,,,,,1,1,,,,,,,,,
-APURIMAC,ANDAHUAYLAS,ANDAHUAYLAS,,,1,1,2,,,3,,1,,1,,9,,,,,,,,,
-APURIMAC,ANDAHUAYLAS,PACUCHA,,,,,,,,,1,,,,,1,,,,,,,,,
-APURIMAC,ANDAHUAYLAS,PAMPACHIRI,,,,,,1,,,1,,,,,2,,,,,,,,,
-APURIMAC,ANDAHUAYLAS,SAN JERONIMO,,,,,,,,1,,,1,,,2,,,,,,,,,
-APURIMAC,ANDAHUAYLAS,SANTA MARIA DE CHICMO,,,,,,,1,,,,,,,1,,,,,,,,,
-APURIMAC,ANDAHUAYLAS,TALAVERA,,,1,,,,,,,,,,,1,,,,,,,,,
-APURIMAC,CHINCHEROS,ANCO-HUALLO,,,,,,,,,,,,1,,1,,,,,,,,,
-APURIMAC,CHINCHEROS,HUACCANA,,,,,,,,1,,,,,,1,,,,,,,,,
-AREQUIPA,AREQUIPA,ALTO SELVA ALEGRE,,1,,,1,,,,,2,1,2,1,8,,,,,,,,,
-AREQUIPA,AREQUIPA,AREQUIPA,,1,,1,,,,,,,,,1,3,,,,,,,,,
-AREQUIPA,AREQUIPA,CAYMA,,,,,,,,,,2,1,,2,5,,,,,,,,,
-AREQUIPA,AREQUIPA,CERRO COLORADO,2,1,,,,,5,4,1,1,2,5,3,24,,,,,,,,,
-AREQUIPA,AREQUIPA,CHARACATO,,,,,,,,,,,,,1,1,,,,,,,,,
-AREQUIPA,AREQUIPA,JOSE LUIS BUSTAMANTE Y RIVERO,,,,,,,,2,,,,,1,3,,,,,,,,,
-AREQUIPA,AREQUIPA,LA JOYA,,,,,,,,1,1,2,,1,3,8,,,,,,,,,
-AREQUIPA,AREQUIPA,MARIANO MELGAR,,,,,1,,1,1,1,,,3,5,12,,,,,,,,,
-AREQUIPA,AREQUIPA,MIRAFLORES,,,,,,,,,,1,,,1,2,,,,,,,,,
-AREQUIPA,AREQUIPA,PAUCARPATA,,,1,,,,,2,2,4,2,1,5,17,,,,,,,,,
-AREQUIPA,AREQUIPA,SABANDIA,,,1,,,,,,,,,,,1,,,,,,,,,
-AREQUIPA,AREQUIPA,SACHACA,,,,,,,,,1,,1,1,1,4,,,,,,,,,
-AREQUIPA,AREQUIPA,SOCABAYA,,,,,1,,,,1,,,1,,3,,,,,,,,,
-AREQUIPA,AREQUIPA,TIABAYA,,,,,,,,,1,,2,,,3,,,,,,,,,
-AREQUIPA,AREQUIPA,UCHUMAYO,,,,,,,,,,,1,1,,2,,,,,,,,,
-AREQUIPA,AREQUIPA,YURA,,1,,,,,1,3,1,,,,1,7,,,,,,,,,
-AREQUIPA,CARAVELI,CHALA,,,,,,,,,,,,,2,2,,,,,,,,,
-AREQUIPA,CAMANA,CAMANA,,,,,,,,,1,,,,2,3,,,,,,,,,
-AREQUIPA,CAMANA,MARISCAL CACERES,,,,,,,,,,,,2,,2,,,,,,,,,
-AREQUIPA,ISLAY,COCACHACRA,,,,,,,,,1,,,,,1,,,,,,,,,
-AREQUIPA,ISLAY,MOLLENDO,,1,,,1,,,,,,,,,2,,,,,,,,,
-AREQUIPA,CAYLLOMA,CHIVAY,,,,1,,,,,,,,,,1,,,,,,,,,
-AREQUIPA,CAYLLOMA,MAJES,,,,,,,,8,1,1,,1,5,16,,,,,,,,,
-AREQUIPA,CASTILLA,URACA,,,,,,,,,1,,,,,1,,,,,,,,,
-AYACUCHO,HUAMANGA,ANDRES AVELINO CACERES D.,,,,,,,,,,,,,1,1,,,,,,,,,
-AYACUCHO,HUAMANGA,AYACUCHO,,,,,,1,3,,2,,4,,1,11,,,,,,,,,
-AYACUCHO,HUAMANGA,CARMEN ALTO,,,,,,,,,,,2,1,2,5,,,,,,,,,
-AYACUCHO,HUAMANGA,JESUS NAZARENO,,,,,,,1,,,,,1,1,3,,,,,,,,,
-AYACUCHO,HUAMANGA,SAN JUAN BAUTISTA,,,,,,,1,,,,1,2,1,5,,,,,,,,,
-AYACUCHO,HUAMANGA,SOCOS,,,,,1,,,,,,,,,1,,,,,,,,,
-AYACUCHO,HUAMANGA,VINCHOS,,,,,,,1,,,,,,,1,,,,,,,,,
-AYACUCHO,HUANTA,AYAHUANCO,,,,,,,,,,,,,1,1,,,,,,,,,
-AYACUCHO,HUANTA,HUANTA,,,,,,,1,,,2,,1,2,6,,,,,,,,,
-AYACUCHO,HUANTA,LLOCHEGUA,,,,1,,,,,,,,,,1,,,,,,,,,
-AYACUCHO,HUANTA,SANTILLANA,,,,,1,,,,,,,,,1,,,,,,,,,
-AYACUCHO,HUANTA,SIVIA,,,,,,,,,1,,,,,1,,,,,,,,,
-AYACUCHO,HUANTA,UCHURACCAY,,,,,,,,1,,,,,,1,,,,,,,,,
-AYACUCHO,LUCANAS,CHAVIÑA,,,,,,,,1,,,,,,1,,,,,,,,,
-AYACUCHO,LA MAR,AYNA,,,1,,,1,1,1,,,,,,4,,,,,,,,,
-AYACUCHO,LA MAR,SAMUGARI,,,,,,,,,1,,,,,1,,,,,,,,,
-AYACUCHO,LA MAR,SAN MIGUEL,,,,,,,,,,,,,1,1,,,,,,,,,
-AYACUCHO,LA MAR,SANTA ROSA,,,,,1,,1,1,1,1,,,1,6,,,,,,,,,
-AYACUCHO,VILCAS HUAMAN,ACCOMARCA,,,,1,,,,,,,,,,1,,,,,,,,,
-AYACUCHO,CANGALLO,CANGALLO,,,,,,1,,,,,,,,1,,,,,,,,,
-CAJAMARCA,JAEN,JAEN,,,,,1,,1,,,,,4,,6,,,,,,,,,
-CAJAMARCA,JAEN,PUCARA,,,,,,,,,,,,1,,1,,,,,,,,,
-CAJAMARCA,SAN IGNACIO,SAN IGNACIO,,,,,,,,,,,,,1,1,,,,,,,,,
-CAJAMARCA,SAN IGNACIO,SAN JOSE DE LOURDES,,,,,1,,,,,,,,,1,,,,,,,,,
-CAJAMARCA,CAJAMARCA,CAJAMARCA,,,,,,,,1,,,,,,1,,,,,,,,,
-CAJAMARCA,CUTERVO,CUTERVO,,,,,,,,,,,,,1,1,,,,,,,,,
-CAJAMARCA,CONTUMAZA,CONTUMAZA,,,,,,,,1,,,,,,1,,,,,,,,,
-CAJAMARCA,SANTA CRUZ,LA ESPERANZA,1,,,,,,,,,,,,,1,,,,,,,,,
-CAJAMARCA,CHOTA,CHOTA,,,,,1,,1,,,,,,,2,,,,,,,,,
-CAJAMARCA,CHOTA,CONCHAN,,,,,,,1,,,,,,,1,,,,,,,,,
-CAJAMARCA,CHOTA,LLAMA,,,,,,,,,,1,,,,1,,,,,,,,,
-CAJAMARCA,CHOTA,TACABAMBA,,,,,1,,,,,,,,,1,,,,,,,,,
-CAJAMARCA,HUALGAYOC,BAMBAMARCA,,,,,,,,1,,,,,,1,,,,,,,,,
-CALLAO,CALLAO,BELLAVISTA,4,1,1,1,,,1,1,2,,,,,11,,,,,,,,,
-CALLAO,CALLAO,CALLAO,10,6,5,11,5,7,5,6,15,15,7,7,8,107,,,,,,,,,
-CALLAO,CALLAO,CARMEN DE LA LEGUA REYNOSO,1,1,,1,,,1,,1,,1,,2,8,,,,,,,,,
-CALLAO,CALLAO,LA PERLA,2,1,,,,,1,,,,,1,1,6,,,,,,,,,
-CALLAO,CALLAO,MI PERU,,,,,,,,,1,,,,,1,,,,,,,,,
-CALLAO,CALLAO,VENTANILLA,4,2,1,2,4,3,8,19,3,11,2,2,,61,,,,,,,,,
-CUSCO,ANTA,ANTA,2,,1,,,,,,,,1,,,4,,,,,,,,,
-CUSCO,ANTA,CHINCHAYPUJIO,,,1,,,,,,,,,1,,2,,,,,,,,,
-CUSCO,ANTA,HUAROCONDO,,,,,,,,,,1,,,,1,,,,,,,,,
-CUSCO,ANTA,LIMATAMBO,1,,,,,,,,,,,,,1,,,,,,,,,
-CUSCO,ANTA,MOLLEPATA,,,,,,,1,,,1,,,,2,,,,,,,,,
-CUSCO,ANTA,PUCYURA,,,,,,,,1,,,,,,1,,,,,,,,,
-CUSCO,ANTA,ZURITE,,,,,,1,1,,,,,,,2,,,,,,,,,
-CUSCO,CUSCO,CCORCA,,,,,1,,,,,,,,,1,,,,,,,,,
-CUSCO,CUSCO,CUSCO,1,6,3,4,4,,1,,1,1,,,1,22,,,,,,,,,
-CUSCO,CUSCO,POROY,,,,2,2,,,,,,,,,4,,,,,,,,,
-CUSCO,CUSCO,SAN JERONIMO,,,2,,,,1,,,3,1,1,,8,,,,,,,,,
-CUSCO,CUSCO,SAN SEBASTIAN,,2,2,,2,1,2,,2,2,3,,,16,,,,,,,,,
-CUSCO,CUSCO,SANTIAGO,3,5,7,4,4,1,2,3,1,,1,2,1,34,,,,,,,,,
-CUSCO,CUSCO,SAYLLA,,,,1,,,,,,2,,,1,4,,,,,,,,,
-CUSCO,CUSCO,WANCHAQ,,,1,,1,,,1,,2,,,,5,,,,,,,,,
-CUSCO,CHUMBIVILCAS,COLQUEMARCA,,,,,,,1,,,,,1,,2,,,,,,,,,
-CUSCO,CHUMBIVILCAS,LLUSCO,,,,,,,,,,,1,,,1,,,,,,,,,
-CUSCO,CHUMBIVILCAS,SANTO TOMAS,,,,,,,,,,2,,,,2,,,,,,,,,
-CUSCO,CHUMBIVILCAS,VELILLE,,,,,,,,,,,,1,,1,,,,,,,,,
-CUSCO,LA CONVENCION,ECHARATE,,1,2,1,,,,,,3,1,,1,9,,,,,,,,,
-CUSCO,LA CONVENCION,HUAYOPATA,,,,,,,,,,1,,,,1,,,,,,,,,
-CUSCO,LA CONVENCION,INKAWASI,,,,,,,,,,,,,1,1,,,,,,,,,
-CUSCO,LA CONVENCION,KIMBIRI,,,1,,,1,2,2,,,,1,2,9,,,,,,,,,
-CUSCO,LA CONVENCION,MARANURA,1,,1,,,,,,,,,,,2,,,,,,,,,
-CUSCO,LA CONVENCION,OCOBAMBA,,,,,,,1,,,,,,,1,,,,,,,,,
-CUSCO,LA CONVENCION,PICHARI,,,,,,,,1,,1,,1,1,4,,,,,,,,,
-CUSCO,LA CONVENCION,QUELLOUNO,,,,1,,,,,,,,,,1,,,,,,,,,
-CUSCO,LA CONVENCION,SANTA ANA,,,2,2,,,1,1,1,,2,,,9,,,,,,,,,
-CUSCO,LA CONVENCION,VILCABAMBA,1,,,,,,,,,,,,,1,,,,,,,,,
-CUSCO,LA CONVENCION,VILLA VIRGEN,,,,,,,,,,,1,,,1,,,,,,,,,
-CUSCO,CALCA,CALCA,,,1,1,,,1,,1,,,,,4,,,,,,,,,
-CUSCO,CALCA,LAMAY,,,,,1,,,,,1,,,,2,,,,,,,,,
-CUSCO,CALCA,LARES,,,1,,,,,,,,,,,1,,,,,,,,,
-CUSCO,CALCA,PISAC,,,,1,,1,,,,,1,,,3,,,,,,,,,
-CUSCO,CALCA,SAN SALVADOR,,,,,1,,,,,,,,,1,,,,,,,,,
-CUSCO,CALCA,TARAY,,,,,1,,,,,,,,,1,,,,,,,,,
-CUSCO,CALCA,YANATILE,,,,,,,1,,,,,,,1,,,,,,,,,
-CUSCO,URUBAMBA,MARAS,,,,,,,,1,,,,,,1,,,,,,,,,
-CUSCO,URUBAMBA,OLLANTAYTAMBO,,,,,2,,,1,,,,,,3,,,,,,,,,
-CUSCO,URUBAMBA,URUBAMBA,,,,1,1,,,,,,,,,2,,,,,,,,,
-CUSCO,PAUCARTAMBO,CHALLABAMBA,,,,,1,,,,1,,,,,2,,,,,,,,,
-CUSCO,PAUCARTAMBO,COLQUEPATA,,,,1,,,,,,,,,,1,,,,,,,,,
-CUSCO,PAUCARTAMBO,HUANCARANI,,,,,,,,1,,1,,1,,3,,,,,,,,,
-CUSCO,PAUCARTAMBO,KOSÑIPATA,,,,1,,,,2,1,,,,,4,,,,,,,,,
-CUSCO,QUISPICANCHI,CCATCA,,,,,,,,,,,1,,,1,,,,,,,,,
-CUSCO,QUISPICANCHI,CUSIPATA,,,,1,,,,,,,,,,1,,,,,,,,,
-CUSCO,QUISPICANCHI,LUCRE,,,,1,,,,,,,,,,1,,,,,,,,,
-CUSCO,QUISPICANCHI,OROPESA,,,,,,,,,3,2,1,,,6,,,,,,,,,
-CUSCO,QUISPICANCHI,QUIQUIJANA,,,,,,,1,,,,,,,1,,,,,,,,,
-CUSCO,QUISPICANCHI,URCOS,2,,,,,,,,,1,,,,3,,,,,,,,,
-CUSCO,CANCHIS,CHECACUPE,,,,,,,,,,,,1,,1,,,,,,,,,
-CUSCO,CANCHIS,SAN PABLO,,,,,,,,,,,1,,,1,,,,,,,,,
-CUSCO,CANCHIS,SICUANI,,,,,1,1,,2,3,1,1,1,,10,,,,,,,,,
-CUSCO,CANCHIS,TINTA,,,,,,,,,,,1,,,1,,,,,,,,,
-CUSCO,PARURO,ACCHA,,,,,,,,,,1,,,,1,,,,,,,,,
-CUSCO,PARURO,HUANOQUITE,,,,1,,,1,,,,,,,2,,,,,,,,,
-CUSCO,CANAS,PAMPAMARCA,,,,,,,,,,,1,,,1,,,,,,,,,
-CUSCO,ESPINAR,ESPINAR,,1,,,,,,,,,,,,1,,,,,,,,,
-CUSCO,ACOMAYO,ACOMAYO,,,1,1,,,,,,,,,,2,,,,,,,,,
-CUSCO,ACOMAYO,ACOS,,,,1,,,,,,,,,,1,,,,,,,,,
-HUANCAVELICA,ACOBAMBA,PAUCARA,,,,1,,,,,,,,,,1,,,,,,,,,
-HUANCAVELICA,TAYACAJA,AHUAYCHA,,,,,,,,,1,,,,,1,,,,,,,,,
-HUANCAVELICA,TAYACAJA,COLCABAMBA,1,,1,,1,,,,,,,,,3,,,,,,,,,
-HUANCAVELICA,TAYACAJA,DANIEL HERNANDEZ,,,,,,1,,,1,,,,,2,,,,,,,,,
-HUANCAVELICA,TAYACAJA,HUARIBAMBA,,1,,,,,,,,,,,,1,,,,,,,,,
-HUANCAVELICA,TAYACAJA,PAMPAS,,,,,,,,,,1,,,,1,,,,,,,,,
-HUANCAVELICA,TAYACAJA,PAZOS,1,,,,,,,,,,,,,1,,,,,,,,,
-HUANCAVELICA,TAYACAJA,PICHOS,,,,,,,,,,,,1,,1,,,,,,,,,
-HUANCAVELICA,TAYACAJA,SALCABAMBA,,1,,,,,,,,,,,,1,,,,,,,,,
-HUANCAVELICA,TAYACAJA,TINTAY PUNCU,1,,,,,,,,,,,,,1,,,,,,,,,
-HUANCAVELICA,HUANCAVELICA,ACORIA,,1,,,,,,,,,,,,1,,,,,,,,,
-HUANCAVELICA,HUANCAVELICA,ASCENSION,,,1,,,1,,,,,,,,2,,,,,,,,,
-HUANCAVELICA,HUANCAVELICA,HUANCAVELICA,,,2,,,,,,,,,,,2,,,,,,,,,
-HUANCAVELICA,HUANCAVELICA,MARISCAL CACERES,,,1,,,,,,,,,,,1,,,,,,,,,
-HUANCAVELICA,HUANCAVELICA,YAULI,1,,,,,,,,,,,,,1,,,,,,,,,
-HUANCAVELICA,ANGARAES,LIRCAY,,,,,1,,,,,,,,,1,,,,,,,,,
-HUANCAVELICA,HUAYTARA,CORDOVA,,,,,1,,,,,,,,,1,,,,,,,,,
-HUANUCO,HUAMALIES,JACAS GRANDE,,,,,,,,,,1,,,,1,,,,,,,,,
-HUANUCO,HUAMALIES,PUÑOS,1,,,,,,,,,,,,,1,,,,,,,,,
-HUANUCO,HUANUCO,AMARILIS,4,1,,,,2,1,,,,1,2,,11,,,,,,,,,
-HUANUCO,HUANUCO,CHURUBAMBA,2,,1,,,,,,,,1,,,4,,,,,,,,,
-HUANUCO,HUANUCO,HUANUCO,,,3,1,2,,,2,,2,1,1,1,13,,,,,,,,,
-HUANUCO,HUANUCO,PILLCO MARCA,3,,,,,,1,2,,,1,,,7,,,,,,,,,
-HUANUCO,HUANUCO,SAN PABLO DE PILLAO,,,,,,,,,,,1,,,1,,,,,,,,,
-HUANUCO,HUANUCO,SANTA MARIA DEL VALLE,4,,,1,1,,,,,,,,,6,,,,,,,,,
-HUANUCO,PACHITEA,CHAGLLA,,1,,,,,,,,,,,,1,,,,,,,,,
-HUANUCO,PACHITEA,MOLINO,11,8,3,,,,,,,,,2,,24,,,,,,,,,
-HUANUCO,PACHITEA,PANAO,8,6,2,,,1,,,2,1,,1,,21,,,,,,,,,
-HUANUCO,PACHITEA,UMARI,4,5,2,1,1,,,,,2,1,,,16,,,,,,,,,
-HUANUCO,LEONCIO PRADO,JOSE CRESPO Y CASTILLO,,1,,1,,,1,,,,,,,3,,,,,,,,,
-HUANUCO,LEONCIO PRADO,MARIANO DAMASO BERAUN,1,,,,1,,,,,,,,,2,,,,,,,,,
-HUANUCO,LEONCIO PRADO,RUPA-RUPA,,1,,,2,,,,,1,,,,4,,,,,,,,,
-HUANUCO,LAURICOCHA,BAÑOS,,,1,,,,,,,,,,,1,,,,,,,,,
-HUANUCO,LAURICOCHA,SAN FRANCISCO DE ASIS,,,1,,,,,,,,,,,1,,,,,,,,,
-HUANUCO,HUACAYBAMBA,COCHABAMBA,,,,,,,,1,,,,,,1,,,,,,,,,
-HUANUCO,DOS DE MAYO,LA UNION,,1,,,,,,,,,,,,1,,,,,,,,,
-HUANUCO,DOS DE MAYO,MARIAS,,,,,,,,1,,,,,,1,,,,,,,,,
-HUANUCO,DOS DE MAYO,SHUNQUI,,,,1,,,,,,,,,,1,,,,,,,,,
-HUANUCO,PUERTO INCA,PUERTO INCA,,,1,,,,,1,,,,1,,3,,,,,,,,,
-HUANUCO,PUERTO INCA,TOURNAVISTA,,1,,1,,,,,,,,,,2,,,,,,,,,
-HUANUCO,PUERTO INCA,YUYAPICHIS,,1,,,,,,,,1,,,,2,,,,,,,,,
-HUANUCO,AMBO,AMBO,,3,,,,,,,,,,1,,4,,,,,,,,,
-HUANUCO,AMBO,CONCHAMARCA,1,,,,,,,,,,,,,1,,,,,,,,,
-HUANUCO,AMBO,HUACAR,,,2,,,,,,,,,1,,3,,,,,,,,,
-HUANUCO,YAROWILCA,APARICIO POMARES,,,2,,,,,,,,,,,2,,,,,,,,,
-ICA,ICA,ICA,,1,,,,,1,,,1,,2,2,7,,,,,,,,,
-ICA,ICA,LA TINGUIÑA,,,,,,,,,,,,2,,2,,,,,,,,,
-ICA,ICA,LOS AQUIJES,,,,,,,,,,,,,1,1,,,,,,,,,
-ICA,ICA,PACHACUTEC,,,,,,,,,,,,,1,1,,,,,,,,,
-ICA,ICA,SANTIAGO,,,,,,,1,,,,,,1,2,,,,,,,,,
-ICA,ICA,SUBTANJALLA,,,,,,,,,,,,,1,1,,,,,,,,,
-ICA,ICA,YAUCA DEL ROSARIO,,,,,,,,,1,,,,,1,,,,,,,,,
-ICA,CHINCHA,CHINCHA ALTA,,,,,,,,,,,1,1,,2,,,,,,,,,
-ICA,CHINCHA,CHINCHA BAJA,,,,,,,,,,,,1,,1,,,,,,,,,
-ICA,CHINCHA,GROCIO PRADO,,,,,,,,1,1,,,,,2,,,,,,,,,
-ICA,CHINCHA,PUEBLO NUEVO,,,,,,,3,1,,3,1,,,8,,,,,,,,,
-ICA,CHINCHA,SUNAMPE,1,,,,,,,1,1,,1,,,4,,,,,,,,,
-ICA,PISCO,PISCO,,,,,,,,1,3,3,,1,5,13,,,,,,,,,
-ICA,PISCO,SAN ANDRES,,,,,,,,1,,,,,1,2,,,,,,,,,
-ICA,PISCO,SAN CLEMENTE,,,,,,,,,,,,,1,1,,,,,,,,,
-ICA,NAZCA,CHANGUILLO,,,,,,,1,,,,,,,1,,,,,,,,,
-ICA,NAZCA,NAZCA,,,,,,,,,2,,,,,2,,,,,,,,,
-ICA,PALPA,PALPA,,,,,,,1,,1,,,,,2,,,,,,,,,
-ICA,IMPORTADO,IMPORTADO,,,,,,,,,1,5,3,1,,10,,,,,,,,,
-JUNIN,SATIPO,COVIRIALI,,,,,,,,,,,,,2,2,,,,,,,,,
-JUNIN,SATIPO,MAZAMARI,,1,,,1,,1,3,,,,1,3,10,,,,,,,,,
-JUNIN,SATIPO,PAMPA HERMOSA,,,,,,,,,1,,,,,1,,,,,,,,,
-JUNIN,SATIPO,PANGOA,,,,,,1,3,1,,,,,1,6,,,,,,,,,
-JUNIN,SATIPO,RIO NEGRO,,,1,,,,1,1,2,,,2,1,8,,,,,,,,,
-JUNIN,SATIPO,RIO TAMBO,,,1,,,,1,,,,,2,3,7,,,,,,,,,
-JUNIN,SATIPO,SATIPO,,,1,1,,,4,,1,,,7,9,23,,,,,,,,,
-JUNIN,TARMA,TARMA,,,,,,1,,,,,,,,1,,,,,,,,,
-JUNIN,HUANCAYO,CHILCA,,1,,1,1,3,3,1,,2,2,1,2,17,,,,,,,,,
-JUNIN,HUANCAYO,CHUPURO,1,,,,,,,,,,,,,1,,,,,,,,,
-JUNIN,HUANCAYO,COLCA,1,,1,,,,,,,,,,,2,,,,,,,,,
-JUNIN,HUANCAYO,CULLHUAS,,1,,,,,,,,,,,,1,,,,,,,,,
-JUNIN,HUANCAYO,EL TAMBO,,3,,2,1,2,1,1,,,2,1,2,15,,,,,,,,,
-JUNIN,HUANCAYO,HUANCAN,,1,1,,,,,,,,1,,1,4,,,,,,,,,
-JUNIN,HUANCAYO,HUANCAYO,1,4,4,2,6,,2,3,2,,1,3,,28,,,,,,,,,
-JUNIN,HUANCAYO,HUAYUCACHI,,,,,,,,,,,1,,,1,,,,,,,,,
-JUNIN,HUANCAYO,PARIAHUANCA,,,,,1,2,,,,,,,,3,,,,,,,,,
-JUNIN,HUANCAYO,PILCOMAYO,,1,,,,,,,1,,,1,,3,,,,,,,,,
-JUNIN,HUANCAYO,QUILCAS,,,1,1,,,,,,,,,,2,,,,,,,,,
-JUNIN,HUANCAYO,SAN AGUSTIN,,,1,2,,2,,1,,,,,,6,,,,,,,,,
-JUNIN,HUANCAYO,SAN JERONIMO DE TUNAN,,,,1,,,,,1,,,,,2,,,,,,,,,
-JUNIN,HUANCAYO,SAPALLANGA,,,,,,1,,1,,,,,,2,,,,,,,,,
-JUNIN,HUANCAYO,SICAYA,,1,,,,1,,,,,1,,,3,,,,,,,,,
-JUNIN,CHANCHAMAYO,CHANCHAMAYO,1,,,,,,,,,,,,,1,,,,,,,,,
-JUNIN,CHANCHAMAYO,PERENE,,2,1,2,,,1,1,2,1,1,,1,12,,,,,,,,,
-JUNIN,CHANCHAMAYO,PICHANAQUI,2,,,1,,1,,,,1,,,1,6,,,,,,,,,
-JUNIN,YAULI,LA OROYA,,,1,,,,1,,,1,,,,3,,,,,,,,,
-JUNIN,CONCEPCION,ANDAMARCA,,,,,,,1,,,,,,,1,,,,,,,,,
-JUNIN,CONCEPCION,CHAMBARA,,1,,,,,,,,,,,,1,,,,,,,,,
-JUNIN,CONCEPCION,COMAS,,,,1,,,,,,,,,,1,,,,,,,,,
-JUNIN,CONCEPCION,CONCEPCION,,,,1,,,2,,,,,,,3,,,,,,,,,
-JUNIN,CONCEPCION,MATAHUASI,1,,,,,,,1,,,1,,,3,,,,,,,,,
-JUNIN,CONCEPCION,SANTA ROSA DE OCOPA,1,,,,,,,,,,,,,1,,,,,,,,,
-JUNIN,JAUJA,EL MANTARO,,1,,,,,,,,,,,,1,,,,,,,,,
-JUNIN,JAUJA,HUAMALI,,1,,,,,,,,1,,,,2,,,,,,,,,
-JUNIN,CHUPACA,CHONGOS BAJO,,,,,,1,2,,,,,,,3,,,,,,,,,
-JUNIN,CHUPACA,CHUPACA,1,,1,,1,,,,,,,1,,4,,,,,,,,,
-JUNIN,CHUPACA,TRES DE DICIEMBRE,,,,,,,1,,,,,,,1,,,,,,,,,
-LA LIBERTAD,ASCOPE,ASCOPE,,,,,,,,,,,,1,,1,,,,,,,,,
-LA LIBERTAD,ASCOPE,CASA GRANDE,,3,,,3,,,,,,,,,6,,,,,,,,,
-LA LIBERTAD,ASCOPE,CHICAMA,,,,,1,,,,,,,,,1,,,,,,,,,
-LA LIBERTAD,ASCOPE,MAGDALENA DE CAO,,,,,,,,1,,,,,,1,,,,,,,,,
-LA LIBERTAD,ASCOPE,PAIJAN,,1,,,,1,1,,,,,,,3,,,,,,,,,
-LA LIBERTAD,ASCOPE,RAZURI,,,,,,,,,,1,,,,1,,,,,,,,,
-LA LIBERTAD,ASCOPE,SANTIAGO DE CAO,,,,,,,,1,,,,,,1,,,,,,,,,
-LA LIBERTAD,TRUJILLO,EL PORVENIR,,6,4,7,5,1,8,6,1,4,,1,2,45,,,,,,,,,
-LA LIBERTAD,TRUJILLO,FLORENCIA DE MORA,,2,,5,1,,1,,1,4,2,3,1,20,,,,,,,,,
-LA LIBERTAD,TRUJILLO,HUANCHACO,,,1,1,,7,,,1,1,2,1,,14,,,,,,,,,
-LA LIBERTAD,TRUJILLO,LA ESPERANZA,3,3,1,4,4,9,7,8,1,5,1,,3,49,,,,,,,,,
-LA LIBERTAD,TRUJILLO,LAREDO,1,1,1,2,2,1,2,,,,1,,1,12,,,,,,,,,
-LA LIBERTAD,TRUJILLO,MOCHE,,,,,1,,,1,,,1,,,3,,,,,,,,,
-LA LIBERTAD,TRUJILLO,SALAVERRY,,,,,1,,,,,,,,,1,,,,,,,,,
-LA LIBERTAD,TRUJILLO,TRUJILLO,1,,1,4,5,4,2,1,1,4,,3,,26,,,,,,,,,
-LA LIBERTAD,TRUJILLO,VICTOR LARCO HERRERA,,,,2,,,,,2,,,,1,5,,,,,,,,,
-LA LIBERTAD,PACASMAYO,GUADALUPE,,1,,,1,,,,,,,,,2,,,,,,,,,
-LA LIBERTAD,PACASMAYO,PACASMAYO,,,,,,1,,,,,,1,,2,,,,,,,,,
-LA LIBERTAD,PACASMAYO,SAN JOSE,1,,,,,,,,,,,,,1,,,,,,,,,
-LA LIBERTAD,PACASMAYO,SAN PEDRO DE LLOC,,,,,,1,,,,,,,,1,,,,,,,,,
-LA LIBERTAD,CHEPEN,CHEPEN,,1,2,,,,,,,,,,1,4,,,,,,,,,
-LA LIBERTAD,CHEPEN,PACANGA,,,1,,,,,,,,,,,1,,,,,,,,,
-LA LIBERTAD,VIRU,CHAO,,,,1,,,,,,5,,4,1,11,,,,,,,,,
-LA LIBERTAD,VIRU,VIRU,1,2,,,1,,,,,,1,2,3,10,,,,,,,,,
-LA LIBERTAD,PATAZ,PARCOY,,,,,1,,1,,,,,,,2,,,,,,,,,
-LA LIBERTAD,PATAZ,TAYABAMBA,,,,,,,1,,1,,,,,2,,,,,,,,,
-LA LIBERTAD,SANCHEZ CARRION,CHUGAY,,,,,,,,,,1,,,,1,,,,,,,,,
-LA LIBERTAD,SANCHEZ CARRION,HUAMACHUCO,,,,1,,2,,,,1,,1,,5,,,,,,,,,
-LA LIBERTAD,SANCHEZ CARRION,SARIN,,,,,,,,,,1,,,,1,,,,,,,,,
-LA LIBERTAD,OTUZCO,SINSICAP,,,,,,1,,,,,,,,1,,,,,,,,,
-LA LIBERTAD,OTUZCO,USQUIL,,,1,,,,1,1,,,,,,3,,,,,,,,,
-LA LIBERTAD,SANTIAGO DE CHUCO,QUIRUVILCA,,,,,,,,,,,1,,,1,,,,,,,,,
-LAMBAYEQUE,CHICLAYO,CAYALTI,,1,,,,,1,,,,,,,2,,,,,,,,,
-LAMBAYEQUE,CHICLAYO,CHICLAYO,1,2,1,,1,2,1,2,2,1,,,1,14,,,,,,,,,
-LAMBAYEQUE,CHICLAYO,ETEN PUERTO,,,,1,,,,,,,,,,1,,,,,,,,,
-LAMBAYEQUE,CHICLAYO,JOSE LEONARDO ORTIZ,,3,1,1,1,1,3,1,,6,,,,17,,,,,,,,,
-LAMBAYEQUE,CHICLAYO,LA VICTORIA,,,,,,,1,,1,,,,,2,,,,,,,,,
-LAMBAYEQUE,CHICLAYO,PATAPO,,,,,,,,,,,,,1,1,,,,,,,,,
-LAMBAYEQUE,CHICLAYO,PICSI,,1,,,,,,,,,,,,1,,,,,,,,,
-LAMBAYEQUE,CHICLAYO,PIMENTEL,,,,,1,,,,1,,,,,2,,,,,,,,,
-LAMBAYEQUE,CHICLAYO,POMALCA,,,,,1,,1,,,,,,,2,,,,,,,,,
-LAMBAYEQUE,CHICLAYO,PUCALA,,2,,,,,,,,,,,,2,,,,,,,,,
-LAMBAYEQUE,CHICLAYO,SAÑA,,,,,,,1,,,,,,,1,,,,,,,,,
-LAMBAYEQUE,CHICLAYO,SANTA ROSA,,,,,,,,,1,,,,,1,,,,,,,,,
-LAMBAYEQUE,LAMBAYEQUE,ILLIMO,,,,,,1,,,1,,,,,2,,,,,,,,,
-LAMBAYEQUE,LAMBAYEQUE,JAYANCA,,,,,,,,,,1,,1,1,3,,,,,,,,,
-LAMBAYEQUE,LAMBAYEQUE,LAMBAYEQUE,2,1,,1,,1,3,,,1,,,1,10,,,,,,,,,
-LAMBAYEQUE,LAMBAYEQUE,MOCHUMI,,,,,,,1,,,,,1,,2,,,,,,,,,
-LAMBAYEQUE,LAMBAYEQUE,MORROPE,1,1,,,,,1,,,,,,,3,,,,,,,,,
-LAMBAYEQUE,LAMBAYEQUE,MOTUPE,,,,,,,,1,1,,,,,2,,,,,,,,,
-LAMBAYEQUE,LAMBAYEQUE,OLMOS,1,1,,,1,,,,,,,,,3,,,,,,,,,
-LAMBAYEQUE,LAMBAYEQUE,PACORA,,1,,,,,,,,,,1,,2,,,,,,,,,
-LAMBAYEQUE,FERREÑAFE,CAÑARIS,,1,,,,,,,,,,,,1,,,,,,,,,
-LAMBAYEQUE,FERREÑAFE,PUEBLO NUEVO,,1,,,,,,,,,,,,1,,,,,,,,,
-LAMBAYEQUE,FERREÑAFE,FERREÑAFE,,,,,,,,,,,,1,,1,,,,,,,,,
-LIMA,LIMA,ANCON,1,2,1,1,,1,,,,1,1,,,8,,,,,,,,,
-LIMA,LIMA,ATE,16,16,16,17,11,8,3,4,8,15,17,10,18,159,,,,,,,,,
-LIMA,LIMA,BARRANCO,,1,,,1,,1,,2,,,,,5,,,,,,,,,
-LIMA,LIMA,BREðA,,,1,,1,,1,,,,,,2,5,,,,,,,,,
-LIMA,LIMA,BREÑA,,,,,,,,,2,1,1,1,,5,,,,,,,,,
-LIMA,LIMA,CARABAYLLO,4,8,9,10,2,3,1,2,,1,3,1,4,48,,,,,,,,,
-LIMA,LIMA,CHACLACAYO,,2,,,1,,,,,,,2,,5,,,,,,,,,
-LIMA,LIMA,CHORRILLOS,6,4,3,2,1,3,,1,3,1,3,9,3,39,,,,,,,,,
-LIMA,LIMA,CIENEGUILLA,1,,,1,,,,,,1,,1,1,5,,,,,,,,,
-LIMA,LIMA,COMAS,11,25,12,12,3,3,,2,2,4,1,3,16,94,,,,,,,,,
-LIMA,LIMA,EL AGUSTINO,13,9,10,6,4,7,2,3,6,11,15,32,20,138,,,,,,,,,
-LIMA,LIMA,INDEPENDENCIA,3,2,4,1,1,1,,1,5,5,2,3,3,31,,,,,,,,,
-LIMA,LIMA,JESUS MARIA,,1,,,1,,,1,,2,,4,1,10,,,,,,,,,
-LIMA,LIMA,LA MOLINA,,1,2,,2,,,,,,3,1,1,10,,,,,,,,,
-LIMA,LIMA,LA VICTORIA,3,16,6,6,9,10,8,8,8,3,11,8,7,103,,,,,,,,,
-LIMA,LIMA,LIMA,9,15,9,11,12,6,4,10,5,3,19,9,16,128,,,,,,,,,
-LIMA,LIMA,LOS OLIVOS,1,2,,1,,3,,2,1,6,4,1,2,23,,,,,,,,,
-LIMA,LIMA,LURIGANCHO,5,6,4,8,3,2,,,4,,2,1,4,39,,,,,,,,,
-LIMA,LIMA,LURIN,,1,1,1,,,,2,1,2,3,4,2,17,,,,,,,,,
-LIMA,LIMA,MAGDALENA DEL MAR,,1,1,,,,,,,1,1,,,4,,,,,,,,,
-LIMA,LIMA,MIRAFLORES,,,,,,,,,,1,,,,1,,,,,,,,,
-LIMA,LIMA,PACHACAMAC,,,2,1,3,,,1,4,1,6,5,5,28,,,,,,,,,
-LIMA,LIMA,PUCUSANA,,,,,,,,1,,,1,,,2,,,,,,,,,
-LIMA,LIMA,PUEBLO LIBRE,,1,,,1,,1,1,,1,,1,2,8,,,,,,,,,
-LIMA,LIMA,PUENTE PIEDRA,8,13,7,5,10,3,4,4,3,5,11,8,6,87,,,,,,,,,
-LIMA,LIMA,RIMAC,3,2,6,1,4,,,3,5,7,3,7,3,44,,,,,,,,,
-LIMA,LIMA,SAN BARTOLO,,,,,,,,,1,,1,,,2,,,,,,,,,
-LIMA,LIMA,SAN BORJA,1,,,2,1,,1,1,,,,,,6,,,,,,,,,
-LIMA,LIMA,SAN ISIDRO,,,,,,,,,1,,,,,1,,,,,,,,,
-LIMA,LIMA,SAN JUAN DE LURIGANCHO,21,32,31,44,21,10,2,20,31,35,40,34,35,356,,,,,,,,,
-LIMA,LIMA,SAN JUAN DE MIRAFLORES,3,6,4,,4,3,,4,5,4,1,11,12,57,,,,,,,,,
-LIMA,LIMA,SAN LUIS,,1,1,1,1,1,1,,,2,1,2,1,12,,,,,,,,,
-LIMA,LIMA,SAN MARTIN DE PORRES,5,4,4,6,6,7,2,8,11,19,3,12,7,94,,,,,,,,,
-LIMA,LIMA,SAN MIGUEL,,,4,1,1,,,1,3,1,2,,,13,,,,,,,,,
-LIMA,LIMA,SANTA ANITA,9,16,6,6,4,4,,6,4,2,7,14,12,90,,,,,,,,,
-LIMA,LIMA,SANTIAGO DE SURCO,2,3,3,2,2,,1,1,1,5,3,,4,27,,,,,,,,,
-LIMA,LIMA,SURQUILLO,,1,2,1,1,1,2,,3,1,,1,1,14,,,,,,,,,
-LIMA,LIMA,VILLA EL SALVADOR,3,6,4,3,1,3,,9,10,11,7,4,8,69,,,,,,,,,
-LIMA,LIMA,VILLA MARIA DEL TRIUNFO,3,,3,3,,3,1,3,4,2,5,6,6,39,,,,,,,,,
-LIMA,BARRANCA,BARRANCA,,,6,5,1,,,1,,,,,3,16,,,,,,,,,
-LIMA,BARRANCA,PARAMONGA,,,1,1,2,1,1,,,,,,,6,,,,,,,,,
-LIMA,BARRANCA,PATIVILCA,,,1,,,,,,,,,,,1,,,,,,,,,
-LIMA,BARRANCA,SUPE,,,,1,,,,,,,,,2,3,,,,,,,,,
-LIMA,BARRANCA,SUPE PUERTO,,,,2,,,,,,,,,,2,,,,,,,,,
-LIMA,HUAROCHIRI,HUAROCHIRI,,3,,,,,,,,1,,2,,6,,,,,,,,,
-LIMA,HUAROCHIRI,RICARDO PALMA,,1,,,,,,,,,,,,1,,,,,,,,,
-LIMA,HUAROCHIRI,SAN ANTONIO,,,,,,,,,1,1,,1,2,5,,,,,,,,,
-LIMA,HUAROCHIRI,SAN BARTOLOME,,1,,,,,,,,,,,1,2,,,,,,,,,
-LIMA,HUAURA,HUACHO,1,,,,,1,,,,1,,,1,4,,,,,,,,,
-LIMA,HUAURA,HUALMAY,,,,,,,,,3,,,,,3,,,,,,,,,
-LIMA,HUAURA,HUAURA,1,,,,,,1,,1,,,,,3,,,,,,,,,
-LIMA,HUAURA,SANTA MARIA,,,,,,,,,1,,,,,1,,,,,,,,,
-LIMA,HUAURA,VEGUETA,,,,,,,,,1,,,,,1,,,,,,,,,
-LIMA,HUARAL,ATAVILLOS BAJO,,,,,,,,,,1,,,,1,,,,,,,,,
-LIMA,HUARAL,CHANCAY,,,,1,,,1,,,2,,3,,7,,,,,,,,,
-LIMA,HUARAL,HUARAL,2,,1,,,,,,,,,,,3,,,,,,,,,
-LIMA,CAÑETE,MALA,,1,3,,,,2,,,,,,,6,,,,,,,,,
-LIMA,CAÑETE,QUILMANA,,,,2,,,,,,,,,1,3,,,,,,,,,
-LIMA,CAÑETE,SAN VICENTE DE CAÑETE,,,1,,,2,,,4,2,,,2,11,,,,,,,,,
-LIMA,CANTA,CANTA,,2,,1,,,,,,,,,,3,,,,,,,,,
-LIMA,CANTA,HUAMANTANGA,,,,1,,,,,,,,,,1,,,,,,,,,
-LIMA,CAJATAMBO,GORGOR,,,,,,,,1,,,,,,1,,,,,,,,,
-LIMA,CAÑETE,ASIA,,,,,,,,,,1,,,,1,,,,,,,,,
-LIMA,CAÑETE,CHILCA,,,,,,,,,,,1,2,,3,,,,,,,,,
-LIMA,CAÑETE,IMPERIAL,1,1,,,,,1,,,,1,,,4,,,,,,,,,
-LIMA,CAÑETE,LUNAHUANA,,,,,,,,,1,,,,,1,,,,,,,,,
-LIMA,CAÑETE,NUEVO IMPERIAL,1,,,,,,,,1,,,,1,3,,,,,,,,,
-LIMA,CAÑETE,PACARAN,,,,,,,,,1,,,,,1,,,,,,,,,
-LORETO,MAYNAS,ALTO NANAY,,,1,,1,,,,1,,,,,3,,,,,,,,,
-LORETO,MAYNAS,BELEN,,,3,,3,1,,1,,,,,,8,,,,,,,,,
-LORETO,MAYNAS,FERNANDO LORES,,,,,,,,,,1,,,,1,,,,,,,,,
-LORETO,MAYNAS,IQUITOS,2,,6,1,,3,,1,3,1,,,1,18,,,,,,,,,
-LORETO,MAYNAS,MAZAN,,,,,,,,1,,,,,,1,,,,,,,,,
-LORETO,MAYNAS,PUNCHANA,2,,,1,,,1,8,3,2,,2,,19,,,,,,,,,
-LORETO,MAYNAS,SAN JUAN BAUTISTA,,1,8,3,,1,,,2,2,1,,,18,,,,,,,,,
-LORETO,ALTO AMAZONAS,BALSAPUERTO,,,,,,,1,,,,,,,1,,,,,,,,,
-LORETO,ALTO AMAZONAS,LAGUNAS,1,,,,,,,1,,,,,1,3,,,,,,,,,
-LORETO,ALTO AMAZONAS,SANTA CRUZ,,,,,,,,,,,,1,,1,,,,,,,,,
-LORETO,ALTO AMAZONAS,TENIENTE CESAR LOPEZ ROJAS,,,,,1,,,,,,,,,1,,,,,,,,,
-LORETO,ALTO AMAZONAS,YURIMAGUAS,6,8,7,3,2,2,2,1,2,,,,15,48,,,,,,,,,
-LORETO,DATEM DEL MARAÑON,BARRANCA,,,,1,,,,2,,,,,2,5,,,,,,,,,
-LORETO,DATEM DEL MARAÑON,MANSERICHE,,,,,,,,,,,,,1,1,,,,,,,,,
-LORETO,UCAYALI,CONTAMANA,,,,,3,,,,,,,,,3,,,,,,,,,
-LORETO,UCAYALI,VARGAS GUERRA,,3,,,,,,,,,,,,3,,,,,,,,,
-LORETO,LORETO,NAUTA,,,,,,,,,1,1,,,,2,,,,,,,,,
-LORETO,LORETO,TIGRE,,,,,,,,,1,1,,,,2,,,,,,,,,
-LORETO,PUTUMAYO,PUTUMAYO,,,,,,,,,,1,,,,1,,,,,,,,,
-LORETO,REQUENA,ALTO TAPICHE,,,,,,,,,1,,,,,1,,,,,,,,,
-LORETO,REQUENA,REQUENA,,,,,,,,,1,1,,,,2,,,,,,,,,
-LORETO,MARISCAL RAMON CASTILLA,RAMON CASTILLA,,,,,,,,,1,,,,,1,,,,,,,,,
-LORETO,MARISCAL RAMON CASTILLA,YAVARI,,,1,,,,,,,1,,,,2,,,,,,,,,
-MADRE DE DIOS,TAMBOPATA,INAMBARI,,,,,1,1,,1,2,5,,,,10,,,,,,,,,
-MADRE DE DIOS,TAMBOPATA,LAS PIEDRAS,,1,,,,,,,2,3,,,1,7,,,,,,,,,
-MADRE DE DIOS,TAMBOPATA,TAMBOPATA,,,,,2,,1,11,26,34,2,,,76,,,,,,,,,
-MADRE DE DIOS,MANU,HUEPETUHE,,,,,,,,,1,2,,,,3,,,,,,,,,
-MADRE DE DIOS,MANU,MADRE DE DIOS,,,,,,,,,,2,,,,2,,,,,,,,,
-MADRE DE DIOS,TAHUAMANU,IBERIA,,,,,,,,,,,1,,,1,,,,,,,,,
-MOQUEGUA,MARISCAL NIETO,MOQUEGUA,1,,2,1,1,,,,,,,,2,7,,,,,,,,,
-MOQUEGUA,ILO,ILO,2,1,2,3,4,1,,1,,,,,1,15,,,,,,,,,
-PASCO,OXAPAMPA,CHONTABAMBA,,,1,1,,,,,,,,,,2,,,,,,,,,
-PASCO,OXAPAMPA,CONSTITUCION,,,,,,,,1,1,,,,,2,,,,,,,,,
-PASCO,OXAPAMPA,HUANCABAMBA,,,,1,,,,,,,,,,1,,,,,,,,,
-PASCO,OXAPAMPA,OXAPAMPA,,2,,,1,,1,1,,,,,,5,,,,,,,,,
-PASCO,OXAPAMPA,PALCAZU,,1,,,,1,1,3,,1,1,,,8,,,,,,,,,
-PASCO,OXAPAMPA,POZUZO,,,1,,1,1,1,,1,1,1,,,7,,,,,,,,,
-PASCO,OXAPAMPA,PUERTO BERMUDEZ,1,2,2,,1,1,2,7,3,,1,2,2,24,,,,,,,,,
-PASCO,OXAPAMPA,VILLA RICA,2,2,,,,,,,,,2,,2,8,,,,,,,,,
-PASCO,PASCO,CHAUPIMARCA,,,,1,,,,,,,,2,1,4,,,,,,,,,
-PASCO,PASCO,HUARIACA,,2,,,,,,,2,,1,,,5,,,,,,,,,
-PASCO,PASCO,HUAYLLAY,,,,,,,,,,1,,,1,2,,,,,,,,,
-PASCO,PASCO,PALLANCHACRA,,,,,,,,,,,,1,,1,,,,,,,,,
-PASCO,PASCO,PAUCARTAMBO,,,1,,,,,,,,,,,1,,,,,,,,,
-PASCO,PASCO,SIMON BOLIVAR,,,,,,,,,,,,,1,1,,,,,,,,,
-PASCO,PASCO,YANACANCHA,,,,,,,,,,1,,,1,2,,,,,,,,,
-PASCO,DANIEL ALCIDES CARRION,CHACAYAN,,,,,,,,,,,,,2,2,,,,,,,,,
-PASCO,DANIEL ALCIDES CARRION,YANAHUANCA,,,,,,1,,1,,,,,,2,,,,,,,,,
-PIURA,PIURA,CASTILLA,,,,,,2,1,,1,,,,,4,,,,,,,,,
-PIURA,PIURA,CATACAOS,,,1,,1,,,,,,,,,2,,,,,,,,,
-PIURA,PIURA,LAS LOMAS,,,,,,,,,,1,,,,1,,,,,,,,,
-PIURA,PIURA,PIURA,,,,4,1,,,,1,1,,,,7,,,,,,,,,
-PIURA,PIURA,TAMBO GRANDE,,,,,,,,,,1,,,,1,,,,,,,,,
-PIURA,PIURA,VEINTISEIS DE OCTUBRE,,,,,,,,,1,,,,,1,,,,,,,,,
-PIURA,SULLANA,BELLAVISTA,,,,,,,,1,2,,,,1,4,,,,,,,,,
-PIURA,SULLANA,MARCAVELICA,,,,,,,,1,,,,,,1,,,,,,,,,
-PIURA,SULLANA,SULLANA,,,,,,,1,3,3,2,,,,9,,,,,,,,,
-PIURA,TALARA,MANCORA,,,,,,,,,,1,,,,1,,,,,,,,,
-PIURA,TALARA,PARIÑAS,,,,,,,1,,,2,,,,3,,,,,,,,,
-PIURA,MORROPON,CHULUCANAS,,1,,,,1,,,1,1,,,,4,,,,,,,,,
-PIURA,MORROPON,MORROPON,,,,,,,,1,,,,,,1,,,,,,,,,
-PIURA,SECHURA,BERNAL,,,,,,1,,,,,,,,1,,,,,,,,,
-PIURA,SECHURA,RINCONADA LLICUAR,,,1,,,,,,,,,,,1,,,,,,,,,
-PIURA,SECHURA,SECHURA,1,,,1,3,1,,,,,,,,6,,,,,,,,,
-PIURA,PAITA,COLAN,,1,,,,,,,,,,,,1,,,,,,,,,
-PIURA,PAITA,PAITA,,,,,,,2,,2,1,,,,5,,,,,,,,,
-PIURA,HUANCABAMBA,CANCHAQUE,,,,,,,,1,,,,,,1,,,,,,,,,
-PIURA,AYABACA,AYABACA,,,,,,,,,,,,,1,1,,,,,,,,,
-PIURA,AYABACA,MONTERO,,,,,,,,,,,,,1,1,,,,,,,,,
-PIURA,AYABACA,SAPILLICA,,,,,,,,,,1,,,,1,,,,,,,,,
-PUNO,PUNO,PUNO,,,,,1,,,,,,,,,1,,,,,,,,,
-PUNO,CHUCUITO,JULI,,,,,,,,,,1,,,,1,,,,,,,,,
-PUNO,SAN ROMAN,JULIACA,3,1,,,1,,1,,,1,,,,7,,,,,,,,,
-PUNO,AZANGARO,AZANGARO,,,,,,,,,,2,,,,2,,,,,,,,,
-PUNO,AZANGARO,SAN JOSE,,,,,,,,,,1,,,,1,,,,,,,,,
-PUNO,SANDIA,SANDIA,1,,1,,,,,,2,1,,,,5,,,,,,,,,
-PUNO,CARABAYA,ITUATA,,,,,,,,,,1,,,,1,,,,,,,,,
-PUNO,CARABAYA,MACUSANI,,,,1,,,,,,,,,,1,,,,,,,,,
-PUNO,CARABAYA,OLLACHEA,,,,1,,,,,,,,,,1,,,,,,,,,
-PUNO,LAMPA,LAMPA,,,,,,1,,,,,,,,1,,,,,,,,,
-SAN MARTIN,TOCACHE,TOCACHE,,,1,,,,,,,1,,,,2,,,,,,,,,
-SAN MARTIN,PICOTA,PICOTA,,,,,,,1,,,,,,3,4,,,,,,,,,
-SAN MARTIN,PICOTA,PUCACACA,,,,,,,1,,,,,,,1,,,,,,,,,
-SAN MARTIN,LAMAS,ALONSO DE ALVARADO,,,,,,,,,,1,,,,1,,,,,,,,,
-SAN MARTIN,LAMAS,CAYNARACHI,,,1,,,,2,,,,,,,3,,,,,,,,,
-SAN MARTIN,LAMAS,LAMAS,,,,,,,,,1,,,,,1,,,,,,,,,
-SAN MARTIN,MOYOBAMBA,CALZADA,,,,,,,,,,1,,,,1,,,,,,,,,
-SAN MARTIN,MOYOBAMBA,MOYOBAMBA,2,,,,,,,1,2,1,,3,1,10,,,,,,,,,
-SAN MARTIN,MOYOBAMBA,SORITOR,,1,3,1,1,,,1,1,3,,,,11,,,,,,,,,
-SAN MARTIN,MOYOBAMBA,YANTALO,,,,,,,,1,1,,,,,2,,,,,,,,,
-SAN MARTIN,MARISCAL CACERES,JUANJUI,3,1,,,,,,,,,1,,,5,,,,,,,,,
-SAN MARTIN,MARISCAL CACERES,PAJARILLO,1,1,,,,,,,,,,,,2,,,,,,,,,
-SAN MARTIN,SAN MARTIN,CHAZUTA,,2,,,,1,,,1,,,,,4,,,,,,,,,
-SAN MARTIN,SAN MARTIN,CHIPURANA,,,1,,,,,,,,,,,1,,,,,,,,,
-SAN MARTIN,SAN MARTIN,HUIMBAYOC,,,,1,,,,,,,,,,1,,,,,,,,,
-SAN MARTIN,SAN MARTIN,JUAN GUERRA,,,,,,,,,1,,,,,1,,,,,,,,,
-SAN MARTIN,SAN MARTIN,LA BANDA DE SHILCAYO,,,,,,,1,,3,,,,,4,,,,,,,,,
-SAN MARTIN,SAN MARTIN,PAPAPLAYA,,,,1,,,,,,,,,,1,,,,,,,,,
-SAN MARTIN,SAN MARTIN,SAUCE,,,,,,,1,,,,,,,1,,,,,,,,,
-SAN MARTIN,SAN MARTIN,TARAPOTO,1,1,,,,,,,2,,,,,4,,,,,,,,,
-SAN MARTIN,BELLAVISTA,BELLAVISTA,,,,,,,,,,1,,,,1,,,,,,,,,
-SAN MARTIN,HUALLAGA,PISCOYACU,,,,,1,1,,,,,,,,2,,,,,,,,,
-SAN MARTIN,HUALLAGA,SACANCHE,,,,,,1,,,,,,,,1,,,,,,,,,
-SAN MARTIN,HUALLAGA,SAPOSOA,,,,,2,1,,,,2,,,1,6,,,,,,,,,
-SAN MARTIN,EL DORADO,AGUA BLANCA,,,,,1,,,,,,1,,,2,,,,,,,,,
-SAN MARTIN,EL DORADO,SAN JOSE DE SISA,1,,,,,1,4,3,1,,,,3,13,,,,,,,,,
-SAN MARTIN,EL DORADO,SAN MARTIN,,,,,,,,,1,,,,,1,,,,,,,,,
-SAN MARTIN,EL DORADO,SANTA ROSA,,,,,1,,,1,,,,,,2,,,,,,,,,
-SAN MARTIN,EL DORADO,SHATOJA,,,,,,,,1,,,,,,1,,,,,,,,,
-SAN MARTIN,RIOJA,AWAJUN,2,,,1,,,,,,1,,1,1,6,,,,,,,,,
-SAN MARTIN,RIOJA,ELIAS SOPLIN VARGAS,,,,,,,,,,1,,,,1,,,,,,,,,
-SAN MARTIN,RIOJA,NUEVA CAJAMARCA,,,,,,1,,,2,,,1,1,5,,,,,,,,,
-SAN MARTIN,RIOJA,PARDO MIGUEL,,,,,,1,,,,,,,,1,,,,,,,,,
-SAN MARTIN,RIOJA,RIOJA,,,,,,,,,,1,,1,1,3,,,,,,,,,
-SAN MARTIN,RIOJA,YURACYACU,1,,,,,,,,,,,,,1,,,,,,,,,
-TACNA,TACNA,ALTO DE LA ALIANZA,,,,1,,,,,,,,,,1,,,,,,,,,
-TACNA,TACNA,CIUDAD NUEVA,,,1,1,,,,,,,,,,2,,,,,,,,,
-TACNA,TACNA,CORONEL GREGORIO ALBARRACIN LANCHIPA,,,1,,1,,,,,,,,,2,,,,,,,,,
-TACNA,TACNA,TACNA,,1,,3,,,,,1,,,,,5,,,,,,,,,
-TUMBES,TUMBES,CORRALES,,,,,,,1,,,1,1,2,1,6,,,,,,,,,
-TUMBES,TUMBES,LA CRUZ,,,,,1,,,1,,,,,,2,,,,,,,,,
-TUMBES,TUMBES,SAN JACINTO,,,,,,,,,,,,1,,1,,,,,,,,,
-TUMBES,TUMBES,TUMBES,1,,2,1,1,2,,4,2,3,5,4,6,31,,,,,,,,,
-TUMBES,ZARUMILLA,AGUAS VERDES,,1,,,2,1,2,1,,,,,1,8,,,,,,,,,
-TUMBES,ZARUMILLA,ZARUMILLA,,,,2,,,1,,,,1,,1,5,,,,,,,,,
-TUMBES,CONTRALMIRANTE VILLAR,CANOAS DE PUNTA SAL,,,,,,,,,,,,1,,1,,,,,,,,,
-TUMBES,CONTRALMIRANTE VILLAR,ZORRITOS,,,,,,,,1,,,,,,1,,,,,,,,,
-UCAYALI,CORONEL PORTILLO,CALLERIA,6,18,8,1,2,,1,,4,6,,,1,47,,,,,,,,,
-UCAYALI,CORONEL PORTILLO,CAMPOVERDE,,2,,,,,,,,,,,,2,,,,,,,,,
-UCAYALI,CORONEL PORTILLO,IPARIA,,,,,,,,1,,1,,,,2,,,,,,,,,
-UCAYALI,CORONEL PORTILLO,MANANTAY,,7,5,,1,1,1,,3,3,1,,1,23,,,,,,,,,
-UCAYALI,CORONEL PORTILLO,MASISEA,,1,,,,,,,,,,,,1,,,,,,,,,
-UCAYALI,CORONEL PORTILLO,YARINACOCHA,5,13,2,6,,,,,,,,,,26,,,,,,,,,
-UCAYALI,PADRE ABAD,CURIMANA,,,,,2,,,,,,,,,2,,,,,,,,,
-UCAYALI,PADRE ABAD,PADRE ABAD,,,,1,1,,1,2,,,1,,,6,,,,,,,,,
-UCAYALI,ATALAYA,RAIMONDI,,,,,,,,,,,,,9,9,,,,,,,,,
-UCAYALI,ATALAYA,RAYMONDI,1,2,3,3,5,2,11,10,5,8,3,11,,64,,,,,,,,,
-UCAYALI,ATALAYA,SEPAHUA,,,,,,2,1,2,7,,,,,12,,,,,,,,,
-UCAYALI,ATALAYA,TAHUANIA,,,,,,3,,1,,3,,1,,8,,,,,,,,,
-UCAYALI,ATALAYA,YURUA,,,1,,,,,,,,,,,1,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,
+"","DEPARTAMENTO","PROVINCIA","DISTRITO","2014","2015","2016","2017","2018","2019","2020","2021","2022","total"
+"1","AMAZONAS","CHACHAPOYAS","CHACHAPOYAS",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"2","AMAZONAS","BAGUA","ARAMANGO",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"3","AMAZONAS","BAGUA","BAGUA",NA,NA,NA,NA,NA,3,NA,NA,NA,3
+"4","AMAZONAS","BAGUA","IMAZA",1,1,2,NA,1,NA,NA,NA,NA,5
+"5","AMAZONAS","BAGUA","LA PECA",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"6","AMAZONAS","BONGARA","SHIPASBAMBA",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"7","AMAZONAS","CONDORCANQUI","NIEVA",3,NA,1,NA,2,NA,NA,NA,1,7
+"8","AMAZONAS","RODRIGUEZ DE MENDOZA","SAN NICOLAS",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"9","ANCASH","CASMA","CASMA",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"10","ANCASH","SANTA","CHIMBOTE",NA,NA,NA,NA,1,NA,1,NA,NA,2
+"11","ANCASH","SANTA","NEPEÑA",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"12","ANCASH","SANTA","NUEVO CHIMBOTE",NA,NA,1,1,NA,NA,NA,NA,5,7
+"13","ANCASH","HUARAZ","HUARAZ",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"14","ANCASH","HUARAZ","INDEPENDENCIA",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"15","ANCASH","HUAYLAS","CARAZ",NA,NA,NA,NA,NA,1,NA,1,NA,2
+"16","ANCASH","BOLOGNESI","CHIQUIAN",NA,1,NA,NA,NA,NA,NA,NA,NA,1
+"17","ANCASH","CARHUAZ","ANTA",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"18","ANCASH","CARHUAZ","CARHUAZ",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"19","ANCASH","SIHUAS","SIHUAS",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"20","APURIMAC","ABANCAY","ABANCAY",NA,NA,NA,1,NA,1,NA,NA,2,4
+"21","APURIMAC","ABANCAY","CURAHUASI",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"22","APURIMAC","ABANCAY","LAMBRAMA",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"23","APURIMAC","COTABAMBAS","COYLLURQUI",2,NA,NA,NA,NA,NA,NA,NA,NA,2
+"24","APURIMAC","AYMARAES","CHALHUANCA",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"25","APURIMAC","AYMARAES","COTARUSE",NA,NA,NA,NA,NA,NA,NA,NA,4,4
+"26","APURIMAC","GRAU","CHUQUIBAMBILLA",1,NA,NA,NA,1,NA,NA,NA,NA,2
+"27","APURIMAC","GRAU","MARISCAL GAMARRA",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"28","APURIMAC","ANDAHUAYLAS","ANDAHUAYLAS",2,NA,NA,3,NA,1,NA,1,NA,7
+"29","APURIMAC","ANDAHUAYLAS","PACUCHA",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"30","APURIMAC","ANDAHUAYLAS","PAMPACHIRI",NA,1,NA,NA,1,NA,NA,NA,NA,2
+"31","APURIMAC","ANDAHUAYLAS","SAN JERONIMO",NA,NA,NA,1,NA,NA,1,NA,NA,2
+"32","APURIMAC","ANDAHUAYLAS","SANTA MARIA DE CHICMO",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"33","APURIMAC","CHINCHEROS","ANCO HUALLO",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"34","APURIMAC","CHINCHEROS","HUACCANA",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"35","AREQUIPA","AREQUIPA","ALTO SELVA ALEGRE",1,NA,NA,NA,NA,2,1,2,1,7
+"36","AREQUIPA","AREQUIPA","AREQUIPA",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"37","AREQUIPA","AREQUIPA","CAYMA",NA,NA,NA,NA,NA,2,1,NA,2,5
+"38","AREQUIPA","AREQUIPA","CERRO COLORADO",NA,NA,5,2,1,1,2,5,3,19
+"39","AREQUIPA","AREQUIPA","CHARACATO",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"40","AREQUIPA","AREQUIPA","JOSE LUIS BUSTAMANTE Y RIVERO",NA,NA,NA,2,NA,NA,NA,NA,1,3
+"41","AREQUIPA","AREQUIPA","LA JOYA",NA,NA,NA,1,1,2,NA,1,3,8
+"42","AREQUIPA","AREQUIPA","MARIANO MELGAR",1,NA,1,1,1,NA,NA,3,5,12
+"43","AREQUIPA","AREQUIPA","MIRAFLORES",NA,NA,NA,NA,NA,1,NA,NA,1,2
+"44","AREQUIPA","AREQUIPA","PAUCARPATA",NA,NA,NA,1,2,4,2,1,5,15
+"45","AREQUIPA","AREQUIPA","SACHACA",NA,NA,NA,NA,1,NA,1,1,1,4
+"46","AREQUIPA","AREQUIPA","SOCABAYA",1,NA,NA,NA,1,NA,NA,1,NA,3
+"47","AREQUIPA","AREQUIPA","TIABAYA",NA,NA,NA,NA,1,NA,2,NA,NA,3
+"48","AREQUIPA","AREQUIPA","UCHUMAYO",NA,NA,NA,NA,NA,NA,1,1,NA,2
+"49","AREQUIPA","AREQUIPA","YURA",NA,NA,1,2,1,NA,NA,NA,1,5
+"50","AREQUIPA","CARAVELI","CHALA",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"51","AREQUIPA","CAMANA","CAMANA",NA,NA,NA,NA,1,NA,NA,NA,2,3
+"52","AREQUIPA","CAMANA","MARISCAL CACERES",NA,NA,NA,NA,NA,NA,NA,2,NA,2
+"53","AREQUIPA","ISLAY","COCACHACRA",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"54","AREQUIPA","ISLAY","MOLLENDO",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"55","AREQUIPA","CAYLLOMA","MAJES",NA,NA,NA,8,1,1,NA,1,5,16
+"56","AREQUIPA","CASTILLA","URACA",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"57","AYACUCHO","HUAMANGA","ACOS VINCHOS",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"58","AYACUCHO","HUAMANGA","ANDRES AVELINO CACERES DORREGARAY",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"59","AYACUCHO","HUAMANGA","AYACUCHO",NA,1,3,NA,2,2,3,1,1,13
+"60","AYACUCHO","HUAMANGA","CARMEN ALTO",NA,NA,NA,NA,NA,NA,1,2,2,5
+"61","AYACUCHO","HUAMANGA","JESUS NAZARENO",NA,NA,1,NA,NA,NA,NA,1,1,3
+"62","AYACUCHO","HUAMANGA","OCROS",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"63","AYACUCHO","HUAMANGA","SAN JUAN BAUTISTA",NA,NA,1,NA,NA,1,NA,3,2,7
+"64","AYACUCHO","HUAMANGA","SOCOS",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"65","AYACUCHO","HUAMANGA","TAMBILLO",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"66","AYACUCHO","HUAMANGA","VINCHOS",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"67","AYACUCHO","HUANTA","AYAHUANCO",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"68","AYACUCHO","HUANTA","HUANTA",NA,NA,NA,NA,NA,2,NA,NA,2,4
+"69","AYACUCHO","HUANTA","SANTILLANA",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"70","AYACUCHO","HUANTA","UCHURACCAY",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"71","AYACUCHO","LUCANAS","CHAVIÑA",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"72","AYACUCHO","LA MAR","AYNA",NA,1,1,1,NA,NA,NA,1,NA,4
+"73","AYACUCHO","LA MAR","SAMUGARI",NA,NA,NA,NA,1,NA,1,NA,NA,2
+"74","AYACUCHO","LA MAR","SAN MIGUEL",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"75","AYACUCHO","LA MAR","SANTA ROSA",1,NA,1,1,2,1,NA,NA,1,7
+"76","AYACUCHO","CANGALLO","CANGALLO",NA,1,NA,NA,NA,NA,NA,NA,NA,1
+"77","AYACUCHO","HUANCA SANCOS","SANTIAGO DE LUCANAMARCA",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"78","CAJAMARCA","JAEN","JAEN",1,NA,1,NA,NA,NA,NA,2,NA,4
+"79","CAJAMARCA","JAEN","PUCARA",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"80","CAJAMARCA","SAN IGNACIO","SAN IGNACIO",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"81","CAJAMARCA","SAN IGNACIO","SAN JOSE DE LOURDES",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"82","CAJAMARCA","CAJAMARCA","CAJAMARCA",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"83","CAJAMARCA","CUTERVO","CUTERVO",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"84","CAJAMARCA","CUTERVO","SAN LUIS DE LUCMA",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"85","CAJAMARCA","CONTUMAZA","CONTUMAZA",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"86","CAJAMARCA","CHOTA","CHOTA",1,NA,1,NA,NA,NA,NA,NA,NA,2
+"87","CAJAMARCA","CHOTA","CONCHAN",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"88","CAJAMARCA","CHOTA","LLAMA",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"89","CAJAMARCA","CHOTA","TACABAMBA",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"90","CAJAMARCA","HUALGAYOC","BAMBAMARCA",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"91","CALLAO","CALLAO","BELLAVISTA",NA,NA,1,1,2,NA,NA,NA,NA,4
+"92","CALLAO","CALLAO","CALLAO",5,7,5,6,13,13,7,7,9,72
+"93","CALLAO","CALLAO","CARMEN DE LA LEGUA-REYNOSO",NA,NA,1,NA,1,NA,1,NA,2,5
+"94","CALLAO","CALLAO","LA PERLA",NA,NA,1,NA,NA,NA,NA,1,1,3
+"95","CALLAO","CALLAO","MI PERU",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"96","CALLAO","CALLAO","VENTANILLA",4,3,7,18,3,11,2,2,NA,50
+"97","CUSCO","ANTA","ANTA",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"98","CUSCO","ANTA","CHINCHAYPUJIO",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"99","CUSCO","ANTA","HUAROCONDO",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"100","CUSCO","ANTA","MOLLEPATA",NA,NA,1,NA,NA,1,NA,NA,NA,2
+"101","CUSCO","ANTA","PUCYURA",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"102","CUSCO","ANTA","ZURITE",NA,1,1,NA,NA,NA,NA,NA,NA,2
+"103","CUSCO","CUSCO","CCORCA",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"104","CUSCO","CUSCO","CUSCO",4,NA,1,NA,1,1,NA,NA,1,8
+"105","CUSCO","CUSCO","POROY",2,NA,NA,NA,NA,NA,NA,NA,NA,2
+"106","CUSCO","CUSCO","SAN JERONIMO",NA,NA,1,NA,NA,3,1,1,NA,6
+"107","CUSCO","CUSCO","SAN SEBASTIAN",2,1,2,NA,2,2,3,NA,NA,12
+"108","CUSCO","CUSCO","SANTIAGO",4,1,2,3,1,NA,1,3,1,16
+"109","CUSCO","CUSCO","SAYLLA",NA,NA,NA,NA,NA,2,NA,NA,1,3
+"110","CUSCO","CUSCO","WANCHAQ",1,NA,NA,1,NA,2,NA,NA,NA,4
+"111","CUSCO","CHUMBIVILCAS","COLQUEMARCA",NA,NA,1,NA,NA,NA,NA,1,NA,2
+"112","CUSCO","CHUMBIVILCAS","LLUSCO",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"113","CUSCO","CHUMBIVILCAS","SANTO TOMAS",NA,NA,NA,NA,NA,2,NA,NA,NA,2
+"114","CUSCO","CHUMBIVILCAS","VELILLE",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"115","CUSCO","LA CONVENCION","ECHARATE",NA,NA,NA,1,NA,3,1,1,1,7
+"116","CUSCO","LA CONVENCION","HUAYOPATA",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"117","CUSCO","LA CONVENCION","INKAWASI",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"118","CUSCO","LA CONVENCION","KIMBIRI",NA,1,2,2,NA,NA,NA,2,2,9
+"119","CUSCO","LA CONVENCION","OCOBAMBA",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"120","CUSCO","LA CONVENCION","PICHARI",NA,NA,NA,1,1,1,1,1,NA,5
+"121","CUSCO","LA CONVENCION","SANTA ANA",NA,NA,1,1,1,NA,2,NA,NA,5
+"122","CUSCO","LA CONVENCION","VILLA VIRGEN",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"123","CUSCO","CALCA","CALCA",NA,NA,1,NA,1,NA,NA,NA,NA,2
+"124","CUSCO","CALCA","LAMAY",1,NA,NA,NA,NA,1,NA,NA,NA,2
+"125","CUSCO","CALCA","PISAC",NA,1,NA,NA,NA,NA,1,NA,NA,2
+"126","CUSCO","CALCA","SAN SALVADOR",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"127","CUSCO","CALCA","TARAY",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"128","CUSCO","CALCA","YANATILE",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"129","CUSCO","URUBAMBA","MARAS",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"130","CUSCO","URUBAMBA","OLLANTAYTAMBO",2,NA,NA,1,NA,NA,NA,NA,NA,3
+"131","CUSCO","URUBAMBA","URUBAMBA",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"132","CUSCO","PAUCARTAMBO","CHALLABAMBA",1,NA,NA,NA,1,NA,NA,NA,NA,2
+"133","CUSCO","PAUCARTAMBO","HUANCARANI",NA,NA,NA,1,NA,1,NA,1,NA,3
+"134","CUSCO","PAUCARTAMBO","KOSÑIPATA",NA,NA,NA,1,1,NA,NA,NA,NA,2
+"135","CUSCO","QUISPICANCHI","CCATCA",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"136","CUSCO","QUISPICANCHI","OROPESA",NA,NA,NA,NA,3,2,1,NA,NA,6
+"137","CUSCO","QUISPICANCHI","QUIQUIJANA",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"138","CUSCO","QUISPICANCHI","URCOS",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"139","CUSCO","CANCHIS","CHECACUPE",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"140","CUSCO","CANCHIS","SAN PABLO",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"141","CUSCO","CANCHIS","SICUANI",1,1,NA,2,3,1,1,1,NA,10
+"142","CUSCO","CANCHIS","TINTA",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"143","CUSCO","PARURO","ACCHA",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"144","CUSCO","PARURO","HUANOQUITE",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"145","CUSCO","CANAS","PAMPAMARCA",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"146","HUANCAVELICA","TAYACAJA","AHUAYCHA",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"147","HUANCAVELICA","TAYACAJA","COLCABAMBA",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"148","HUANCAVELICA","TAYACAJA","DANIEL HERNANDEZ",NA,1,NA,NA,1,NA,NA,NA,NA,2
+"149","HUANCAVELICA","TAYACAJA","PAMPAS",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"150","HUANCAVELICA","TAYACAJA","PICHOS",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"151","HUANCAVELICA","HUANCAVELICA","ASCENSION",NA,1,NA,NA,NA,NA,NA,NA,NA,1
+"152","HUANCAVELICA","ANGARAES","LIRCAY",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"153","HUANCAVELICA","CHURCAMPA","COSME",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"154","HUANCAVELICA","HUAYTARA","CORDOVA",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"155","HUANCAVELICA","HUAYTARA","PILPICHACA",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"156","HUANUCO","HUAMALIES","JACAS GRANDE",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"157","HUANUCO","HUAMALIES","MONZON",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"158","HUANUCO","HUANUCO","AMARILIS",NA,2,1,NA,NA,NA,1,2,NA,6
+"159","HUANUCO","HUANUCO","CHURUBAMBA",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"160","HUANUCO","HUANUCO","HUANUCO",2,NA,NA,2,NA,2,1,2,1,10
+"161","HUANUCO","HUANUCO","PILLCO MARCA",NA,NA,1,1,1,NA,1,NA,NA,4
+"162","HUANUCO","HUANUCO","SAN PABLO DE PILLAO",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"163","HUANUCO","HUANUCO","SANTA MARIA DEL VALLE",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"164","HUANUCO","PACHITEA","MOLINO",NA,NA,NA,NA,NA,NA,NA,2,NA,2
+"165","HUANUCO","PACHITEA","PANAO",NA,1,NA,NA,2,1,NA,2,1,7
+"166","HUANUCO","PACHITEA","UMARI",1,NA,NA,NA,NA,2,1,NA,NA,4
+"167","HUANUCO","LEONCIO PRADO","JOSE CRESPO Y CASTILLO",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"168","HUANUCO","LEONCIO PRADO","MARIANO DAMASO BERAUN",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"169","HUANUCO","LEONCIO PRADO","RUPA-RUPA",2,NA,NA,NA,NA,1,NA,NA,NA,3
+"170","HUANUCO","HUACAYBAMBA","COCHABAMBA",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"171","HUANUCO","DOS DE MAYO","MARIAS",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"172","HUANUCO","PUERTO INCA","PUERTO INCA",NA,NA,NA,2,1,NA,NA,1,NA,4
+"173","HUANUCO","PUERTO INCA","YUYAPICHIS",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"174","HUANUCO","AMBO","AMBO",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"175","HUANUCO","AMBO","HUACAR",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"176","ICA","ICA","ICA",NA,NA,1,NA,NA,1,NA,2,2,6
+"177","ICA","ICA","LA TINGUIÑA",NA,NA,NA,NA,NA,NA,NA,2,NA,2
+"178","ICA","ICA","LOS AQUIJES",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"179","ICA","ICA","PACHACUTEC",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"180","ICA","ICA","SANTIAGO",NA,NA,1,NA,NA,NA,NA,NA,1,2
+"181","ICA","ICA","SUBTANJALLA",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"182","ICA","ICA","YAUCA DEL ROSARIO",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"183","ICA","CHINCHA","CHINCHA ALTA",NA,NA,NA,2,NA,NA,NA,3,1,6
+"184","ICA","CHINCHA","CHINCHA BAJA",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"185","ICA","CHINCHA","GROCIO PRADO",NA,NA,NA,1,1,2,NA,NA,NA,4
+"186","ICA","CHINCHA","PUEBLO NUEVO",NA,NA,3,1,NA,3,1,NA,NA,8
+"187","ICA","CHINCHA","SUNAMPE",NA,NA,NA,1,1,NA,1,NA,NA,3
+"188","ICA","PISCO","PISCO",NA,NA,NA,1,3,3,NA,1,5,13
+"189","ICA","PISCO","SAN CLEMENTE",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"190","ICA","PISCO","TUPAC AMARU INCA",NA,NA,NA,2,NA,NA,NA,NA,NA,2
+"191","ICA","NAZCA","CHANGUILLO",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"192","ICA","PALPA","PALPA",NA,NA,1,NA,1,NA,NA,NA,NA,2
+"193","JUNIN","SATIPO","COVIRIALI",NA,NA,NA,NA,NA,NA,NA,NA,2,2
+"194","JUNIN","SATIPO","MAZAMARI",1,NA,1,3,NA,NA,NA,1,3,9
+"195","JUNIN","SATIPO","PAMPA HERMOSA",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"196","JUNIN","SATIPO","PANGOA",NA,1,3,2,NA,NA,NA,NA,1,7
+"197","JUNIN","SATIPO","RIO NEGRO",NA,NA,1,1,2,NA,NA,2,1,7
+"198","JUNIN","SATIPO","RIO TAMBO",NA,NA,NA,NA,NA,NA,NA,1,3,4
+"199","JUNIN","SATIPO","SATIPO",NA,NA,4,NA,1,NA,NA,7,9,21
+"200","JUNIN","TARMA","TARMA",NA,1,NA,NA,NA,NA,NA,NA,NA,1
+"201","JUNIN","HUANCAYO","CHILCA",1,3,2,1,NA,2,2,1,2,14
+"202","JUNIN","HUANCAYO","EL TAMBO",1,2,1,1,NA,NA,2,1,2,10
+"203","JUNIN","HUANCAYO","HUANCAN",NA,NA,NA,NA,NA,NA,1,NA,1,2
+"204","JUNIN","HUANCAYO","HUANCAYO",6,NA,2,3,1,NA,1,3,NA,16
+"205","JUNIN","HUANCAYO","HUAYUCACHI",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"206","JUNIN","HUANCAYO","PARIAHUANCA",1,2,NA,NA,NA,NA,NA,NA,NA,3
+"207","JUNIN","HUANCAYO","PILCOMAYO",NA,NA,NA,NA,1,NA,NA,1,NA,2
+"208","JUNIN","HUANCAYO","SAN AGUSTIN",NA,2,NA,1,NA,NA,NA,NA,NA,3
+"209","JUNIN","HUANCAYO","SAN JERONIMO DE TUNAN",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"210","JUNIN","HUANCAYO","SAPALLANGA",NA,1,NA,1,NA,NA,NA,NA,NA,2
+"211","JUNIN","HUANCAYO","SICAYA",NA,1,NA,NA,NA,NA,1,NA,NA,2
+"212","JUNIN","CHANCHAMAYO","CHANCHAMAYO",NA,NA,NA,NA,NA,NA,1,1,1,3
+"213","JUNIN","CHANCHAMAYO","PERENE",NA,NA,1,1,2,1,2,NA,1,8
+"214","JUNIN","CHANCHAMAYO","PICHANAQUI",NA,1,NA,NA,NA,1,NA,1,1,4
+"215","JUNIN","CHANCHAMAYO","SAN RAMON",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"216","JUNIN","YAULI","LA OROYA",NA,NA,1,NA,NA,1,NA,NA,NA,2
+"217","JUNIN","CONCEPCION","ANDAMARCA",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"218","JUNIN","CONCEPCION","CONCEPCION",NA,NA,2,NA,NA,NA,NA,NA,NA,2
+"219","JUNIN","CONCEPCION","MATAHUASI",NA,NA,NA,1,NA,NA,1,NA,NA,2
+"220","JUNIN","JAUJA","HUAMALI",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"221","JUNIN","CHUPACA","CHONGOS BAJO",NA,1,2,NA,NA,NA,NA,NA,NA,3
+"222","JUNIN","CHUPACA","CHUPACA",1,NA,NA,NA,NA,NA,NA,1,NA,2
+"223","JUNIN","CHUPACA","TRES DE DICIEMBRE",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"224","LA LIBERTAD","ASCOPE","ASCOPE",NA,NA,NA,NA,NA,NA,NA,1,1,2
+"225","LA LIBERTAD","ASCOPE","CASA GRANDE",3,NA,NA,NA,NA,NA,NA,NA,NA,3
+"226","LA LIBERTAD","ASCOPE","CHICAMA",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"227","LA LIBERTAD","ASCOPE","MAGDALENA DE CAO",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"228","LA LIBERTAD","ASCOPE","PAIJAN",NA,1,1,NA,NA,1,NA,NA,NA,3
+"229","LA LIBERTAD","ASCOPE","RAZURI",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"230","LA LIBERTAD","ASCOPE","SANTIAGO DE CAO",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"231","LA LIBERTAD","TRUJILLO","EL PORVENIR",5,1,8,6,2,5,NA,2,5,34
+"232","LA LIBERTAD","TRUJILLO","FLORENCIA DE MORA",1,NA,1,NA,3,6,3,4,3,21
+"233","LA LIBERTAD","TRUJILLO","HUANCHACO",NA,6,NA,NA,2,1,2,1,1,13
+"234","LA LIBERTAD","TRUJILLO","LA ESPERANZA",4,9,7,8,1,5,3,2,5,44
+"235","LA LIBERTAD","TRUJILLO","LAREDO",2,1,2,NA,NA,NA,1,NA,NA,6
+"236","LA LIBERTAD","TRUJILLO","MOCHE",1,NA,NA,1,NA,NA,1,NA,NA,3
+"237","LA LIBERTAD","TRUJILLO","SALAVERRY",1,NA,NA,NA,2,NA,NA,NA,NA,3
+"238","LA LIBERTAD","TRUJILLO","TRUJILLO",5,4,2,1,2,5,NA,6,2,27
+"239","LA LIBERTAD","TRUJILLO","VICTOR LARCO HERRERA",NA,NA,NA,NA,3,1,NA,NA,2,6
+"240","LA LIBERTAD","PACASMAYO","GUADALUPE",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"241","LA LIBERTAD","PACASMAYO","PACASMAYO",NA,1,NA,NA,NA,NA,NA,1,NA,2
+"242","LA LIBERTAD","PACASMAYO","SAN PEDRO DE LLOC",NA,1,NA,NA,NA,NA,NA,1,NA,2
+"243","LA LIBERTAD","CHEPEN","CHEPEN",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"244","LA LIBERTAD","VIRU","CHAO",NA,NA,NA,NA,1,6,1,4,3,15
+"245","LA LIBERTAD","VIRU","VIRU",1,NA,NA,NA,NA,NA,2,4,4,11
+"246","LA LIBERTAD","PATAZ","PARCOY",1,NA,1,NA,NA,NA,NA,NA,1,3
+"247","LA LIBERTAD","PATAZ","TAYABAMBA",NA,NA,1,NA,1,NA,NA,NA,NA,2
+"248","LA LIBERTAD","SANCHEZ CARRION","CHUGAY",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"249","LA LIBERTAD","SANCHEZ CARRION","HUAMACHUCO",NA,2,NA,NA,NA,1,1,1,2,7
+"250","LA LIBERTAD","SANCHEZ CARRION","SARIN",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"251","LA LIBERTAD","OTUZCO","OTUZCO",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"252","LA LIBERTAD","OTUZCO","SINSICAP",NA,1,NA,NA,NA,NA,NA,NA,NA,1
+"253","LA LIBERTAD","OTUZCO","USQUIL",NA,NA,1,1,NA,NA,NA,NA,NA,2
+"254","LA LIBERTAD","SANTIAGO DE CHUCO","QUIRUVILCA",NA,NA,NA,NA,NA,NA,2,1,NA,3
+"255","LA LIBERTAD","SANTIAGO DE CHUCO","SANTIAGO DE CHUCO",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"256","LAMBAYEQUE","CHICLAYO","CAYALTI",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"257","LAMBAYEQUE","CHICLAYO","CHICLAYO",1,2,1,2,2,1,NA,NA,1,10
+"258","LAMBAYEQUE","CHICLAYO","JOSE LEONARDO ORTIZ",1,1,3,1,NA,6,NA,NA,NA,12
+"259","LAMBAYEQUE","CHICLAYO","LA VICTORIA",NA,NA,1,NA,1,NA,NA,NA,NA,2
+"260","LAMBAYEQUE","CHICLAYO","PATAPO",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"261","LAMBAYEQUE","CHICLAYO","PIMENTEL",1,NA,NA,NA,1,NA,NA,NA,NA,2
+"262","LAMBAYEQUE","CHICLAYO","POMALCA",1,NA,1,NA,NA,NA,NA,NA,NA,2
+"263","LAMBAYEQUE","CHICLAYO","SAÑA",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"264","LAMBAYEQUE","CHICLAYO","SANTA ROSA",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"265","LAMBAYEQUE","LAMBAYEQUE","ILLIMO",NA,1,NA,NA,1,NA,NA,NA,NA,2
+"266","LAMBAYEQUE","LAMBAYEQUE","JAYANCA",NA,NA,NA,NA,NA,1,NA,1,1,3
+"267","LAMBAYEQUE","LAMBAYEQUE","LAMBAYEQUE",NA,1,3,NA,NA,1,NA,NA,1,6
+"268","LAMBAYEQUE","LAMBAYEQUE","MOCHUMI",NA,NA,1,NA,NA,NA,NA,1,NA,2
+"269","LAMBAYEQUE","LAMBAYEQUE","MORROPE",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"270","LAMBAYEQUE","LAMBAYEQUE","MOTUPE",NA,NA,NA,1,1,NA,NA,NA,NA,2
+"271","LAMBAYEQUE","LAMBAYEQUE","OLMOS",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"272","LAMBAYEQUE","LAMBAYEQUE","PACORA",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"273","LAMBAYEQUE","FERREÑAFE","FERREÑAFE",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"274","LIMA","LIMA","ANCON",NA,1,NA,NA,NA,NA,1,NA,NA,2
+"275","LIMA","LIMA","ATE",11,7,3,4,14,14,17,10,20,100
+"276","LIMA","LIMA","BARRANCO",1,NA,1,NA,1,NA,NA,NA,NA,3
+"277","LIMA","LIMA","BREÑA",1,NA,1,NA,1,NA,2,1,2,8
+"278","LIMA","LIMA","CARABAYLLO",2,3,1,1,1,2,4,1,4,19
+"279","LIMA","LIMA","CHACLACAYO",1,NA,NA,NA,1,NA,NA,2,NA,4
+"280","LIMA","LIMA","CHORRILLOS",1,3,NA,1,1,2,3,7,3,21
+"281","LIMA","LIMA","CIENEGUILLA",NA,NA,NA,NA,NA,NA,NA,NA,3,3
+"282","LIMA","LIMA","COMAS",3,3,NA,2,14,13,5,3,14,57
+"283","LIMA","LIMA","EL AGUSTINO",4,7,2,3,9,15,13,26,18,97
+"284","LIMA","LIMA","INDEPENDENCIA",1,1,NA,1,5,6,3,5,1,23
+"285","LIMA","LIMA","JESUS MARIA",1,NA,NA,1,1,2,NA,3,1,9
+"286","LIMA","LIMA","LA MOLINA",2,NA,NA,NA,1,NA,3,1,1,8
+"287","LIMA","LIMA","LA VICTORIA",9,10,8,8,6,1,10,9,7,68
+"288","LIMA","LIMA","LIMA",12,6,4,10,12,6,23,11,13,97
+"289","LIMA","LIMA","LOS OLIVOS",NA,3,NA,2,2,8,4,1,4,24
+"290","LIMA","LIMA","LURIGANCHO",3,2,NA,NA,7,NA,4,1,4,21
+"291","LIMA","LIMA","LURIN",NA,NA,NA,2,1,2,3,3,2,13
+"292","LIMA","LIMA","MAGDALENA DEL MAR",NA,NA,NA,NA,2,2,2,NA,NA,6
+"293","LIMA","LIMA","MIRAFLORES",NA,1,NA,NA,NA,NA,NA,NA,NA,1
+"294","LIMA","LIMA","PACHACAMAC",3,NA,NA,1,4,NA,6,4,2,20
+"295","LIMA","LIMA","PUCUSANA",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"296","LIMA","LIMA","PUEBLO LIBRE",1,NA,1,1,NA,1,NA,2,2,8
+"297","LIMA","LIMA","PUENTE PIEDRA",10,3,4,4,4,4,11,8,6,54
+"298","LIMA","LIMA","RIMAC",4,NA,NA,3,4,6,4,5,3,29
+"299","LIMA","LIMA","SAN BARTOLO",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"300","LIMA","LIMA","SAN BORJA",1,NA,1,1,NA,NA,NA,NA,NA,3
+"301","LIMA","LIMA","SAN ISIDRO",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"302","LIMA","LIMA","SAN JUAN DE LURIGANCHO",21,10,2,19,32,26,29,30,20,189
+"303","LIMA","LIMA","SAN JUAN DE MIRAFLORES",4,3,NA,4,7,3,1,4,12,38
+"304","LIMA","LIMA","SAN LUIS",1,1,1,NA,NA,NA,1,1,NA,5
+"305","LIMA","LIMA","SAN MARTIN DE PORRES",6,7,2,8,10,17,6,10,6,72
+"306","LIMA","LIMA","SAN MIGUEL",1,NA,NA,1,3,NA,3,1,NA,9
+"307","LIMA","LIMA","SANTA ANITA",4,4,NA,6,3,3,7,12,10,49
+"308","LIMA","LIMA","SANTIAGO DE SURCO",2,NA,1,1,1,4,2,NA,2,13
+"309","LIMA","LIMA","SURQUILLO",1,1,2,NA,1,NA,NA,1,NA,6
+"310","LIMA","LIMA","VILLA EL SALVADOR",1,3,NA,6,12,8,7,6,12,55
+"311","LIMA","LIMA","VILLA MARIA DEL TRIUNFO",NA,3,1,3,5,2,3,6,7,30
+"312","LIMA","BARRANCA","BARRANCA",1,NA,NA,1,NA,NA,NA,NA,3,5
+"313","LIMA","BARRANCA","PARAMONGA",2,1,1,NA,NA,NA,NA,NA,NA,4
+"314","LIMA","BARRANCA","SUPE",NA,NA,NA,NA,NA,NA,NA,NA,2,2
+"315","LIMA","HUAROCHIRI","HUAROCHIRI",NA,NA,NA,NA,NA,1,NA,2,NA,3
+"316","LIMA","HUAROCHIRI","RICARDO PALMA",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"317","LIMA","HUAROCHIRI","SAN ANTONIO",NA,NA,NA,NA,1,1,NA,NA,1,3
+"318","LIMA","HUAROCHIRI","SAN BARTOLOME",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"319","LIMA","HUAURA","CALETA DE CARQUIN",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"320","LIMA","HUAURA","HUACHO",NA,1,NA,NA,1,2,2,NA,1,7
+"321","LIMA","HUAURA","HUALMAY",NA,NA,NA,NA,2,NA,NA,NA,NA,2
+"322","LIMA","HUAURA","HUAURA",NA,NA,1,NA,1,2,2,NA,NA,6
+"323","LIMA","HUAURA","SANTA MARIA",NA,NA,NA,NA,2,2,NA,1,NA,5
+"324","LIMA","HUAURA","SAYAN",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"325","LIMA","HUAURA","VEGUETA",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"326","LIMA","HUARAL","ATAVILLOS BAJO",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"327","LIMA","HUARAL","CHANCAY",NA,NA,1,NA,NA,2,NA,3,NA,6
+"328","LIMA","CAÑETE","ASIA",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"329","LIMA","CAÑETE","CHILCA",NA,NA,NA,NA,NA,NA,NA,2,NA,2
+"330","LIMA","CAÑETE","IMPERIAL",NA,NA,1,NA,NA,NA,2,2,NA,5
+"331","LIMA","CAÑETE","LUNAHUANA",NA,NA,NA,NA,1,NA,NA,NA,1,2
+"332","LIMA","CAÑETE","MALA",NA,NA,1,NA,NA,NA,1,NA,2,4
+"333","LIMA","CAÑETE","NUEVO IMPERIAL",NA,NA,NA,NA,1,NA,NA,NA,1,2
+"334","LIMA","CAÑETE","QUILMANA",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"335","LIMA","CAÑETE","SAN VICENTE DE CAÑETE",NA,2,NA,NA,3,2,NA,1,3,11
+"336","LIMA","CAJATAMBO","GORGOR",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"337","LIMA","CAÑETE","SAN ANTONIO",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"338","LORETO","MAYNAS","ALTO NANAY",1,NA,NA,NA,1,NA,NA,NA,NA,2
+"339","LORETO","MAYNAS","BELEN",3,1,NA,1,NA,NA,NA,NA,NA,5
+"340","LORETO","MAYNAS","FERNANDO LORES",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"341","LORETO","MAYNAS","IQUITOS",NA,3,NA,2,3,1,NA,NA,1,10
+"342","LORETO","MAYNAS","MAZAN",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"343","LORETO","MAYNAS","PUNCHANA",NA,NA,1,8,3,2,NA,2,NA,16
+"344","LORETO","MAYNAS","SAN JUAN BAUTISTA",NA,1,NA,NA,2,2,1,NA,NA,6
+"345","LORETO","ALTO AMAZONAS","BALSAPUERTO",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"346","LORETO","ALTO AMAZONAS","LAGUNAS",NA,NA,NA,1,NA,NA,NA,NA,1,2
+"347","LORETO","ALTO AMAZONAS","SANTA CRUZ",NA,NA,NA,NA,NA,NA,NA,1,1,2
+"348","LORETO","ALTO AMAZONAS","TENIENTE CESAR LOPEZ ROJAS",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"349","LORETO","ALTO AMAZONAS","YURIMAGUAS",2,2,2,1,3,1,NA,NA,11,22
+"350","LORETO","DATEM DEL MARAÑON","BARRANCA",NA,NA,NA,2,NA,NA,NA,NA,2,4
+"351","LORETO","DATEM DEL MARAÑON","MANSERICHE",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"352","LORETO","UCAYALI","CONTAMANA",3,NA,NA,NA,NA,NA,NA,NA,NA,3
+"353","LORETO","LORETO","NAUTA",NA,NA,NA,NA,1,1,NA,NA,NA,2
+"354","LORETO","LORETO","TIGRE",NA,NA,NA,NA,1,1,NA,NA,NA,2
+"355","LORETO","PUTUMAYO","PUTUMAYO",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"356","LORETO","REQUENA","ALTO TAPICHE",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"357","LORETO","REQUENA","REQUENA",NA,NA,NA,NA,1,1,NA,NA,NA,2
+"358","LORETO","MARISCAL RAMON CASTILLA","RAMON CASTILLA",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"359","LORETO","MARISCAL RAMON CASTILLA","YAVARI",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"360","MADRE DE DIOS","TAMBOPATA","INAMBARI",1,1,NA,1,2,3,NA,NA,NA,8
+"361","MADRE DE DIOS","TAMBOPATA","LAS PIEDRAS",NA,NA,NA,NA,2,1,NA,NA,NA,3
+"362","MADRE DE DIOS","TAMBOPATA","TAMBOPATA",2,NA,1,10,17,11,6,NA,NA,47
+"363","MADRE DE DIOS","MANU","HUEPETUHE",NA,NA,NA,NA,1,1,NA,NA,NA,2
+"364","MADRE DE DIOS","MANU","MADRE DE DIOS",NA,NA,NA,NA,2,2,NA,NA,NA,4
+"365","MADRE DE DIOS","TAHUAMANU","IBERIA",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"366","MOQUEGUA","MARISCAL NIETO","MOQUEGUA",1,NA,NA,NA,NA,NA,NA,NA,2,3
+"367","MOQUEGUA","ILO","ILO",4,1,NA,1,NA,NA,NA,NA,3,9
+"368","PASCO","OXAPAMPA","CHONTABAMBA",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"369","PASCO","OXAPAMPA","CONSTITUCION",NA,NA,NA,1,1,NA,NA,NA,NA,2
+"370","PASCO","OXAPAMPA","OXAPAMPA",1,NA,1,1,NA,NA,NA,NA,NA,3
+"371","PASCO","OXAPAMPA","PALCAZU",NA,1,1,3,NA,1,1,NA,NA,7
+"372","PASCO","OXAPAMPA","POZUZO",1,1,1,NA,1,1,1,NA,NA,6
+"373","PASCO","OXAPAMPA","PUERTO BERMUDEZ",1,1,2,7,4,1,NA,2,4,22
+"374","PASCO","OXAPAMPA","VILLA RICA",NA,NA,NA,NA,2,NA,2,NA,NA,4
+"375","PASCO","PASCO","CHAUPIMARCA",NA,NA,NA,1,NA,NA,NA,2,1,4
+"376","PASCO","PASCO","HUARIACA",NA,NA,NA,NA,2,NA,1,NA,NA,3
+"377","PASCO","PASCO","HUAYLLAY",NA,NA,NA,NA,NA,1,NA,NA,1,2
+"378","PASCO","PASCO","PALLANCHACRA",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"379","PASCO","PASCO","SIMON BOLIVAR",NA,NA,NA,NA,NA,NA,NA,NA,1,1
+"380","PASCO","PASCO","YANACANCHA",NA,NA,NA,1,NA,1,NA,NA,1,3
+"381","PASCO","DANIEL ALCIDES CARRION","CHACAYAN",NA,NA,NA,NA,NA,NA,NA,NA,2,2
+"382","PASCO","DANIEL ALCIDES CARRION","YANAHUANCA",NA,1,1,1,NA,NA,NA,NA,NA,3
+"383","PIURA","PIURA","CASTILLA",NA,2,1,NA,1,NA,NA,NA,NA,4
+"384","PIURA","PIURA","CATACAOS",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"385","PIURA","PIURA","LA UNION",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"386","PIURA","PIURA","LAS LOMAS",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"387","PIURA","PIURA","PIURA",1,1,NA,NA,1,1,NA,NA,NA,4
+"388","PIURA","PIURA","TAMBO GRANDE",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"389","PIURA","PIURA","VEINTISEIS DE OCTUBRE",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"390","PIURA","SULLANA","BELLAVISTA",NA,NA,NA,1,2,NA,NA,NA,1,4
+"391","PIURA","SULLANA","MARCAVELICA",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"392","PIURA","SULLANA","SULLANA",NA,NA,1,3,3,2,NA,NA,NA,9
+"393","PIURA","TALARA","MANCORA",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"394","PIURA","TALARA","PARIÑAS",NA,NA,1,NA,NA,2,NA,NA,NA,3
+"395","PIURA","MORROPON","CHULUCANAS",NA,1,NA,NA,1,1,NA,NA,NA,3
+"396","PIURA","MORROPON","MORROPON",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"397","PIURA","SECHURA","BERNAL",NA,1,NA,NA,NA,NA,NA,NA,NA,1
+"398","PIURA","SECHURA","SECHURA",3,1,NA,NA,NA,NA,NA,NA,NA,4
+"399","PIURA","PAITA","PAITA",NA,NA,2,NA,2,1,NA,NA,NA,5
+"400","PIURA","HUANCABAMBA","CANCHAQUE",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"401","PIURA","AYABACA","AYABACA",NA,NA,NA,NA,NA,NA,NA,NA,2,2
+"402","PIURA","AYABACA","MONTERO",NA,NA,NA,NA,NA,NA,NA,NA,2,2
+"403","PIURA","AYABACA","SAPILLICA",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"404","PUNO","PUNO","PUNO",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"405","PUNO","CHUCUITO","JULI",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"406","PUNO","SAN ROMAN","JULIACA",1,NA,1,NA,NA,2,NA,NA,NA,4
+"407","PUNO","AZANGARO","AZANGARO",NA,NA,NA,NA,NA,2,NA,NA,NA,2
+"408","PUNO","AZANGARO","SAN JOSE",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"409","PUNO","SANDIA","ALTO INAMBARI",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"410","PUNO","SANDIA","SANDIA",NA,NA,NA,NA,3,1,NA,NA,NA,4
+"411","PUNO","CARABAYA","ITUATA",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"412","PUNO","LAMPA","LAMPA",NA,1,NA,NA,NA,NA,NA,NA,NA,1
+"413","SAN MARTIN","TOCACHE","TOCACHE",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"414","SAN MARTIN","PICOTA","PICOTA",NA,NA,1,NA,NA,NA,1,NA,3,5
+"415","SAN MARTIN","PICOTA","PUCACACA",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"416","SAN MARTIN","LAMAS","ALONSO DE ALVARADO",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"417","SAN MARTIN","LAMAS","CAYNARACHI",NA,NA,2,NA,NA,NA,NA,NA,NA,2
+"418","SAN MARTIN","LAMAS","LAMAS",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"419","SAN MARTIN","MOYOBAMBA","CALZADA",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"420","SAN MARTIN","MOYOBAMBA","MOYOBAMBA",NA,NA,NA,1,2,1,1,2,1,8
+"421","SAN MARTIN","MOYOBAMBA","SORITOR",1,NA,NA,1,1,3,NA,NA,NA,6
+"422","SAN MARTIN","MOYOBAMBA","YANTALO",NA,NA,NA,1,1,NA,NA,NA,NA,2
+"423","SAN MARTIN","MARISCAL CACERES","JUANJUI",NA,NA,NA,NA,NA,NA,1,NA,NA,1
+"424","SAN MARTIN","SAN MARTIN","CHAZUTA",NA,1,NA,NA,1,NA,NA,NA,NA,2
+"425","SAN MARTIN","SAN MARTIN","JUAN GUERRA",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"426","SAN MARTIN","SAN MARTIN","LA BANDA DE SHILCAYO",NA,NA,1,NA,3,NA,NA,NA,NA,4
+"427","SAN MARTIN","SAN MARTIN","SAUCE",NA,NA,1,NA,NA,NA,NA,NA,NA,1
+"428","SAN MARTIN","SAN MARTIN","TARAPOTO",NA,NA,NA,NA,2,NA,NA,NA,NA,2
+"429","SAN MARTIN","BELLAVISTA","BELLAVISTA",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"430","SAN MARTIN","HUALLAGA","PISCOYACU",1,1,NA,NA,NA,NA,NA,NA,NA,2
+"431","SAN MARTIN","HUALLAGA","SACANCHE",NA,1,NA,NA,NA,NA,NA,NA,NA,1
+"432","SAN MARTIN","HUALLAGA","SAPOSOA",2,1,NA,NA,NA,2,NA,NA,1,6
+"433","SAN MARTIN","EL DORADO","AGUA BLANCA",1,NA,NA,NA,NA,NA,1,NA,NA,2
+"434","SAN MARTIN","EL DORADO","SAN JOSE DE SISA",NA,1,4,3,1,NA,NA,NA,3,12
+"435","SAN MARTIN","EL DORADO","SAN MARTIN",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"436","SAN MARTIN","EL DORADO","SANTA ROSA",1,NA,NA,1,NA,NA,NA,NA,NA,2
+"437","SAN MARTIN","EL DORADO","SHATOJA",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"438","SAN MARTIN","RIOJA","AWAJUN",NA,NA,NA,NA,NA,1,NA,1,1,3
+"439","SAN MARTIN","RIOJA","ELIAS SOPLIN VARGAS",NA,NA,NA,NA,NA,1,NA,NA,NA,1
+"440","SAN MARTIN","RIOJA","NUEVA CAJAMARCA",NA,1,NA,NA,2,NA,NA,1,1,5
+"441","SAN MARTIN","RIOJA","PARDO MIGUEL",NA,1,NA,NA,NA,NA,NA,NA,NA,1
+"442","SAN MARTIN","RIOJA","RIOJA",NA,NA,NA,NA,NA,1,NA,1,1,3
+"443","TACNA","TACNA","CIUDAD NUEVA",NA,1,NA,NA,NA,NA,NA,NA,NA,1
+"444","TACNA","TACNA","CORONEL GREGORIO ALBARRACIN LANCHIPA",1,NA,NA,NA,NA,NA,NA,NA,NA,1
+"445","TACNA","TACNA","TACNA",NA,NA,NA,NA,1,NA,NA,NA,NA,1
+"446","TUMBES","TUMBES","CORRALES",NA,NA,1,NA,NA,1,1,2,1,6
+"447","TUMBES","TUMBES","LA CRUZ",1,NA,NA,1,NA,NA,NA,NA,NA,2
+"448","TUMBES","TUMBES","SAN JACINTO",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"449","TUMBES","TUMBES","TUMBES",1,2,NA,4,2,3,5,4,6,27
+"450","TUMBES","ZARUMILLA","AGUAS VERDES",2,1,2,1,NA,NA,NA,NA,1,7
+"451","TUMBES","ZARUMILLA","ZARUMILLA",NA,NA,1,NA,NA,NA,1,NA,1,3
+"452","TUMBES","CONTRALMIRANTE VILLAR","CANOAS DE PUNTA SAL",NA,NA,NA,NA,NA,NA,NA,1,NA,1
+"453","TUMBES","CONTRALMIRANTE VILLAR","ZORRITOS",NA,NA,NA,1,NA,NA,NA,NA,NA,1
+"454","UCAYALI","CORONEL PORTILLO","CALLERIA",2,NA,1,NA,4,6,NA,NA,1,14
+"455","UCAYALI","CORONEL PORTILLO","IPARIA",NA,NA,NA,1,NA,1,NA,NA,NA,2
+"456","UCAYALI","CORONEL PORTILLO","MANANTAY",1,1,1,NA,3,3,1,NA,1,11
+"457","UCAYALI","PADRE ABAD","CURIMANA",2,NA,NA,NA,NA,NA,NA,NA,NA,2
+"458","UCAYALI","PADRE ABAD","PADRE ABAD",1,NA,1,2,NA,NA,1,NA,NA,5
+"459","UCAYALI","ATALAYA","RAIMONDI",NA,NA,NA,NA,6,8,3,11,9,37
+"460","UCAYALI","ATALAYA","RAYMONDI",5,2,11,10,NA,NA,NA,NA,NA,28
+"461","UCAYALI","ATALAYA","SEPAHUA",NA,2,1,2,7,NA,NA,NA,1,13
+"462","UCAYALI","ATALAYA","TAHUANIA",NA,3,NA,1,NA,3,NA,1,NA,8

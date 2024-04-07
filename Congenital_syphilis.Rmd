@@ -49,8 +49,8 @@ data_total <- data_total %>%
 
 ```{r, echo=FALSE}
 congenital <- congenital %>%
-  select(c(1:16)) %>%
-  select(!c(4:7))
+ select(c(2:13))
+  #select(!c(4:7))
 
 congenital <- rename(
   congenital, c("NOMBDEP"="DEPARTAMENTO","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
@@ -69,8 +69,6 @@ newborn <- newborn %>%
 
 ```
 
-Final data:
-Se excluyó el valor de Barranca en 2014 por ser un valor extremo
 ```{r}
 data_congenital <- congenital_long %>%
   left_join(newborn, by = c("NOMBDEP","NOMBPROV","year")) %>%
