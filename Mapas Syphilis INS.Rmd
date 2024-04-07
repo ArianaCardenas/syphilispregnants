@@ -25,6 +25,7 @@ data_ins_long <- read_csv("Data_final/ins_final_long.csv")
 data_ins_wide <- read_csv("Data_final/ins_final_wide.csv")
 pobfem <- read_csv("Data_final/pobfem_year.csv")
 newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
+maternal <- read_csv("Data_final/syphilis_maternal.csv")
 ```
 
 # Limpiando la data
@@ -33,12 +34,23 @@ newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
 ```{r }
 
 data_ins_long = rename(
-  data_ins_long, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito")) %>%
-  mutate(year = as.character(year)) 
+ data_ins_long, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito")) %>%
+ mutate(year = as.character(year)) 
 
 data_ins_wide = rename(
   data_ins_wide, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito")) %>%
   mutate(year = as.character(year)) 
+
+maternal = rename(
+  maternal, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
+
+maternal_long <- pivot_longer(maternal, cols = c(4:11), 
+                                names_to = "year", values_to = "maternal")
+
+maternal_long <- maternal_long %>%
+  group_by(NOMBDEP, NOMBPROV, year) %>%
+  summarise(maternal = sum(maternal, na.rm = TRUE)) %>%
+  unnest(maternal)
 
 newborn <- newborn %>%
   rename(c("NOMBDEP"="departamento","NOMBPROV"="provincia", "year"="years")) %>%
@@ -54,9 +66,9 @@ Agrupamos la data para tener la suma de tamizajes y tamizajes reactivos por año
 
 ```{r}
 prepplot <- data_ins_long %>%
-  group_by(NOMBDEP, year) %>%
-  summarise(ntest =sum(test_number)) %>%
-  filter(year>2013)
+ group_by(NOMBDEP, year) %>%
+ summarise(ntest =sum(test_number)) %>%
+ filter(year>2013)
 
 prepplot2 <- data_ins_long %>%
   group_by(NOMBDEP, year) %>%
@@ -66,7 +78,6 @@ prepplot2 <- data_ins_long %>%
 newborndep <- newborn %>%
   group_by(NOMBDEP, year) %>%
   summarise(newborntotal =sum(n, na.rm = TRUE))
-
 ```
 
 Unimos dataframes y obtenemos el número de casos ajustado por población
@@ -84,6 +95,12 @@ data_total_reactivos <- prepplot2 %>%
   left_join(newborndep, by = c("NOMBDEP","year")) %>%
   mutate(rate = (tamizaje_reactivo/newborntotal)*1000) %>%
   left_join(departamentos, by = c("NOMBDEP"))
+
+data_maternal <- maternal_long %>%
+  left_join(newborn, by = c("NOMBDEP","NOMBPROV","year")) %>%
+  mutate(rate = (maternal/n)*1000) %>% 
+  mutate_if(is.numeric, round, 2) %>%
+  left_join(provincias, by = c("NOMBDEP","NOMBPROV"))
   
 ```
 
@@ -133,7 +150,7 @@ ggplot() +
 Dumbell Plot años 2014, 2018 y 2022.
 
 ```{r}
-dntest <- data_total_reactivos %>%
+dntest <- data_maternal %>%
   filter(year==2014|year==2018|year==2022) 
 
 ggplot(dntest, aes(x = rate, y = NOMBDEP)) +
@@ -146,20 +163,15 @@ Tabla de las 10 provincias con más casos de sífilis materna por 1000 nacidos v
 
 ```{r, echo=FALSE}
 
-data_maternal_table <- data_ins_long %>%
-  group_by(NOMBDEP,NOMBPROV, year) %>%
-  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
-  filter(year>2013) %>%
-  left_join(newborn, by =c("NOMBDEP", "NOMBPROV", "year")) %>%
-  mutate(rate = (tamizaje_reactivo/n)*1000) %>%
-  filter(n>10)
+#data_maternal_table <- data_maternal %>%
+ # group_by(NOMBDEP,NOMBPROV, year) %>%
+#  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
+#  filter(year>2013) %>%
+#  left_join(newborn, by =c("NOMBDEP", "NOMBPROV", "year")) %>%
+#  mutate(rate = (tamizaje_reactivo/n)*1000) %>%
+#  filter(n>10)
 
-#Se eliminan las provincias con menos de diez nacidos vivos por año. La lista es la sgte:
-
-provmenosde10 <- data_maternal_table %>%
-  filter(n<11)
-
-data_maternal_table <- data_maternal_table %>%
+data_maternal_table <- data_maternal %>%
   select(NOMBDEP, NOMBPROV, year, rate) %>%
   arrange(desc(rate)) %>%
   head(n= 10) %>%
@@ -181,16 +193,17 @@ Mapa de sífilis materna por departamento.
 
 ```{r}
 ggplot() +
-  geom_sf(data = data_total_reactivos, aes(geometry = geometry,fill = rate),
+  geom_sf(data = data_maternal, aes(geometry = geometry,fill = rate),
           color = "white", size = 0.2) +
   scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
    labs(title="Cases of syphilis in pregnants, INS data",
         fill = "Syphilis in pregnants per 1000 newborn")
+
 ```
 
 ```{r}
 ggplot() +
-  geom_sf(data = data_total_reactivos, aes(geometry = geometry,fill = rate),
+  geom_sf(data = data_maternal, aes(geometry = geometry,fill = rate),
           color = "white", size = 0.2) +
   scale_fill_gradient(low = "darkgoldenrod1", high = "darkred") +
   facet_wrap(.~year) + 
