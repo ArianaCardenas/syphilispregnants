@@ -55,13 +55,16 @@ rm(data_syphilis,data_ubigeo,departamentos)
 Uploading MINSA data (maternal and congenital syphilis):
 
 ```{r, echo=FALSE}
-data_ins_long <- read_csv("Data_final/ins_final_long.csv")
+maternal <- read_csv("Data_final/syphilis_maternal.csv")
 newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
 
-data_ins_long = rename(
-  data_ins_long, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
+maternal = rename(
+  maternal, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
 newborn = rename(
   newborn, c("NOMBDEP"="departamento","NOMBPROV"="provincia","year"="years"))
+
+maternal_long <- pivot_longer(maternal, cols = c(4:11), 
+                                names_to = "year", values_to = "maternal")
 
 congenital <- read_csv("Data_final/syphilis_congenital.csv")
 
@@ -86,32 +89,36 @@ newborn_nac <- newborn %>%
   summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
   ungroup()
 
-rm(congenital,newborn)
+rm(maternal,congenital,newborn)
 ```
 
 Maternal 
 
 ```{r}
-data_maternal_dep <- data_ins_long %>%
+data_maternal_dep <- maternal_long %>%
   group_by(NOMBDEP, year) %>%
-  filter( year > 2013) %>%
-  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
+  filter( year > 2014) %>%
+  summarise(maternal =sum(maternal, na.rm = TRUE)) %>%
+  mutate(year=as.numeric(year))%>%
   ungroup()
 
-data_maternal_nac<- data_ins_long %>%
+data_maternal_nac<- maternal_long %>%
   group_by(year) %>%
-  filter( year > 2013) %>%
-  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
+  filter( year > 2014) %>%
+  summarise(maternal =sum(maternal, na.rm = TRUE)) %>%
+  mutate(year=as.numeric(year))%>%
   ungroup()
 
 #Calculating rates of maternal syphilis 
 data_maternal_dep <- data_maternal_dep %>%
   left_join(newborn_dep, by = c("NOMBDEP","year")) %>%
-  mutate(rate_mat = (tamizaje_reactivo/newborntotal)*1000)
+  mutate(rate_mat = (maternal/newborntotal)*1000) %>% 
+  mutate_if(is.numeric, round, 2)
 
 data_maternal_nac <- data_maternal_nac %>%
   left_join(newborn_nac, by = c("year")) %>%
-  mutate(rate_mat = (tamizaje_reactivo/newborntotal)*1000)
+  mutate(rate_mat = (maternal/newborntotal)*1000) %>% 
+  mutate_if(is.numeric, round, 2)
 ```
 
 Congenital:
@@ -133,8 +140,6 @@ data_congenital_dep <- congenital_long_dep %>%
 
 #National
 congenital_long_nac <- congenital_long %>%
-  mutate(
-  congenital = ifelse(year==2014&NOMBPROV=="BARRANCA",NA,congenital_long$congenital))%>%
   group_by(year) %>%
   summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
   unnest(congenital)
@@ -168,7 +173,7 @@ poverty =
   left_join(data_congenital_dep, by = c("year","NOMBDEP")) %>%
   select(wealth_index,year,NOMBDEP,v001,v022,v005,syphilis_screening,rate_mat,rate_con) %>%
   filter(!is.na(wealth_index))%>%
-  filter(year > "2013") %>%
+  filter(year > "2014") %>%
   mutate(
     NOMBDEP = as.factor(NOMBDEP),
     year = as.factor(year),
@@ -296,7 +301,7 @@ poverty_cr = poverty_cr %>%
   group_by(year,wealth_index)%>%
   summarize(rate_con_mean=mean(rate_con))
 
-poverty_mr %>% 
+poverty_cr %>% 
      DT::datatable()
 ```
 
@@ -340,7 +345,7 @@ dep_poverty =
   left_join(data_congenital_dep, by = c("year","NOMBDEP")) %>%
   select(wealth_index,year,NOMBDEP,v001,v022,v005,syphilis_screening,rate_mat,rate_con) %>%
   filter(!is.na(wealth_index))%>%
-  filter(year > "2013") %>%
+  filter(year > 2014) %>%
   filter(NOMBDEP== "AMAZONAS") %>%
   mutate(
     NOMBDEP = as.factor(NOMBDEP),
