@@ -1,5 +1,5 @@
 ---
-title: "Map Syphilis"
+title: "Map Syphilis INS - Screening and maternal rates"
 author: "CardenasA"
 date: "2023-08-20"
 output: html_document
@@ -21,6 +21,7 @@ library(gt)
 
 ```{r}
 departamentos <- read_sf("Límites - mapas/DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp")
+provincias <- read_sf("Límites - mapas/PROVINCIAS_inei_geogpsperu_suyopomalia.shp")
 data_ins_long <- read_csv("Data_final/ins_final_long.csv")
 data_ins_wide <- read_csv("Data_final/ins_final_wide.csv")
 pobfem <- read_csv("Data_final/pobfem_year.csv")
@@ -121,7 +122,8 @@ ggplot(dntest, aes(x = rate, y = NOMBDEP)) +
   geom_line() +
   geom_point(aes(color = year), size = 3) +
   xlab("Rate of syphilis screening per 1000 women")+
-  ylab("Region")
+  ylab("Departments")
+
 ```
 
 Mapa tamizaje de Sífilis por departamento, ajustado por población
@@ -145,20 +147,24 @@ ggplot() +
         fill = "Syphilis screening per 1000 women")
 ```
 
+
 #Sífilis materna
 
 Dumbell Plot años 2014, 2018 y 2022.
 
 ```{r}
-dntest <- data_maternal %>%
+syphmaterna <- data_total_reactivos %>%
   filter(year==2014|year==2018|year==2022) 
 
-ggplot(dntest, aes(x = rate, y = NOMBDEP)) +
+syphmaterna <- ggplot(syphmaterna, aes(x = rate, y = NOMBDEP)) +
   geom_line() +
   geom_point(aes(color = year), size = 3) +
   xlab("Cases of maternal syphilis per 1000 newborn")+
-  ylab("Region")
+  ylab("Departments")
+
+ggsave("Graph_dumbell_3c.png", plot = syphmaterna, width = 8, height = 4, dpi = 300)
 ```
+
 Tabla de las 10 provincias con más casos de sífilis materna por 1000 nacidos vivos.
 
 ```{r, echo=FALSE}

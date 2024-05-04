@@ -79,7 +79,7 @@ data_congenital <- congenital_long %>%
 ## Casos de sífilis congénita por 1000 nacidos vivos por departamento.
 
 #Dumbell Plot años 2014, 2018 y 2022.
-Nuevamente se excluye el valor de Barranca en 2014 por ser un valor extremo
+
 
 ```{r pressure, echo=FALSE}
 
@@ -90,11 +90,13 @@ d14_d22 <- data_congenital %>%
   unnest(rate) %>%
   filter(year==2014|year==2018|year==2022) 
 
-ggplot(d14_d22, aes(x = rate, y = NOMBDEP)) +
+d14_d22_congenital <- ggplot(d14_d22, aes(x = rate, y = NOMBDEP)) +
   geom_line() +
   geom_point(aes(color = year), size = 3) +
   xlab("Cases of congenital syphilis per 1000 newborns")+
-  ylab("Region")
+  ylab("Departments")
+
+ggsave("Graph_dumbell_3b.png", plot = d14_d22_congenital, width = 8, height = 4, dpi = 300)
 ```
 
 # Tabla de las 10 provincias con más casos de sífilis congénita por 1000 nacidos vivos.
@@ -107,7 +109,7 @@ data_congenital_table <- data_congenital %>%
   head(n= 10) %>%
   gt(groupname_col = FALSE) %>%
   tab_header(
-    title = "Provinces and years with the highest rate of congenital sifilis"
+    title = "Departments, provinces and years with the highest rate of congenital sifilis"
   ) %>%
   tab_footnote(
     footnote = "Rate per 1000 newborn",
