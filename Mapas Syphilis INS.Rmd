@@ -116,12 +116,12 @@ Dumbell Plot años 2014, 2018 y 2022.
 
 ```{r}
 dntest <- data_total_ntest %>%
-  filter(year==2014|year==2018|year==2022) 
+  filter(year==2015|year==2018|year==2022) 
 
-ggplot(dntest, aes(x = rate, y = NOMBDEP)) +
+d15_d22_screening <- ggplot(dntest, aes(x = rate, y = NOMBDEP)) +
   geom_line() +
   geom_point(aes(color = year), size = 3) +
-  xlab("Rate of syphilis screening per 1000 women")+
+  xlab("Rate of syphilis screening per 1000 women - INS")+
   ylab("Departments")
 
 ```
@@ -150,16 +150,16 @@ ggplot() +
 
 #Sífilis materna
 
-Dumbell Plot años 2014, 2018 y 2022.
+Dumbell Plot años 2015, 2018 y 2022.
 
 ```{r}
 syphmaterna <- data_total_reactivos %>%
-  filter(year==2014|year==2018|year==2022) 
+  filter(year==2015|year==2018|year==2022) 
 
 syphmaterna <- ggplot(syphmaterna, aes(x = rate, y = NOMBDEP)) +
   geom_line() +
   geom_point(aes(color = year), size = 3) +
-  xlab("Cases of maternal syphilis per 1000 newborn")+
+  xlab("Rate of maternal syphilis per 1000 newborn")+
   ylab("Departments")
 
 ggsave("Graph_dumbell_3c.png", plot = syphmaterna, width = 8, height = 4, dpi = 300)

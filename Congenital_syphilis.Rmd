@@ -88,12 +88,12 @@ d14_d22 <- data_congenital %>%
   summarise(rate = mean(rate, na.rm = TRUE)) %>%
   mutate_if(is.numeric, round, 2) %>%
   unnest(rate) %>%
-  filter(year==2014|year==2018|year==2022) 
+  filter(year==2015|year==2018|year==2022) 
 
 d14_d22_congenital <- ggplot(d14_d22, aes(x = rate, y = NOMBDEP)) +
   geom_line() +
   geom_point(aes(color = year), size = 3) +
-  xlab("Cases of congenital syphilis per 1000 newborns")+
+  xlab("Rate of congenital syphilis per 1000 newborns")+
   ylab("Departments")
 
 ggsave("Graph_dumbell_3b.png", plot = d14_d22_congenital, width = 8, height = 4, dpi = 300)

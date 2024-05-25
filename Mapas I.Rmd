@@ -316,13 +316,15 @@ rm(d19_d22)
 
 ```{r}
 dtotal = data_grafico_year %>%
-  filter(year==2014|year==2018|year==2022) 
+  filter(year==2015|year==2018|year==2022) 
 
-ggplot(dtotal, aes(x = syphilis_screening, y = reorder(NOMBDEP,ZONA))) +
+d15_d22_screening <- ggplot(dtotal, aes(x = syphilis_screening, y = reorder(NOMBDEP,ZONA))) +
   geom_line() +
   geom_point(aes(color = year), size = 3) +
-  xlab("Syphilis screening")+
-  ylab("Region")
+  xlab("Rate of syphilis screening per 1000 women")+
+  ylab("Deparments")
+
+ggsave("Graph_dumbell_3a.png", plot = d15_d22_screening, width = 8, height = 4, dpi = 300)
 ```
 
 
