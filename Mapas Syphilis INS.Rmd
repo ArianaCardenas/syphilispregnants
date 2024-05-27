@@ -92,16 +92,17 @@ rm(maternal_prov,maternal_dep,maternal_long,newbornprov, newborndep)
 
 #Sífilis materna
 
-Dumbell Plot años 2014, 2018 y 2022.
+Dumbell Plot años 2015, 2018 y 2022.
 
 ```{r}
+
 syphmaterna <- data_maternal_dep %>%
   filter(year==2015|year==2018|year==2022)
 
 syphmaterna <- ggplot(syphmaterna, aes(x = rate, y = reorder(NOMBDEP,desc(ZONA)))) +
   geom_line() +
   geom_point(aes(color = year), size = 3) +
-  xlab("Cases of maternal syphilis per 1000 newborn")+
+  xlab("Rate of maternal syphilis per 1000 newborn")+
   ylab("Departments")
 
 syphmaterna
