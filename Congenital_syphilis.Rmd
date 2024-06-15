@@ -21,11 +21,8 @@ library(gt)
 # Cargando las datas
 
 ```{r, echo=FALSE}
-data_ubigeo <- read_csv("Data_final/data_ubigeo_innovalab.csv")
-data_ubigeo_2022_innova <- read_csv("Data_final/data_ubigeo_2022_innova.csv")
 provincias <- read_sf("Límites - mapas/PROVINCIAS_inei_geogpsperu_suyopomalia.shp")
 departamentos <- read_sf("Límites - mapas/DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp")
-data_syphilis <- read_csv("Data_final/data_syphilis.csv")
 congenital <- read_csv("Data_final/syphilis_congenital.csv")
 newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
 ```
@@ -33,81 +30,88 @@ newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
 Limpieza de la data
 
 ```{r, echo=FALSE}
-data_ubigeo_2022_innova = data_ubigeo_2022_innova[,c(2:6,1,7:9)]
-data_ubigeo = data_ubigeo[,c(1:6,8,10,12)]
-
-data_ubigeo_2022_innova = rename(data_ubigeo_2022_innova, c("NOMBDEP"="DEPARTAMEN","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
-
-data_ubigeo = rbind(data_ubigeo,data_ubigeo_2022_innova)
-
-data_total <- data_syphilis%>% 
-  left_join(data_ubigeo, by = c("caseid","year"))
-
-data_total <- data_total %>%
-  left_join(provincias, by = c("NOMBDEP", "NOMBPROV"))
-```
-
-```{r, echo=FALSE}
-congenital <- congenital %>%
- select(c(2:13))
-  #select(!c(4:7))
 
 congenital <- rename(
   congenital, c("NOMBDEP"="DEPARTAMENTO","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
 
-congenital_long <- pivot_longer(congenital, cols = c(4:12), 
+congenital_long <- pivot_longer(congenital, cols = c(5:13), 
                                 names_to = "year", values_to = "congenital")
 
-congenital_long <- congenital_long %>%
+congenital_prov <- congenital_long %>%
   group_by(NOMBDEP, NOMBPROV, year) %>%
   summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
-  unnest(congenital)
+  unnest(congenital) %>%
+  filter(year > 2014)
 
-newborn <- newborn %>%
- rename(c("NOMBDEP"="departamento","NOMBPROV"="provincia", "year"="years")) %>%
- mutate(year = as.character(year)) 
+congenital_dep <- congenital_long %>%
+  group_by(NOMBDEP, year) %>%
+  summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  unnest(congenital) %>%
+  filter(year > 2014)
+
+newbornprov <- newborn %>%
+  rename(c("NOMBDEP"="departamento","NOMBPROV"="provincia", "year"="years")) %>%
+  mutate(year = as.character(year)) %>%
+  filter(year > "2014") %>%
+  mutate(
+  ZONA= ifelse(NOMBDEP=="LIMA"|NOMBDEP=="CALLAO",1,
+               ifelse(NOMBDEP=="TUMBES"|NOMBDEP=="PIURA"|NOMBDEP=="LAMBAYEQUE"|NOMBDEP=="LA LIBERTAD"|NOMBDEP=="CAJAMARCA",2,
+                      ifelse(NOMBDEP=="ANCASH"|NOMBDEP=="HUANUCO"|NOMBDEP=="PASCO"|NOMBDEP=="JUNIN"|NOMBDEP=="HUANCAVELICA"|NOMBDEP=="ICA"|NOMBDEP=="AYACUCHO",3,
+                             ifelse(NOMBDEP=="AREQUIPA"|NOMBDEP=="APURIMAC"|NOMBDEP=="CUSCO"|NOMBDEP=="PUNO"|NOMBDEP=="MOQUEGUA"|NOMBDEP=="TACNA",4,
+                                    ifelse(NOMBDEP=="LORETO"|NOMBDEP=="SAN MARTIN"|NOMBDEP=="UCAYALI"|NOMBDEP=="MADRE DE DIOS"|NOMBDEP == "CAJAMARCA"|NOMBDEP == "AMAZONAS",5,NA))))
+))
+
+newborndep <- newbornprov %>%
+  group_by(NOMBDEP, year, ZONA) %>%
+  summarise(n =sum(n, na.rm = TRUE)) 
 
 ```
 
 ```{r}
-data_congenital <- congenital_long %>%
-  left_join(newborn, by = c("NOMBDEP","NOMBPROV","year")) %>%
+data_congenital_prov <- congenital_prov %>%
+  left_join(newbornprov, by = c("NOMBDEP","NOMBPROV","year")) %>%
   mutate(rate = (congenital/n)*1000) %>% 
   mutate_if(is.numeric, round, 2) %>%
   left_join(provincias, by = c("NOMBDEP","NOMBPROV"))
+
+data_congenital_dep <- congenital_dep %>%
+  left_join(newborndep, by = c("NOMBDEP","year")) %>%
+  mutate(rate = (congenital/n)*1000) %>% 
+  mutate_if(is.numeric, round, 2) %>%
+  left_join(departamentos, by = c("NOMBDEP"))
 ```
 ## Casos de sífilis congénita por 1000 nacidos vivos por departamento.
 
 #Dumbell Plot años 2014, 2018 y 2022.
-Nuevamente se excluye el valor de Barranca en 2014 por ser un valor extremo
+
 
 ```{r pressure, echo=FALSE}
 
-d14_d22 <- data_congenital %>%
-  group_by(NOMBDEP, year) %>%
-  summarise(rate = mean(rate, na.rm = TRUE)) %>%
-  mutate_if(is.numeric, round, 2) %>%
-  unnest(rate) %>%
-  filter(year==2014|year==2018|year==2022) 
+syphcongenita <- data_congenital_dep %>%
+  filter(year==2015|year==2018|year==2022)
 
-ggplot(d14_d22, aes(x = rate, y = NOMBDEP)) +
+syphcongenita <- ggplot(syphcongenita, aes(x = rate, y = reorder(NOMBDEP,desc(ZONA)))) +
   geom_line() +
   geom_point(aes(color = year), size = 3) +
-  xlab("Cases of congenital syphilis per 1000 newborns")+
-  ylab("Region")
+  xlab("Rate of congenital syphilis per 1000 newborn")+
+  ylab("Departments")
+
+syphcongenita
+#ggsave("Graph_dumbell_3b.png", plot = syphcongenita, width = 8, height = 4, dpi = 300)
+
 ```
 
 # Tabla de las 10 provincias con más casos de sífilis congénita por 1000 nacidos vivos.
 
 ```{r, echo=FALSE}
 
-data_congenital_table <- data_congenital %>%
+data_congenital_table <- data_congenital_prov %>%
   select(NOMBDEP, NOMBPROV, year, rate) %>%
   arrange(desc(rate)) %>%
   head(n= 10) %>%
   gt(groupname_col = FALSE) %>%
   tab_header(
-    title = "Provinces and years with the highest rate of congenital sifilis"
+    title = "Departments, provinces and years with the highest rate of congenital sifilis"
   ) %>%
   tab_footnote(
     footnote = "Rate per 1000 newborn",
@@ -119,7 +123,7 @@ data_congenital_table
 Tabla de departamentos y provincias que en el 2022 tuvieron ≤ 0.5 por 1000 nacidos vivos con sífilis congénita
 
 ```{r, echo=FALSE}
-data_congenital_goal <- data_congenital %>%
+data_congenital_goal <- data_congenital_dep %>%
   group_by(NOMBDEP, year) %>%
   summarise(meanrate = mean(rate)) %>%
   mutate_if(is.numeric, round, 2) %>%
@@ -127,7 +131,7 @@ data_congenital_goal <- data_congenital %>%
 
 data_congenital_goal <- as.data.frame(data_congenital_goal)
 
-data_congenital_goal2 <- data_congenital %>%
+data_congenital_goal2 <- data_congenital_prov %>%
   group_by(NOMBDEP, NOMBPROV, year) %>%
   summarise(meanrate = mean(rate)) %>%
   mutate_if(is.numeric, round, 2) %>%
@@ -155,22 +159,15 @@ data_congenital_goal
 
 # Mapa de casos de sífilis congénita por 1000 nacidos vivos por departamento.
 
-```{r, echo=FALSE}
-data_congenital <- data_congenital %>%
-  group_by(NOMBDEP, year) %>%
-  summarise(rate = mean(rate, na.rm = TRUE)) %>%
-  left_join(departamentos, by = c("NOMBDEP"))
-```
-
 Mapa que incluye el promedio de casos desde 2014 al 2022
 
 ```{r}
 ggplot() +
-  geom_sf(data = data_congenital,
+  geom_sf(data = data_congenital_dep,
           aes(geometry = geometry,fill = rate),
           color = "black", size = 0.2) +
   scale_fill_gradient(low = "skyblue", high = "blue") +
-  labs(title="Cases of congenital syphilis per 1000 newborn",
+  labs(title="Rate of congenital syphilis per 1000 newborn",
        fill = "Rate") 
 
 ```
@@ -179,11 +176,11 @@ Mapa de casos por años
 
 ```{r}
 ggplot() +
-  geom_sf(data = data_congenital,
+  geom_sf(data = data_congenital_dep,
           aes(geometry = geometry,fill = rate),
           color = "black", size = 0.2) +
   scale_fill_gradient(low = "skyblue", high = "blue") +
   facet_wrap(.~year) + 
-  labs(title="Cases of congenital syphilis per 1000 newborn",
+  labs(title="Rate of congenital syphilis per 1000 newborn",
        fill = "Rate")
 ```
