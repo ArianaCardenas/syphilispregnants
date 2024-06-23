@@ -56,7 +56,12 @@ Uploading MINSA data (maternal and congenital syphilis):
 ```{r, echo=FALSE}
 maternal <- read_csv("Data_final/syphilis_maternal.csv")
 newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
-newborn_distrito <- read_excel("Data_final/Nacidos_vivos_distrito.xls")
+newborn_distrito <- read_excel("Data_final/Reniec_Nacimientos_Distritos.xlsx")
+
+newborn_distrito = newborn_distrito %>% 
+  mutate(across(c(NOMBDEP, NOMBPROV, NOMBDIST),
+                ~ toupper(.x) %>%
+                  stringi::stri_trans_general("Latin-ASCII")))
 
 maternal = rename(
   maternal, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
@@ -77,11 +82,6 @@ congenital <- rename(
 congenital_long <- pivot_longer(congenital, cols = c(4:12), 
                                 names_to = "year", values_to = "congenital")
 
-newborn_dist <- pivot_longer(newborn_distrito, cols = c(4:11), 
-                             names_to = "year", values_to = "newborntotal")
-
-newborn_dist$year = as.numeric(newborn_dist$year) 
-
 #Provincial
 #newborn_prov <- newborn %>%
   #group_by(NOMBDEP, NOMBPROV, year) %>%
@@ -100,7 +100,7 @@ newborn_dist$year = as.numeric(newborn_dist$year)
   #summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
   #ungroup()
 
-rm(maternal,congenital,newborn,newborn_distrito)
+rm(maternal,congenital,newborn)
 ```
 
 Maternal 
@@ -136,7 +136,7 @@ data_maternal_dist <- maternal_long %>%
 
 #Calculating rates of maternal syphilis 
 data_maternal_dist <- data_maternal_dist %>%
-  left_join(newborn_dist, by = c("NOMBDEP","NOMBPROV","NOMBDIST","year")) %>%
+  left_join(newborn_distrito, by = c("NOMBDEP","NOMBPROV","NOMBDIST","year")) %>%
   mutate(rate_mat = (maternal/newborntotal)*1000)
 
 #data_maternal_prov <- data_maternal_prov %>%
@@ -162,14 +162,14 @@ congenital_long$year = as.numeric(congenital_long$year)
 #Distrital
 congenital_long_dist <- congenital_long %>%
   group_by(NOMBDEP,NOMBPROV,NOMBDIST, year) %>%
+  filter (year >2014) %>%
   summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
   unnest(congenital)
 
 data_congenital_dist <- congenital_long_dist %>%
-  left_join(newborn_dist, by = c("NOMBDEP","NOMBPROV","NOMBDIST","year")) %>%
+  left_join(newborn_distrito, by = c("NOMBDEP","NOMBPROV","NOMBDIST","year")) %>%
   mutate(rate_con = (congenital/newborntotal)*1000) %>% 
-  mutate_if(is.numeric, round, 2) %>%
-  filter(rate_con < 100.0)
+  mutate_if(is.numeric, round, 2) 
 
 #Provincial
 #congenital_long_prov <- congenital_long %>%
@@ -280,7 +280,14 @@ poverty_mrg =
     panel.grid = element_blank()
   )
 
-poverty_mrg 
+poverty_mrg <- poverty_mrg +
+  ggtitle("Objective Two") +
+  theme(
+    plot.title = element_text(size = 10), 
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1))
+
 #ggsave("dep_wealth_obj2.png", plot = poverty_mrg, width = 8, height = 4, dpi = 300)
 ```
 
@@ -330,8 +337,32 @@ poverty_crg =
     panel.grid = element_blank()
   )
 
-poverty_crg
+poverty_crg <- poverty_crg +
+  ggtitle("Objective Three") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) 
+
 #ggsave("prov_wealth_obj3.png", plot = poverty_crg, width = 8, height = 4, dpi = 300)
+```
+
+```{r}
+library(patchwork)
+combined_plot <- poverty_mrg + poverty_crg + 
+  plot_layout(guides = 'collect') & 
+  theme(legend.position = 'bottom')
+
+National  <- combined_plot + 
+  plot_annotation(
+    title = "Objectives by Poverty at the National Level", 
+    theme = theme(
+      plot.title = element_text(size = 14, hjust = 0.5, face = "bold"), 
+      plot.margin = margin(5, 5, 5, 5)  
+    )
+  )
+National
 ```
 
 ## Poverty base AMAZONAS
@@ -405,6 +436,14 @@ dep_poverty_mrg =
   )
 
 dep_poverty_mrg
+
+dep_poverty_mrg <- dep_poverty_mrg +
+  ggtitle("Objective Three") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) 
 ```
 
 Poverty objective 3 AMAZONAS
@@ -453,4 +492,30 @@ dep_poverty_crg =
   )
 
 dep_poverty_crg 
+
+dep_poverty_crg <- dep_poverty_crg +
+  ggtitle("Objective Three") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) 
 ```
+
+```{r}
+combined_plot <- dep_poverty_mrg + dep_poverty_crg + 
+  plot_layout(guides = 'collect') & 
+  theme(legend.position = 'bottom')
+
+Amazonas <- combined_plot + 
+  plot_annotation(
+    title = "Objectives by Poverty at Amazonas", 
+    theme = theme(
+      plot.title = element_text(size = 14, hjust = 0.5, face = "bold"), 
+      plot.margin = margin(5, 5, 5, 5)  
+    )
+  )
+
+Amazonas
+```
+
