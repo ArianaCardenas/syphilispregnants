@@ -1,5 +1,5 @@
 ---
-title: "Determinantes"
+title: "Determinantes 3"
 output: html_document
 date: "2024-05-30"
 ---
@@ -248,22 +248,35 @@ poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
-poverty_mr = poverty_mr %>%  
+poverty_mr1 = poverty_mr %>%  
   mutate(
-    poverty = ifelse(povertyno_poor > povertypoor, "No poor", ifelse(povertypoor > povertyno_poor, "Poor", NA ))) %>%
+    poverty = povertypoor*100) %>%
   filter(!is.na(poverty))%>%
   group_by(year,poverty)%>%
   summarize(rate_mat_mean=mean(rate_mat))
 
-poverty_mr %>% 
+poverty_mr2 = poverty_mr %>%  
+  mutate(
+    poverty = povertypoor*100) %>%
+  filter(!is.na(poverty))%>%
+  group_by(poverty)%>%
+  summarize(rate_mat_mean=mean(rate_mat))
+
+poverty_mr1 %>% 
      DT::datatable()
 ``` 
 
 ```{r}
 poverty_mrg =
-  ggplot(data = poverty_mr,aes(x = year, y = rate_mat_mean, group = poverty))+
-  geom_line(size = 1.2, aes(col = poverty))+
-  xlab("Years") +
+  ggplot(data = poverty_mr2,aes(x = poverty, y = rate_mat_mean
+                                #,
+                                ))+ 
+                                #group = year))+
+  geom_line(size = 1.2
+            #,
+            )+
+            #aes(col = year))+
+  xlab("Poverty (%)") +
   ylab("Rate") +
   theme_bw() +
   theme(
@@ -305,22 +318,35 @@ poverty_cr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
-poverty_cr = poverty_cr %>%  
- mutate(
-    poverty = ifelse(povertyno_poor > povertypoor, "No poor", ifelse(povertypoor > povertyno_poor, "Poor", NA ))) %>%
+poverty_cr1 = poverty_cr %>%  
+  mutate(
+    poverty = povertypoor*100) %>%
   filter(!is.na(poverty))%>%
   group_by(year,poverty)%>%
   summarize(rate_con_mean=mean(rate_con))
 
-poverty_cr %>% 
+poverty_cr2 = poverty_cr %>%  
+  mutate(
+    poverty = povertypoor*100) %>%
+  filter(!is.na(poverty))%>%
+  group_by(poverty)%>%
+  summarize(rate_con_mean=mean(rate_con))
+
+poverty_cr1 %>% 
      DT::datatable()
 ```
 
 ```{r}
 poverty_crg =
-  ggplot(data = poverty_cr,aes(x = year, y = rate_con_mean, group = poverty))+
-  geom_line(size = 1.2, aes(col = poverty))+
-  xlab("Years") +
+  ggplot(data = poverty_cr2,aes(x = poverty, y = rate_con_mean
+                                #,
+                                ))+ 
+                                #group = year))+
+  geom_line(size = 1.2
+            #,
+            )+
+            #aes(col = year))+
+  xlab("Poverty (%)") +
   ylab("Rate") +
   theme_bw() +
   theme(
@@ -365,6 +391,8 @@ National  <- combined_plot +
 National
 ```
 
+##FALTA MODIFICAR
+
 ## Poverty base AMAZONAS
 ```{r}
 dep_poverty = 
@@ -403,9 +431,12 @@ dep_poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+#media: 0.3180768
+#mediana: 0.2836331
+
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
-    poverty = ifelse(povertyno_poor > povertypoor, "No poor", ifelse(povertypoor > povertyno_poor, "Poor", NA ))) %>%
+    poverty = ifelse(povertypoor < 0.3180768, "Poor", "No Poor")) %>%
   filter(!is.na(poverty))%>%
   group_by(year,poverty)%>%
   summarize(rate_mat_mean=mean(rate_mat))
@@ -438,7 +469,7 @@ dep_poverty_mrg =
 dep_poverty_mrg
 
 dep_poverty_mrg <- dep_poverty_mrg +
-  ggtitle("Objective Three") +
+  ggtitle("Objective Two") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -459,9 +490,12 @@ dep_poverty_cr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+#media: 0.285089
+#mediana: 0.2277509
+
 dep_poverty_cr = dep_poverty_cr %>%  
  mutate(
-    poverty = ifelse(povertyno_poor > povertypoor, "No poor", ifelse(povertypoor > povertyno_poor, "Poor", NA))) %>%
+    poverty = ifelse(povertypoor < 0.2850898, "Poor", "No Poor"))%>%
   filter(!is.na(poverty))%>%
   group_by(year,poverty)%>%
   summarize(rate_con_mean=mean(rate_con))
@@ -557,9 +591,12 @@ dep_poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+#media: 0.1197149
+#mediana: 0.109679
+
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
-    poverty = ifelse(povertypoor < 0.109679, "Poor", "No Poor" )) %>%
+    poverty = ifelse(povertypoor < 0.1197149, "Poor", "No Poor" )) %>%
   filter(!is.na(poverty))%>%
   group_by(year,poverty)%>%
   summarize(rate_mat_mean=mean(rate_mat))
@@ -594,7 +631,7 @@ dep_poverty_mrg =
 dep_poverty_mrg
 
 dep_poverty_mrg <- dep_poverty_mrg +
-  ggtitle("Objective Three") +
+  ggtitle("Objective Two") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -615,9 +652,12 @@ dep_poverty_cr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+#media: 0.1257582
+#mediana: 0.1136559
+
 dep_poverty_cr = dep_poverty_cr %>%  
  mutate(
-    poverty = ifelse(povertyno_poor > povertypoor, "No poor", ifelse(povertypoor > povertyno_poor, "Poor", NA))) %>%
+    poverty = ifelse(povertypoor < 0.1257582, "Poor", "No Poor" )) %>%
   filter(!is.na(poverty))%>%
   group_by(year,poverty)%>%
   summarize(rate_con_mean=mean(rate_con))
