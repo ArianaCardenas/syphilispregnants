@@ -2358,9 +2358,9 @@ options(survey.lonely.psu="remove")
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <4.83 ~ "First quantile",
+                            poverty >=4.83 & poverty <7.86 ~ "Second quantile",
+                            poverty >=7.86 & poverty <=12.55 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -2418,9 +2418,9 @@ options(survey.lonely.psu="remove")
 dep_poverty_cr = dep_poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <6.05 ~ "First quantile",
+                            poverty >=6.05 & poverty <9.58 ~ "Second quantile",
+                            poverty >=9.58 & poverty <=12.41 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -2517,12 +2517,14 @@ dep_poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_mr$povertypoor)*100,2)
+
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <5.39 ~ "First quantile",
+                            poverty >=5.39 & poverty <10.97 ~ "Second quantile",
+                            poverty >=10.97 & poverty <=16.50 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -2579,12 +2581,14 @@ dep_poverty_cr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_cr$povertypoor)*100,2)
+
 dep_poverty_cr = dep_poverty_cr %>%  
  mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <6.35 ~ "First quantile",
+                            poverty >=6.35 & poverty <11.37 ~ "Second quantile",
+                            poverty >=11.37 & poverty <=16.88 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -2681,12 +2685,14 @@ dep_poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_mr$povertypoor)*100,2)
+
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <17.09 ~ "First quantile",
+                            poverty >=17.09 & poverty <24.78 ~ "Second quantile",
+                            poverty >=24.78 & poverty <=40.34 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -2741,12 +2747,14 @@ dep_poverty_cr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_cr$povertypoor)*100,2)
+
 dep_poverty_cr = dep_poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <12.07 ~ "First quantile",
+                            poverty >=12.07 & poverty <21.43 ~ "Second quantile",
+                            poverty >=21.43 & poverty <=31.26 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -2843,12 +2851,14 @@ dep_poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_mr$povertypoor)*100,2)
+
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <0.59 ~ "First quantile",
+                            poverty >=0.59 & poverty <4.08 ~ "Second quantile",
+                            poverty >=4.08 & poverty <=8.69 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -2903,12 +2913,14 @@ dep_poverty_cr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_cr$povertypoor)*100,2)
+
 dep_poverty_cr = dep_poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <1.65 ~ "First quantile",
+                            poverty >=1.65 & poverty <3.88 ~ "Second quantile",
+                            poverty >=3.88 & poverty <=8.37 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -3005,12 +3017,14 @@ dep_poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_mr$povertypoor)*100,2)
+
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <3.23 ~ "First quantile",
+                            poverty >=3.23 & poverty <5.25 ~ "Second quantile",
+                            poverty >=5.25 & poverty <=7.44 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -3065,12 +3079,14 @@ dep_poverty_cr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_cr$povertypoor)*100,2)
+
 dep_poverty_cr = dep_poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <3.46 ~ "First quantile",
+                            poverty >=3.46 & poverty <4.41 ~ "Second quantile",
+                            poverty >=4.41 & poverty <=6.31 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -3167,12 +3183,14 @@ dep_poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_mr$povertypoor)*100,2)
+
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <14.29 ~ "First quantile",
+                            poverty >=14.29 & poverty <26.79 ~ "Second quantile",
+                            poverty >=26.79 & poverty <=36.15 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -3227,12 +3245,14 @@ dep_poverty_cr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_cr$povertypoor)*100,2)
+
 dep_poverty_cr = dep_poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <21.18 ~ "First quantile",
+                            poverty >=21.18 & poverty <29.10 ~ "Second quantile",
+                            poverty >=29.10 & poverty <=39.20 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -3329,12 +3349,14 @@ dep_poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_mr$povertypoor)*100,2)
+
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <14.18 ~ "First quantile",
+                            poverty >=14.18 & poverty <21.10 ~ "Second quantile",
+                            poverty >=21.10 & poverty <=28.94 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -3389,12 +3411,14 @@ dep_poverty_cr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_cr$povertypoor)*100,2)
+
 dep_poverty_cr = dep_poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <10.08 ~ "First quantile",
+                            poverty >=10.08 & poverty <17.67 ~ "Second quantile",
+                            poverty >=17.67 & poverty <=21.93 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -3491,12 +3515,14 @@ dep_poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_mr$povertypoor)*100,2)
+
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <24.47 ~ "First quantile",
+                            poverty >=24.47 & poverty <29.90 ~ "Second quantile",
+                            poverty >=29.90 & poverty <=45.90 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -3551,12 +3577,14 @@ dep_poverty_cr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_cr$povertypoor)*100,2)
+
 dep_poverty_cr = dep_poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <14.65 ~ "First quantile",
+                            poverty >=14.65 & poverty <21.06 ~ "Second quantile",
+                            poverty >=21.06 & poverty <=26.21 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -3653,12 +3681,14 @@ dep_poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_mr$povertypoor)*100,2)
+
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <10.32 ~ "First quantile",
+                            poverty >=10.32 & poverty <16.34 ~ "Second quantile",
+                            poverty >=16.34 & poverty <=25.00 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -3713,12 +3743,14 @@ dep_poverty_cr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_cr$povertypoor)*100,2)
+
 dep_poverty_cr = dep_poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <12.35 ~ "First quantile",
+                            poverty >=12.35 & poverty <16.67 ~ "Second quantile",
+                            poverty >=16.67 & poverty <=21.22 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -3815,12 +3847,14 @@ dep_poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_mr$povertypoor)*100,2)
+
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <8.74 ~ "First quantile",
+                            poverty >=8.74 & poverty <11.59 ~ "Second quantile",
+                            poverty >=11.59 & poverty <=19.28 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -3875,12 +3909,14 @@ dep_poverty_cr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_cr$povertypoor)*100,2)
+
 dep_poverty_cr = dep_poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <9.48 ~ "First quantile",
+                            poverty >=9.48 & poverty <10.96 ~ "Second quantile",
+                            poverty >=10.96 & poverty <=15.18 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -3977,12 +4013,14 @@ dep_poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_mr$povertypoor)*100,2)
+
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <8.42 ~ "First quantile",
+                            poverty >=8.42 & poverty <13.27 ~ "Second quantile",
+                            poverty >=13.27 & poverty <=16.33 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -4037,12 +4075,14 @@ dep_poverty_cr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_cr$povertypoor)*100,2)
+
 dep_poverty_cr = dep_poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <8.09 ~ "First quantile",
+                            poverty >=8.09 & poverty <9.80 ~ "Second quantile",
+                            poverty >=9.80 & poverty <=15.88 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -4139,12 +4179,14 @@ dep_poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_mr$povertypoor)*100,2)
+
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <7.76 ~ "First quantile",
+                            poverty >=7.76 & poverty <12.57 ~ "Second quantile",
+                            poverty >=12.57 & poverty <=22.82 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -4199,12 +4241,14 @@ dep_poverty_cr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_cr$povertypoor)*100,2)
+
 dep_poverty_cr = dep_poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <25 ~ "First quantile",
-                            poverty >=25 & poverty <50 ~ "Second quantile",
-                            poverty >=50 & poverty <=75 ~ "Third quantile",
+    poverty_cod = case_when(poverty <8.12 ~ "First quantile",
+                            poverty >=8.12 & poverty <11.77 ~ "Second quantile",
+                            poverty >=11.77 & poverty <=25.28 ~ "Third quantile",
                             TRUE ~ "Fourth quantile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
