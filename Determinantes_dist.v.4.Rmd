@@ -1383,6 +1383,8 @@ dep_poverty_mr =
   unnest(wi) 
 options(survey.lonely.psu="remove")
 
+round(summary(dep_poverty_mr$povertypoor)*100,2)
+
 dep_poverty_mr = dep_poverty_mr %>%  
  mutate(
     poverty = povertypoor*100,
@@ -1442,6 +1444,8 @@ dep_poverty_cr =
   ) %>%
   unnest(wi) 
 options(survey.lonely.psu="remove")
+
+round(summary(dep_poverty_cr$povertypoor)*100,2)
 
 dep_poverty_cr = dep_poverty_cr %>%  
   mutate(
