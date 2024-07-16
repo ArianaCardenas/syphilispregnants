@@ -97,7 +97,7 @@ syphcongenita <- ggplot(syphcongenita, aes(x = rate, y = reorder(NOMBDEP,desc(ZO
   ylab("Departments")
 
 syphcongenita
-#ggsave("Graph_dumbell_3b.png", plot = syphcongenita, width = 8, height = 4, dpi = 300)
+ggsave("Graph_dumbell_congenital.png", plot = syphcongenita, width = 8, height = 4, dpi = 300)
 
 ```
 

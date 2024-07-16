@@ -325,6 +325,7 @@ d15_d22_screening <- ggplot(dtotal, aes(x = syphilis_screening, y = reorder(NOMB
   ylab("Deparments")
 
 ggsave("Graph_dumbell_3a.png", plot = d15_d22_screening, width = 8, height = 4, dpi = 300)
+print(d15_d22_screening)
 ```
 
 

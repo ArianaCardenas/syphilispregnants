@@ -87,7 +87,7 @@ syphilis_df %>%
 
 ### grafico syphilis
 ```{r}
-syphi<-
+syphi_tamizaje<-
   ggplot(syphilis_df %>%
            filter(var== "No" | var== "Yes"), aes(x = year, y = sypprop*100, ymin = `2.5 %`*100, ymax = `97.5 %`*100, group = var)) + 
   geom_line(size = 1.2, aes(col = var))+
@@ -116,9 +116,9 @@ syphi<-
     panel.grid = element_blank()
   )
 
-print(syphi)
+print(syphi_tamizaje)
 
-#ggsave("figure_curva_syp_screening.png", dpi = 300, width = 10)
+ggsave("figure_curva_syp_screening.png", dpi = 300, width = 10)
 ```
 
 #Trend of syphilis congenital
@@ -274,7 +274,7 @@ print(maternal_line)
 ```
 
 ```{r}
-combined_plot <- ggplot() +
+combined_plot_hiv_curve <- ggplot() +
   geom_line(data = data_congenital, aes(x = year, y = rate), color = "purple", size = 1.2) +
   geom_ribbon(data = data_congenital, aes(x = year, ymin = lower_ci, ymax = upper_ci), fill = "purple", alpha = 0.1) +
   geom_line(data = data_maternal, aes(x = year, y = rate), color = "blue", size = 1.2) +
@@ -283,7 +283,7 @@ combined_plot <- ggplot() +
   ylab("Rate") +
   scale_x_continuous(expand = c(0, 0), breaks = c(2014:2022), limits = c(2014, 2022.1)) +
   ggsci::scale_color_jama(alpha = 0.8) +
-  ggtitle("Tasa de Sífilis Congénita y Materna") +
+  #ggtitle("Tasa de Sífilis Congénita y Materna") +
   theme_bw() +
   theme(
     axis.title = element_text(face = "bold", size = 11),
@@ -298,6 +298,46 @@ combined_plot <- ggplot() +
     strip.text = element_text(face = "bold"),
     panel.grid = element_blank()
   )
-print(combined_plot)
+print(combined_plot_hiv_curve)
+ggsave("figure_curva_syp_cong_mater.png", dpi = 300, width = 10)
+```
+```{r}
+#Combinando dos curvas
+tendencias <- plot_grid(
+  syphi_tamizaje,combined_plot_hiv_curve,
+  ncol = 2
+)
+tendencias
+```
+
+```{r}
+#combinar figuras
+
+dumbell <- plot_grid(
+  d15_d22_screening,syphcongenita,syphmaterna,
+  ncol = 3
+)
+dumbell
+```
+```{r}
+#combinando con curvas
+dumbell_tendencia <- plot_grid(
+  dumbell,tendencias,
+  ncol = 1,
+  labels = c ("c", "d"),
+  rel_heights = c(0.6,0.4)
+)
+dumbell_tendencia
+```
+```{r}
+#combinando con gráfico de gol
+
+total <- plot_grid(
+  figure2,dumbell_tendencia,
+  ncol = 2,
+  rel_widths = c(0.4,0.6)
+)
+total
+
 ```
 
