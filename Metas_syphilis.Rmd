@@ -29,12 +29,12 @@ freq_screening_2022 <- data_grafico_2022 %>%
 #Goal 2: Rate of Congenital syphilis < 0.5 per 1000 individuals
 
 ##Correr el rmd de congenital syphilis hasta línea 177
-pre_congenital_2022 <- data_congenital %>% 
+pre_congenital_2022 <- data_congenital_dep %>% 
   filter(year==2022) %>% 
   group_by(NOMBDEP) %>% 
   summarise(congenital_prop = mean(rate, na.rm = TRUE)) 
 
-congenital_2022 <- data_congenital %>% 
+congenital_2022 <- data_congenital_dep %>% 
   filter(year==2022) %>% 
   select(geometry) %>% 
   left_join(pre_congenital_2022, by = "NOMBDEP") 
@@ -45,12 +45,12 @@ congenital_2022 <- data_congenital %>%
 
 ##Correr el rmd de Mapas syphilis INS
 
-maternal_2018<- dntest %>% 
+maternal_2018<- data_maternal_dep %>% 
   filter(year==2018) %>% 
   group_by(NOMBDEP) %>% 
   summarise(maternal_prop_18 = mean(rate, na.rm = TRUE))
 
-maternal_2022<- dntest %>% 
+maternal_2022<- data_maternal_dep %>% 
   filter(year==2022) %>% 
   group_by(NOMBDEP) %>% 
   summarise(maternal_prop_22 = mean(rate, na.rm = TRUE))
@@ -181,17 +181,17 @@ print(figure_2b2)
 #Goal 3
 
 GOALS_2022 <- GOALS_2022 %>% 
-  mutate(goal_maternal = ifelse(rest_porcent >= 30, "100",
-                                ifelse(rest_porcent >=27 & rest_porcent<30, "90",
-                                       ifelse(rest_porcent >=24 & rest_porcent<27, "80",
-                                              ifelse(rest_porcent >=21 & rest_porcent <24, "70",
-                                                     ifelse(rest_porcent >=18 & rest_porcent <21, "60",
-                                                            ifelse(rest_porcent >=15 & rest_porcent <18, "50",
-                                                                   ifelse(rest_porcent >=12 & rest_porcent <15, "40",
-                                                                          ifelse(rest_porcent >=9  & rest_porcent <12, "30",
-                                                                                 ifelse(rest_porcent >=6 & rest_porcent <9, "20",
-                                                                                        ifelse(rest_porcent>=3 & rest_porcent<6, "10",
-                                                                                               ifelse(rest_porcent < 3, "0", NA))))))))))))
+  mutate(goal_maternal = ifelse(rest_porcent >= 35, "100",
+                                ifelse(rest_porcent >=31 & rest_porcent<35, "90",
+                                       ifelse(rest_porcent >=27 & rest_porcent<31, "80",
+                                              ifelse(rest_porcent >=23 & rest_porcent <27, "70",
+                                                     ifelse(rest_porcent >=19 & rest_porcent <23, "60",
+                                                            ifelse(rest_porcent >=15 & rest_porcent <19, "50",
+                                                                   ifelse(rest_porcent >=11 & rest_porcent <15, "40",
+                                                                          ifelse(rest_porcent >=7  & rest_porcent <11, "30",
+                                                                                 ifelse(rest_porcent >=3 & rest_porcent <7, "20",
+                                                                                        ifelse(rest_porcent>=0 & rest_porcent<3, "10",
+                                                                                               ifelse(rest_porcent < 0, "0", NA))))))))))))
 
 
 GOALS_2022$goal_maternal <- as.numeric(as.character(GOALS_2022$goal_maternal))
@@ -218,6 +218,6 @@ figure2<-cowplot::plot_grid(figure_2a,figure_2b, ncol = 1, labels = c("a","b"), 
 
 print(figure2)
 
-#ggsave("Figure2.png", plot = figure2, width = 8, height = 4, dpi = 300)
+ggsave("Figure2.png", plot = figure2, width = 8, height = 4, dpi = 300)
 ```
 
