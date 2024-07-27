@@ -1,0 +1,220 @@
+---
+title: "Bivariate Maps Enaho"
+author: "CardenasA"
+date: "2024-07-20"
+output: html_document
+---
+```{r setup, include=FALSE}
+library(sf)
+library(purrr)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+library(readr)
+library(survey)
+install.packages("ggspatial",repos = 'http://cran.us.r-project.org')
+library(ggspatial)
+install.packages(c("cowplot", "sf"),repos = 'http://cran.us.r-project.org')
+library(cowplot)
+library(sf)
+install.packages("biscale", dependencies = TRUE,repos = 'http://cran.us.r-project.org')
+library(biscale)
+library(readxl)
+```
+
+Uploading Enaho data:
+ 
+```{r, echo =FALSE}
+
+data_enaho <- read_csv("Data_enaho/enaho2.csv")
+
+data_ubigeo <- read_csv("Data_final/data_ubigeo_innovalab.csv")
+
+departamentos <- read_sf("Límites - mapas/DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp")
+#data_syphilis <- read_csv("Data_final/data_syphilis.csv")
+
+data_enaho = rename(data_enaho, c("UBIGEO"="ubigeo"))
+
+data_ubigeo = data_ubigeo %>%
+  filter(year > 2014)
+
+data_ubigeo = data_ubigeo [,c(8,10,12,14)]
+
+data_ubigeo = distinct(data_ubigeo)
+
+data_enaho <- data_enaho %>%
+  left_join(data_ubigeo, by = c("UBIGEO")) %>%
+  mutate(
+    year = as.factor(data_enaho$year)
+  )
+```
+
+```{r include=FALSE}
+rm(data_ubigeo, data_ubigeo_2022_innova, data_syphilis)
+```
+
+Uploading MINSA data (maternal and congenital syphilis):
+
+```{r, echo=FALSE}
+maternal <- read_csv("Data_final/syphilis_maternal.csv")
+newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
+
+maternal = rename(
+  maternal, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
+
+newborn = rename(
+  newborn, c("NOMBDEP"="departamento","NOMBPROV"="provincia","year"="years")) %>%
+group_by(NOMBDEP, year) %>%
+filter( year > 2014) %>%
+summarise(newborn =sum(n, na.rm = TRUE)) %>%
+ungroup()
+
+maternal_long <- pivot_longer(maternal, cols = c(4:11), 
+                                names_to = "year", values_to = "maternal")
+
+congenital <- read_csv("Data_final/syphilis_congenital.csv")
+
+congenital <- congenital %>%
+  select(!c(1))
+
+congenital <- rename(
+  congenital, c("NOMBDEP"="DEPARTAMENTO","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
+
+congenital_long <- pivot_longer(congenital, cols = c(4:12), 
+                                names_to = "year", values_to = "congenital")
+
+
+```
+
+```{r}
+
+data_maternal_dep <- maternal_long %>%
+group_by(NOMBDEP, year) %>%
+filter( year > 2014) %>%
+summarise(maternal =sum(maternal, na.rm = TRUE)) %>%
+mutate(year=as.numeric(year))%>%
+ungroup()
+
+#Calculating rates of maternal syphilis 
+data_maternal_dep <- data_maternal_dep %>%
+  left_join(newborn, by = c("NOMBDEP","year")) %>%
+  mutate(rate_mat = (maternal/newborn)*1000) %>% 
+  mutate_if(is.numeric, round, 2) %>%
+  mutate(year = as.character(year))
+
+```
+
+```{r}
+congenital_long$year = as.numeric(congenital_long$year) 
+
+#Distrital
+congenital_long_dep <- congenital_long %>%
+  group_by(NOMBDEP, year) %>%
+  filter (year >2014) %>%
+  summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  unnest(congenital) %>%
+  ungroup()
+
+data_congenital_dep <- congenital_long_dep %>%
+  left_join(newborn, by = c("NOMBDEP","year")) %>%
+  mutate(rate_con = (congenital/newborn)*1000) %>% 
+  mutate_if(is.numeric, round, 2) %>%
+  mutate(year = as.character(year))
+```
+
+```{r}
+## Congenital syphilis and poverty
+poverty = 
+  data_enaho %>%
+  left_join(data_maternal_dep, by = c("year","NOMBDEP")) %>%
+  left_join(data_congenital_dep, by = c("year","NOMBDEP")) %>%
+  select(poverty,year,NOMBDEP,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(poverty))%>%
+  filter(year > "2014") %>%
+  mutate(
+    NOMBDEP = as.factor(NOMBDEP),
+    year = as.factor(year),
+    poverty = as.factor(poverty)
+  ) 
+
+
+# Crear el diseño de muestreo estratificado
+design <- svydesign(~ conglome, strata = ~ estrato, weights = ~ facpob07, data = poverty, nest = TRUE)
+
+options(survey.lonely.psu="adjust")
+
+syphilis_poverty<- svyby(~poverty,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+
+syphilis_poverty = as.data.frame(syphilis_poverty) 
+syphilis_poverty <- syphilis_poverty %>%
+  mutate(year = as.character(year))  %>%
+  left_join(data_congenital_dep, by = c("NOMBDEP", "year")) %>%
+  left_join(data_maternal_dep, by = c("NOMBDEP", "year")) %>%
+  left_join(departamentos, by = "NOMBDEP")
+
+```
+
+```{r include=FALSE}
+rm(poverty_filtered)
+```
+
+# Bivariate graphic of the rate of congenital syphilis and extreme poverty
+in the departments of Peru
+
+```{r, echo=FALSE, fig.height=8, fig.width=10}
+
+datamap <- bi_class(syphilis_poverty, x = rate_con, y = povertypoor, style = "quantile", dim = 2)
+
+map <- ggplot() +
+  geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
+          color = "white", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
+  labs(
+    title = "Rate of congenital syphilis in extremely poor pregnants"
+  ) +
+  bi_theme() +
+  theme(plot.title = element_text(size = rel(0.65))) 
+  
+
+legend <- bi_legend(pal = "GrPink",
+                    dim = 2,
+                    xlab = "Higher rate",
+                    ylab = "Extreme poverty",
+                    size = 8)
+
+# combine map with legend
+finalPlot <- ggdraw() +
+  draw_plot(map, 0, 0, 1, 1) +
+  draw_plot(legend, .75, .6, .2, .2)
+
+finalPlot
+```
+
+```{r}
+datamap <- bi_class(syphilis_poverty, x = rate_mat, y = povertypoor, style = "quantile", dim = 2)
+
+map <- ggplot() +
+  geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
+          color = "white", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = "GrPink", dim = 2) +
+  labs(
+    title = "Rate of maternal syphilis in extremely poor pregnants"
+  ) +
+  bi_theme() +
+  theme(plot.title = element_text(size = rel(0.65))) 
+  
+
+legend <- bi_legend(pal = "GrPink",
+                    dim = 2,
+                    xlab = "Higher rate",
+                    ylab = "Extreme poverty",
+                    size = 8)
+
+# combine map with legend
+finalPlot <- ggdraw() +
+  draw_plot(map, 0, 0, 1, 1) +
+  draw_plot(legend, .75, .6, .2, .2)
+
+finalPlot
+```
+
