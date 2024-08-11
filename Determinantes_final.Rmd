@@ -1,0 +1,1472 @@
+---
+title: "Determinantes_reg_natural"
+output: html_document
+date: "2024-07-19"
+---
+
+```{r}
+library(sf)
+library(purrr)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+library(readr)
+library(survey)
+library(gridExtra)
+library(cowplot)
+library(readxl)
+library(wesanderson)
+library(patchwork)
+library(RSQLite)
+```
+
+```{r}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	cache = FALSE,
+	dev = "png",
+	dpi = 300
+)
+```
+
+```{r}
+data_enaho <- read_csv("Data_enaho/enaho2.csv")
+
+data_ubigeo <- read_csv("Data_final/data_ubigeo_innovalab.csv")
+
+departamentos <- read_sf("Límites - mapas/DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp")
+#data_syphilis <- read_csv("Data_final/data_syphilis.csv")
+
+data_enaho = rename(data_enaho, c("UBIGEO"="ubigeo"))
+
+data_ubigeo = data_ubigeo %>%
+  filter(year > 2014)
+
+data_ubigeo = data_ubigeo [,c(8,10,12,14)]
+
+data_ubigeo = distinct(data_ubigeo)
+
+data_enaho <- data_enaho %>%
+  left_join(data_ubigeo, by = c("UBIGEO")) %>%
+  mutate(
+    year = as.numeric(data_enaho$year),
+    region_natural = case_when(NOMBDEP == "TUMBES"|NOMBDEP == "PIURA"|NOMBDEP == "LAMBAYEQUE"|NOMBDEP == "LA LIBERTAD"|NOMBDEP == "ANCASH"|NOMBDEP == "LIMA"|NOMBDEP == "CALLAO"|NOMBDEP == "ICA"|NOMBDEP == "AREQUIPA"|NOMBDEP == "MOQUEGUA"|NOMBDEP == "TACNA" ~ "COSTA",
+                               NOMBDEP == "CAJAMARCA"|NOMBDEP == "HUANUCO"|NOMBDEP == "PASCO"|NOMBDEP == "JUNIN"|NOMBDEP == "HUANCAVELICA"|NOMBDEP == "AYACUCHO"|NOMBDEP == "APURIMAC"|NOMBDEP == "CUSCO"|NOMBDEP == "PUNO" ~ "SIERRA",
+                               NOMBDEP == "AMAZONAS"|NOMBDEP == "SAN MARTIN"|NOMBDEP == "LORETO"|NOMBDEP == "UCAYALI"|NOMBDEP == "MADRE DE DIOS" ~ "SELVA")
+  )
+
+rm(data_syphilis,data_ubigeo)
+```
+
+Uploading MINSA data (maternal and congenital syphilis):
+```{r, echo=FALSE}
+maternal <- read_csv("Data_final/syphilis_maternal.csv")
+newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
+newborn_distrito <- read_excel("Data_final/Reniec_Nacimientos_Distritos.xlsx")
+
+newborn_distrito = newborn_distrito %>% 
+  mutate(across(c(NOMBDEP, NOMBPROV, NOMBDIST),
+                ~ toupper(.x) %>%
+                  stringi::stri_trans_general("Latin-ASCII")))
+
+maternal = rename(
+  maternal, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
+newborn = rename(
+  newborn, c("NOMBDEP"="departamento","NOMBPROV"="provincia","year"="years"))
+
+maternal_long <- pivot_longer(maternal, cols = c(4:11), 
+                                names_to = "year", values_to = "maternal")
+
+congenital <- read_csv("Data_final/syphilis_congenital.csv")
+
+congenital <- congenital %>%
+  select(!c(1))
+
+congenital <- rename(
+  congenital, c("NOMBDEP"="DEPARTAMENTO","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
+
+congenital_long <- pivot_longer(congenital, cols = c(4:12), 
+                                names_to = "year", values_to = "congenital")
+
+#Provincial
+newborn_prov <- newborn %>%
+  group_by(NOMBDEP, NOMBPROV, year) %>%
+  summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
+  ungroup()
+
+rm(maternal,congenital,newborn)
+```
+
+Maternal
+```{r}
+data_maternal_prov <- maternal_long %>%
+  group_by(NOMBDEP, NOMBPROV, year) %>%
+  filter( year > 2014) %>%
+  summarise(maternal =sum(maternal, na.rm = TRUE)) %>%
+  mutate(year=as.numeric(year))%>%
+  ungroup()
+
+#Calculating rates of maternal syphilis 
+data_maternal_prov <- data_maternal_prov %>%
+  left_join(newborn_prov, by = c("NOMBDEP","NOMBPROV","year")) %>%
+  mutate(rate_mat = (maternal/newborntotal)*1000)
+```
+
+Congenital:
+```{r}
+congenital_long$year = as.numeric(congenital_long$year) 
+
+#Provincial
+congenital_long_prov <- congenital_long %>%
+  group_by(NOMBDEP,NOMBPROV, year) %>%
+  summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  unnest(congenital)
+
+data_congenital_prov <- congenital_long_prov %>%
+  left_join(newborn_prov, by = c("NOMBDEP","NOMBPROV","year")) %>%
+  mutate(rate_con = (congenital/newborntotal)*1000) %>% 
+  mutate_if(is.numeric, round, 2) %>%
+  filter(rate_con < 100.0)
+
+rm(congenital_long,congenital_long_dep,congenital_long_nac,newborn_nac,newborn_dep,data_ins_long,newborn_nac,newborn_dep)
+```
+
+# Poverty National
+```{r}
+poverty = 
+  data_enaho %>%
+  left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  select(poverty,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(poverty))%>%
+  filter(year > "2014") %>%
+  mutate(
+    NOMBPROV = as.factor(NOMBPROV),
+    year = as.factor(year),
+    poverty = as.factor(poverty)
+  ) %>%
+  group_by(year) %>%
+  nest() %>%
+  mutate(
+    df = map(.x=data,
+             .f = ~svydesign(id = ~ conglome, strata = ~ estrato, weights = ~ facpob07, data = .x))
+  )
+
+options(survey.lonely.psu="remove")
+```
+
+## TERCILES
+
+Poverty objective 2 (terciles)
+```{r}
+poverty_mr = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~poverty, by =~rate_mat , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(poverty_mr$povertypoor, probs = c(1/3, 2/3))*100
+
+poverty_mr = poverty_mr %>%  
+  mutate(
+    poverty = povertypoor*100,
+    poverty_cod = case_when(poverty <16.48 ~ "First tercile",
+                            poverty >=16.48 & poverty <29.38 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(poverty_cod))%>%
+  group_by(year,poverty_cod)%>%
+    summarize(
+    rate_mat_mean = mean(rate_mat),
+    ci_lower = ifelse(mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())<0,0,mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())),
+    ci_upper = mean(rate_mat) + qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())
+            )
+
+summary(poverty_mr$rate_mat_mean)
+
+poverty_mr %>% 
+     DT::datatable()
+```
+
+```{r}
+selected_colors <- wes_palette("Zissou1", n = 5)[c(1, 3, 5)]
+```
+
+```{r}
+National_obj2 =
+  ggplot(data = poverty_mr,aes(x = year, y = rate_mat_mean, group = poverty_cod, color = poverty_cod))+
+  geom_line(size = 1.2)+
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,18) +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+National_obj2 <- National_obj2 +
+  ggtitle("Objective Two - National") +
+  theme(
+    plot.title = element_text(size = 10), 
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) +
+  scale_color_manual(values = selected_colors)
+```
+
+Poverty objective 3 (terciles)
+```{r}
+poverty_cr = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~poverty, by =~rate_con , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(poverty_cr$povertypoor, probs = c(1/3, 2/3))*100
+
+poverty_cr = poverty_cr %>%  
+  mutate(
+    poverty = povertypoor*100,
+    poverty_cod = case_when(poverty <14.00 ~ "First tercile",
+                            poverty >=14.00 & poverty <25.56 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(poverty_cod))%>%
+  group_by(year,poverty_cod)%>%
+  summarize(
+    objective = 0.5,
+    rate_con_mean = mean(rate_con),
+    ci_lower = ifelse(mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())<0,0,mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())),
+    ci_upper = mean(rate_con) + qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())
+            )
+
+summary(poverty_cr$rate_con_mean)
+
+poverty_cr %>% 
+     DT::datatable()
+```
+
+```{r}
+National_obj3 =
+  ggplot(data = poverty_cr,aes(x = year, y = rate_con_mean, group = poverty_cod))+
+  geom_line(size = 1.2, aes(col = poverty_cod))+
+  geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,8) +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+National_obj3  <- National_obj3  +
+  ggtitle("Objective Three - National") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) +
+  scale_color_manual(values = selected_colors)
+```
+
+# Poverty Costa
+```{r}
+poverty = 
+  data_enaho %>%
+  left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  select(poverty,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(poverty))%>%
+  filter(year > "2014") %>%
+  filter(region_natural== "COSTA") %>%
+  mutate(
+    NOMBPROV = as.factor(NOMBPROV),
+    year = as.factor(year),
+    poverty = as.factor(poverty)
+  ) %>%
+  group_by(year) %>%
+  nest() %>%
+  mutate(
+    df = map(.x=data,
+             .f = ~svydesign(id = ~ conglome, strata = ~ estrato, weights = ~ facpob07, data = .x))
+  )
+
+options(survey.lonely.psu="remove")
+```
+
+## TERCILES
+
+Poverty Costa objective 2 (terciles)
+```{r}
+poverty_mr = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~poverty, by =~rate_mat , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(poverty_mr$povertypoor, probs = c(1/3, 2/3))*100
+
+poverty_mr = poverty_mr %>%  
+  mutate(
+    poverty = povertypoor*100,
+    poverty_cod = case_when(poverty <10.12 ~ "First tercile",
+                            poverty >=10.12 & poverty <21.30 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(poverty_cod))%>%
+  group_by(year,poverty_cod)%>%
+    summarize(
+    rate_mat_mean = mean(rate_mat),
+    ci_lower = ifelse(mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())<0,0,mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())),
+    ci_upper = mean(rate_mat) + qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())
+            )
+
+summary(poverty_mr$rate_mat_mean)
+
+poverty_mr %>% 
+     DT::datatable()
+```
+
+```{r}
+Costa_obj2 =
+  ggplot(data = poverty_mr,aes(x = year, y = rate_mat_mean, group = poverty_cod))+
+  geom_line(size = 1.2, aes(col = poverty_cod))+
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,18) +
+  theme_bw() +
+  theme(
+    axis.title =  element_blank(),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+Costa_obj2 <- Costa_obj2 +
+  ggtitle("Objective Two - Costa") +
+  theme(
+    plot.title = element_text(size = 10), 
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) +
+  scale_color_manual(values = selected_colors)
+```
+
+Poverty Costa objective 3 (terciles)
+```{r}
+poverty_cr = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~poverty, by =~rate_con , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(poverty_cr$povertypoor, probs = c(1/3, 2/3))*100
+
+poverty_cr = poverty_cr %>%  
+  mutate(
+    poverty = povertypoor*100,
+    poverty_cod = case_when(poverty <9.85 ~ "First tercile",
+                            poverty >=9.85 & poverty <18.13 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(poverty_cod))%>%
+  group_by(year,poverty_cod)%>%
+  summarize(
+    objective = 0.5,
+    rate_con_mean = mean(rate_con),
+    ci_lower = ifelse(mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())<0,0,mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())),
+    ci_upper = mean(rate_con) + qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())
+            )
+
+summary(poverty_cr$rate_con_mean)
+
+poverty_cr %>% 
+     DT::datatable()
+```
+
+```{r}
+Costa_obj3 =
+  ggplot(data = poverty_cr,aes(x = year, y = rate_con_mean, group = poverty_cod))+
+  geom_line(size = 1.2, aes(col = poverty_cod))+
+  geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,8) +
+  theme_bw() +
+  theme(
+    axis.title =  element_blank(),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+Costa_obj3  <- Costa_obj3  +
+  ggtitle("Objective Three - Costa") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) +
+  scale_color_manual(values = selected_colors)
+```
+
+# Poverty Sierra
+```{r}
+poverty = 
+  data_enaho %>%
+  left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  select(poverty,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(poverty))%>%
+  filter(year > "2014") %>%
+  filter(region_natural== "SIERRA") %>%
+  mutate(
+    NOMBPROV = as.factor(NOMBPROV),
+    year = as.factor(year),
+    poverty = as.factor(poverty)
+  ) %>%
+  group_by(year) %>%
+  nest() %>%
+  mutate(
+    df = map(.x=data,
+             .f = ~svydesign(id = ~ conglome, strata = ~ estrato, weights = ~ facpob07, data = .x))
+  )
+
+options(survey.lonely.psu="remove")
+```
+
+## TERCILES
+
+Poverty Sierra objective 2 (terciles)
+```{r}
+poverty_mr = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~poverty, by =~rate_mat , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(poverty_mr$povertypoor, probs = c(1/3, 2/3))*100
+
+poverty_mr = poverty_mr %>%  
+  mutate(
+    poverty = povertypoor*100,
+    poverty_cod = case_when(poverty <23.27 ~ "First tercile",
+                            poverty >=23.27 & poverty <35.67 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(poverty_cod))%>%
+  group_by(year,poverty_cod)%>%
+    summarize(
+    rate_mat_mean = mean(rate_mat),
+    ci_lower = ifelse(mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())<0,0,mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())),
+    ci_upper = mean(rate_mat) + qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())
+            )
+
+summary(poverty_mr$rate_mat_mean)
+
+poverty_mr %>% 
+     DT::datatable()
+```
+
+```{r}
+Sierra_obj2 =
+  ggplot(data = poverty_mr,aes(x = year, y = rate_mat_mean, group = poverty_cod))+
+  geom_line(size = 1.2, aes(col = poverty_cod))+
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,18) +
+  theme_bw() +
+  theme(
+    axis.title =  element_blank(),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+Sierra_obj2 <- Sierra_obj2 +
+  ggtitle("Objective Two - Sierra") +
+  theme(
+    plot.title = element_text(size = 10), 
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1))+
+  scale_color_manual(values = selected_colors)
+```
+
+Poverty Sierra objective 3 (terciles)
+```{r}
+poverty_cr = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~poverty, by =~rate_con , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(poverty_cr$povertypoor, probs = c(1/3, 2/3))*100
+
+poverty_cr = poverty_cr %>%  
+  mutate(
+    poverty = povertypoor*100,
+    poverty_cod = case_when(poverty <20.49 ~ "First tercile",
+                            poverty >=20.49 & poverty <33.89 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(poverty_cod))%>%
+  group_by(year,poverty_cod)%>%
+  summarize(
+    objective=0,5,
+    rate_con_mean = mean(rate_con),
+    ci_lower = ifelse(mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())<0,0,mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())),
+    ci_upper = mean(rate_con) + qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())
+            )
+
+summary(poverty_cr$rate_con_mean)
+
+poverty_cr %>% 
+     DT::datatable()
+```
+
+```{r}
+Sierra_obj3 =
+  ggplot(data = poverty_cr,aes(x = year, y = rate_con_mean, group = poverty_cod))+
+  geom_line(size = 1.2, aes(col = poverty_cod))+
+  geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,8) +
+  theme_bw() +
+  theme(
+   axis.title =  element_blank(),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+Sierra_obj3  <- Sierra_obj3  +
+  ggtitle("Objective Three - Sierra") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) +
+  scale_color_manual(values = selected_colors)
+```
+
+# Poverty Selva
+```{r}
+poverty = 
+  data_enaho %>%
+  left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  select(poverty,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(poverty))%>%
+  filter(year > "2014") %>%
+  filter(region_natural== "SELVA") %>%
+  mutate(
+    NOMBPROV = as.factor(NOMBPROV),
+    year = as.factor(year),
+    poverty = as.factor(poverty)
+  ) %>%
+  group_by(year) %>%
+  nest() %>%
+  mutate(
+    df = map(.x=data,
+             .f = ~svydesign(id = ~ conglome, strata = ~ estrato, weights = ~ facpob07, data = .x))
+  )
+
+options(survey.lonely.psu="remove")
+```
+
+## TERCILES
+
+Poverty Selva objective 2 (terciles)
+```{r}
+poverty_mr = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~poverty, by =~rate_mat , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(poverty_mr$povertypoor, probs = c(1/3, 2/3))*100
+
+poverty_mr = poverty_mr %>%  
+  mutate(
+    poverty = povertypoor*100,
+    poverty_cod = case_when(poverty <16.82 ~ "First tercile",
+                            poverty >=16.82 & poverty <27.78 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(poverty_cod))%>%
+  group_by(year,poverty_cod)%>%
+    summarize(
+    rate_mat_mean = mean(rate_mat),
+    ci_lower = ifelse(mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())<0,0,mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())),
+    ci_upper = mean(rate_mat) + qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())
+            )
+
+summary(poverty_mr$rate_mat_mean)
+
+poverty_mr %>% 
+     DT::datatable()
+```
+
+```{r}
+Selva_obj2 =
+  ggplot(data = poverty_mr,aes(x = year, y = rate_mat_mean, group = poverty_cod))+
+  geom_line(size = 1.2, aes(col = poverty_cod))+
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,18) +
+  theme_bw() +
+  theme(
+    axis.title =  element_blank(),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+Selva_obj2 <- Selva_obj2 +
+  ggtitle("Objective Two - Selva") +
+  theme(
+    plot.title = element_text(size = 10), 
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1))+
+  scale_color_manual(values = selected_colors)
+```
+
+Poverty Selva objective 3 (terciles)
+```{r}
+poverty_cr = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~poverty, by =~rate_con , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(poverty_cr$povertypoor, probs = c(1/3, 2/3))*100
+
+poverty_cr = poverty_cr %>%  
+  mutate(
+    poverty = povertypoor*100,
+    poverty_cod = case_when(poverty <16.86 ~ "First tercile",
+                            poverty >=16.86 & poverty <26.36 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(poverty_cod))%>%
+  group_by(year,poverty_cod)%>%
+  summarize(
+    objective = 0.5,
+    rate_con_mean = mean(rate_con),
+    ci_lower = ifelse(mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())<0,0,mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())),
+    ci_upper = mean(rate_con) + qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())
+            )
+
+summary(poverty_cr$rate_con_mean)
+
+poverty_cr %>% 
+     DT::datatable()
+```
+
+```{r}
+Selva_obj3 =
+  ggplot(data = poverty_cr,aes(x = year, y = rate_con_mean, group = poverty_cod))+
+  geom_line(size = 1.2, aes(col = poverty_cod))+
+  geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,8) +
+  theme_bw() +
+  theme(
+    axis.title =  element_blank(),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+Selva_obj3  <- Selva_obj3  +
+  ggtitle("Objective Three - Selva") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) +
+  scale_color_manual(values = selected_colors)
+```
+
+## Gráfico general
+```{r, fig.height=6, fig.width=12}
+combined_plot <- National_obj2 + Costa_obj2 + Sierra_obj2 +  Selva_obj2 + National_obj3 + Costa_obj3 + Sierra_obj3 + Selva_obj3 +
+  plot_layout(ncol = 4, guides = 'collect') &  
+  theme(legend.position = 'bottom')
+
+Poverty_graph  <- combined_plot + 
+  plot_annotation(
+    title = "Objectives by Poverty", 
+    theme = theme(
+      plot.title = element_text(size = 14, hjust = 0.5, face = "bold")
+    )
+  )
+
+Poverty_graph
+```
+
+# Education National
+```{r}
+education = 
+  data_enaho %>%
+  left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  select(education_level,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(education_level))%>%
+  filter(year > "2014") %>%
+  mutate(
+    NOMBPROV = as.factor(NOMBPROV),
+    year = as.factor(year),
+    education = as.factor(education_level)
+  ) %>%
+  group_by(year) %>%
+  nest() %>%
+  mutate(
+    df = map(.x=data,
+             .f = ~svydesign(id = ~ conglome, strata = ~ estrato, weights = ~ facpob07, data = .x))
+  )
+
+options(survey.lonely.psu="remove")
+```
+
+## TERCILES
+
+Poverty objective 2 (terciles)
+```{r}
+education_mr = 
+  education %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~education, by =~rate_mat , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(education_mr$`educationless than secondary`, probs = c(1/3, 2/3))*100
+
+education_mr = education_mr %>%  
+  mutate(
+    education = `educationless than secondary`*100,
+    education_cod = case_when(education <61.03 ~ "First tercile",
+                             education >=61.03 & education <76.80 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(education_cod))%>%
+  group_by(year,education_cod)%>%
+    summarize(
+    rate_mat_mean = mean(rate_mat),
+    ci_lower = ifelse(mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())<0,0,mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())),
+    ci_upper = mean(rate_mat) + qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())
+            )
+
+summary(education_mr$rate_mat_mean)
+
+education_mr %>% 
+     DT::datatable()
+```
+
+```{r}
+National_obj2 =
+  ggplot(data = education_mr,aes(x = year, y = rate_mat_mean, group = education_cod))+
+  geom_line(size = 1.2, aes(col = education_cod))+
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,14) +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+National_obj2 <- National_obj2 +
+  ggtitle("Objective Two - National") +
+  theme(
+    plot.title = element_text(size = 10), 
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1))+
+  scale_color_manual(values = selected_colors)
+```
+
+Poverty objective 3 (terciles)
+```{r}
+education_cr = 
+  education %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~education, by =~rate_con , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(education_cr$`educationless than secondary`, probs = c(1/3, 2/3))*100
+
+education_cr = education_cr %>%  
+  mutate(
+    education = `educationless than secondary`*100,
+    education_cod = case_when(education <58.79 ~ "First tercile",
+                             education >=58.79 & education <74.09 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(education_cod))%>%
+  group_by(year,education_cod)%>%
+    summarize(
+      objective = 0.5,
+    rate_con_mean = mean(rate_con),
+    ci_lower = ifelse(mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())<0,0,mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())),
+    ci_upper = mean(rate_con) + qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())
+            )
+
+summary(education_cr$rate_con_mean)
+
+education_cr %>% 
+     DT::datatable()
+```
+
+```{r}
+National_obj3 =
+  ggplot(data = education_cr,aes(x = year, y = rate_con_mean, group = education_cod))+
+  geom_line(size = 1.2, aes(col = education_cod))+
+  geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,6) +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+National_obj3  <- National_obj3  +
+  ggtitle("Objective Three - National") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) +
+  scale_color_manual(values = selected_colors)
+```
+
+# Education Costa
+```{r}
+education = 
+  data_enaho %>%
+  left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  select(education_level,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(education_level))%>%
+  filter(year > "2014") %>%
+  filter(region_natural== "COSTA") %>%
+  mutate(
+    NOMBPROV = as.factor(NOMBPROV),
+    year = as.factor(year),
+    education = as.factor(education_level)
+  ) %>%
+  group_by(year) %>%
+  nest() %>%
+  mutate(
+    df = map(.x=data,
+             .f = ~svydesign(id = ~ conglome, strata = ~ estrato, weights = ~ facpob07, data = .x))
+  )
+
+options(survey.lonely.psu="remove")
+```
+
+## TERCILES
+
+Costa Poverty objective 2 (terciles)
+```{r}
+education_mr = 
+  education %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~education, by =~rate_mat , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(education_mr$`educationless than secondary`, probs = c(1/3, 2/3))*100
+
+education_mr = education_mr %>%  
+  mutate(
+    education = `educationless than secondary`*100,
+    education_cod = case_when(education <49.43 ~ "First tercile",
+                             education >=49.43& education <66.00 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(education_cod))%>%
+  group_by(year,education_cod)%>%
+    summarize(
+    rate_mat_mean = mean(rate_mat),
+    ci_lower = ifelse(mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())<0,0,mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())),
+    ci_upper = mean(rate_mat) + qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())
+            )
+
+summary(education_mr$rate_mat_mean)
+
+education_mr %>% 
+     DT::datatable()
+```
+
+```{r}
+Costa_obj2 =
+  ggplot(data = education_mr,aes(x = year, y = rate_mat_mean, group = education_cod))+
+  geom_line(size = 1.2, aes(col = education_cod))+
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,14) +
+  theme_bw() +
+  theme(
+    axis.title =  element_blank(),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+Costa_obj2  <- Costa_obj2  +
+  ggtitle("Objective Two - Costa") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) +
+  scale_color_manual(values = selected_colors)
+```
+
+Costa Poverty objective 3 (terciles)
+```{r}
+education_cr = 
+  education %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~education, by =~rate_con , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(education_cr$`educationless than secondary`, probs = c(1/3, 2/3))*100
+
+education_cr = education_cr %>%  
+  mutate(
+    education = `educationless than secondary`*100,
+    education_cod = case_when(education <46.55 ~ "First tercile",
+                             education >=46.55 & education <61.60 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(education_cod))%>%
+  group_by(year,education_cod)%>%
+    summarize(
+      objective = 0.5,
+    rate_con_mean = mean(rate_con),
+    ci_lower = ifelse(mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())<0,0,mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())),
+    ci_upper = mean(rate_con) + qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())
+            )
+
+summary(education_cr$rate_con_mean)
+
+education_cr %>% 
+     DT::datatable()
+```
+
+```{r}
+Costa_obj3 =
+  ggplot(data = education_cr,aes(x = year, y = rate_con_mean, group = education_cod))+
+  geom_line(size = 1.2, aes(col = education_cod))+
+  geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,6) +
+  theme_bw() +
+  theme(
+    axis.title =  element_blank(),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+Costa_obj3  <- Costa_obj3  +
+  ggtitle("Objective Three - Costa") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) +
+  scale_color_manual(values = selected_colors)
+```
+
+# Education Sierra
+```{r}
+education = 
+  data_enaho %>%
+  left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  select(education_level,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(education_level))%>%
+  filter(year > "2014") %>%
+  filter(region_natural== "SIERRA") %>%
+  mutate(
+    NOMBPROV = as.factor(NOMBPROV),
+    year = as.factor(year),
+    education = as.factor(education_level)
+  ) %>%
+  group_by(year) %>%
+  nest() %>%
+  mutate(
+    df = map(.x=data,
+             .f = ~svydesign(id = ~ conglome, strata = ~ estrato, weights = ~ facpob07, data = .x))
+  )
+
+options(survey.lonely.psu="remove")
+```
+
+## TERCILES
+
+Sierra Poverty objective 2 (terciles)
+```{r}
+education_mr = 
+  education %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~education, by =~rate_mat , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(education_mr$`educationless than secondary`, probs = c(1/3, 2/3))*100
+
+education_mr = education_mr %>%  
+  mutate(
+    education = `educationless than secondary`*100,
+    education_cod = case_when(education <68.40 ~ "First tercile",
+                             education >=68.40 & education <81.58 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(education_cod))%>%
+  group_by(year,education_cod)%>%
+    summarize(
+    rate_mat_mean = mean(rate_mat),
+    ci_lower = ifelse(mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())<0,0,mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())),
+    ci_upper = mean(rate_mat) + qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())
+            )
+
+summary(education_mr$rate_mat_mean)
+
+education_mr %>% 
+     DT::datatable()
+```
+
+```{r}
+Sierra_obj2 =
+  ggplot(data = education_mr,aes(x = year, y = rate_mat_mean, group = education_cod))+
+  geom_line(size = 1.2, aes(col = education_cod))+
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,14) +
+  theme_bw() +
+  theme(
+    axis.title =  element_blank(),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+Sierra_obj2  <- Sierra_obj2  +
+  ggtitle("Objective Two - Sierra") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) +
+  scale_color_manual(values = selected_colors)
+```
+
+Sierra Poverty objective 3 (terciles)
+```{r}
+education_cr = 
+  education %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~education, by =~rate_con , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(education_cr$`educationless than secondary`, probs = c(1/3, 2/3))*100
+
+education_cr = education_cr %>%  
+  mutate(
+    education = `educationless than secondary`*100,
+    education_cod = case_when(education <65.33 ~ "First tercile",
+                             education >=65.33 & education <78.81 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(education_cod))%>%
+  group_by(year,education_cod)%>%
+    summarize(
+      objective = 0.5,
+    rate_con_mean = mean(rate_con),
+    ci_lower = ifelse(mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())<0,0,mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())),
+    ci_upper = mean(rate_con) + qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())
+            )
+
+summary(education_cr$rate_con_mean)
+
+education_cr %>% 
+     DT::datatable()
+```
+
+```{r}
+Sierra_obj3 =
+  ggplot(data = education_cr,aes(x = year, y = rate_con_mean, group = education_cod))+
+  geom_line(size = 1.2, aes(col = education_cod))+
+  geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,6) +
+  theme_bw() +
+  theme(
+    axis.title =  element_blank(),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+Sierra_obj3  <- Sierra_obj3  +
+  ggtitle("Objective Three - Sierra") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) +
+  scale_color_manual(values = selected_colors)
+```
+
+# Education Selva
+```{r}
+education = 
+  data_enaho %>%
+  left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  select(education_level,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(education_level))%>%
+  filter(year > "2014") %>%
+  filter(region_natural== "SELVA") %>%
+  mutate(
+    NOMBPROV = as.factor(NOMBPROV),
+    year = as.factor(year),
+    education = as.factor(education_level)
+  ) %>%
+  group_by(year) %>%
+  nest() %>%
+  mutate(
+    df = map(.x=data,
+             .f = ~svydesign(id = ~ conglome, strata = ~ estrato, weights = ~ facpob07, data = .x))
+  )
+
+options(survey.lonely.psu="remove")
+```
+
+## TERCILES
+
+Poverty objective 2 (terciles)
+```{r}
+education_mr = 
+  education %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~education, by =~rate_mat , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(education_mr$`educationless than secondary`, probs = c(1/3, 2/3))*100
+
+education_mr = education_mr %>%  
+  mutate(
+    education = `educationless than secondary`*100,
+    education_cod = case_when(education <68.02 ~ "First tercile",
+                             education >=68.02 & education <78.44 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(education_cod))%>%
+  group_by(year,education_cod)%>%
+    summarize(
+    rate_mat_mean = mean(rate_mat),
+    ci_lower = ifelse(mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())<0,0,mean(rate_mat) - qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())),
+    ci_upper = mean(rate_mat) + qt(0.975, df = n() - 1) * sd(rate_mat) / sqrt(n())
+            )
+
+summary(education_mr$rate_mat_mean)
+
+education_mr %>% 
+     DT::datatable()
+```
+
+```{r}
+Selva_obj2 =
+  ggplot(data = education_cr,aes(x = year, y = rate_con_mean, group = education_cod))+
+  geom_line(size = 1.2, aes(col = education_cod))+
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,14) +
+  theme_bw() +
+  theme(
+    axis.title =  element_blank(),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+Selva_obj2  <- Selva_obj2  +
+  ggtitle("Objective Two - Selva") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) +
+  scale_color_manual(values = selected_colors)
+```
+
+Poverty objective 3 (terciles)
+```{r}
+education_cr = 
+  education %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~education, by =~rate_con , design = .x, FUN =svymean, deff=TRUE) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+quantile(education_cr$`educationless than secondary`, probs = c(1/3, 2/3))*100
+
+education_cr = education_cr %>%  
+  mutate(
+    education = `educationless than secondary`*100,
+    education_cod = case_when(education <66.20 ~ "First tercile",
+                             education >=66.20 & education <76.07 ~ "Second tercile",
+                            TRUE ~ "Third tercile")) %>%
+  filter(!is.na(education_cod))%>%
+  group_by(year,education_cod)%>%
+    summarize(
+      objective = 0.5,
+    rate_con_mean = mean(rate_con),
+    ci_lower = ifelse(mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())<0,0,mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())),
+    ci_upper = mean(rate_con) + qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())
+            )
+
+summary(education_cr$rate_con_mean)
+
+education_cr %>% 
+     DT::datatable()
+```
+
+```{r}
+Selva_obj3 =
+  ggplot(data = education_cr,aes(x = year, y = rate_con_mean, group = education_cod))+
+  geom_line(size = 1.2, aes(col = education_cod))+
+  geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
+  xlab("Years") +
+  ylab("Rate") +
+  ylim(0,6) +
+  theme_bw() +
+  theme(
+    axis.title =  element_blank(),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+Selva_obj3  <- Selva_obj3  +
+  ggtitle("Objective Three - Selva") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) +
+  scale_color_manual(values = selected_colors)
+```
+
+## Gráfico general
+```{r, fig.height=6, fig.width=12}
+combined_plot <- National_obj2 + Costa_obj2 + Sierra_obj2 +  Selva_obj2 + National_obj3 + Costa_obj3 + Sierra_obj3 + Selva_obj3 +
+  plot_layout(ncol = 4, guides = 'collect') &  
+  theme(legend.position = 'bottom')
+
+Education_graph  <- combined_plot + 
+  plot_annotation(
+    title = "Objectives by Education", 
+    theme = theme(
+      plot.title = element_text(size = 14, hjust = 0.5, face = "bold")
+    )
+  )
+
+Education_graph
+```
