@@ -578,7 +578,7 @@ poverty_cr = poverty_cr %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
   summarize(
-    objective=0,5,
+    objective=0.5,
     rate_con_mean = mean(rate_con),
     ci_lower = ifelse(mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())<0,0,mean(rate_con) - qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())),
     ci_upper = mean(rate_con) + qt(0.975, df = n() - 1) * sd(rate_con) / sqrt(n())
