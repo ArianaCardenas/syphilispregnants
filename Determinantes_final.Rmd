@@ -219,7 +219,7 @@ National_obj2 =
   )
 
 National_obj2 <- National_obj2 +
-  ggtitle("Objective Two - National") +
+  ggtitle("Maternal - National") +
   theme(
     plot.title = element_text(size = 10), 
     legend.position = "bottom", 
@@ -288,7 +288,7 @@ National_obj3 =
   )
 
 National_obj3  <- National_obj3  +
-  ggtitle("Objective Three - National") +
+  ggtitle("Congenital - National") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -382,7 +382,7 @@ Costa_obj2 =
   )
 
 Costa_obj2 <- Costa_obj2 +
-  ggtitle("Objective Two - Costa") +
+  ggtitle("Maternal - Costa") +
   theme(
     plot.title = element_text(size = 10), 
     legend.position = "bottom", 
@@ -451,7 +451,7 @@ Costa_obj3 =
   )
 
 Costa_obj3  <- Costa_obj3  +
-  ggtitle("Objective Three - Costa") +
+  ggtitle("Congenital - Costa") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -545,7 +545,7 @@ Sierra_obj2 =
   )
 
 Sierra_obj2 <- Sierra_obj2 +
-  ggtitle("Objective Two - Sierra") +
+  ggtitle("Maternal - Sierra") +
   theme(
     plot.title = element_text(size = 10), 
     legend.position = "bottom", 
@@ -614,7 +614,7 @@ Sierra_obj3 =
   )
 
 Sierra_obj3  <- Sierra_obj3  +
-  ggtitle("Objective Three - Sierra") +
+  ggtitle("Congenital - Sierra") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -708,7 +708,7 @@ Selva_obj2 =
   )
 
 Selva_obj2 <- Selva_obj2 +
-  ggtitle("Objective Two - Selva") +
+  ggtitle("Maternal - Selva") +
   theme(
     plot.title = element_text(size = 10), 
     legend.position = "bottom", 
@@ -777,7 +777,7 @@ Selva_obj3 =
   )
 
 Selva_obj3  <- Selva_obj3  +
-  ggtitle("Objective Three - Selva") +
+  ggtitle("Congenital - Selva") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -887,7 +887,7 @@ National_obj2 =
   )
 
 National_obj2 <- National_obj2 +
-  ggtitle("Objective Two - National") +
+  ggtitle("Maternal - National") +
   theme(
     plot.title = element_text(size = 10), 
     legend.position = "bottom", 
@@ -956,7 +956,7 @@ National_obj3 =
   )
 
 National_obj3  <- National_obj3  +
-  ggtitle("Objective Three - National") +
+  ggtitle("Congenital - National") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -1050,7 +1050,7 @@ Costa_obj2 =
   )
 
 Costa_obj2  <- Costa_obj2  +
-  ggtitle("Objective Two - Costa") +
+  ggtitle("Maternal - Costa") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -1119,7 +1119,7 @@ Costa_obj3 =
   )
 
 Costa_obj3  <- Costa_obj3  +
-  ggtitle("Objective Three - Costa") +
+  ggtitle("Congenital - Costa") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -1213,7 +1213,7 @@ Sierra_obj2 =
   )
 
 Sierra_obj2  <- Sierra_obj2  +
-  ggtitle("Objective Two - Sierra") +
+  ggtitle("Maternal - Sierra") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -1282,7 +1282,7 @@ Sierra_obj3 =
   )
 
 Sierra_obj3  <- Sierra_obj3  +
-  ggtitle("Objective Three - Sierra") +
+  ggtitle("Congenital - Sierra") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -1376,7 +1376,7 @@ Selva_obj2 =
   )
 
 Selva_obj2  <- Selva_obj2  +
-  ggtitle("Objective Two - Selva") +
+  ggtitle("Maternal - Selva") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -1445,7 +1445,7 @@ Selva_obj3 =
   )
 
 Selva_obj3  <- Selva_obj3  +
-  ggtitle("Objective Three - Selva") +
+  ggtitle("Congenital - Selva") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
