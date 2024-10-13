@@ -1,7 +1,7 @@
 ---
-title: "Bivariate Maps Congenital Syphilis_ENAHO"
+title: "Bivariate_maps_MaternalSyphilis_ENAHO"
 author: "CardenasA"
-date: "2024-07-20"
+date: "2024-08-05"
 output: html_document
 ---
 
@@ -56,12 +56,18 @@ data_enaho <- data_enaho %>%
 rm(data_ubigeo)
 ```
 
-Uploading MINSA data (congenital syphilis):
+Uploading MINSA data (maternal syphilis):
 
 ```{r, echo=FALSE}
-
+maternal <- read_csv("Data_final/syphilis_maternal.csv")
 newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
 congenital <- read_csv("Data_final/syphilis_congenital.csv")
+
+maternal = rename(
+  maternal, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
+
+maternal_long <- pivot_longer(maternal, cols = c(4:11), 
+                                names_to = "year", values_to = "maternal")
 
 newborn = rename(
   newborn, c("NOMBDEP"="departamento","NOMBPROV"="provincia","year"="years")) %>%
@@ -70,43 +76,32 @@ filter( year > 2014) %>%
 summarise(newborn =sum(n, na.rm = TRUE)) %>%
 ungroup()
 
-congenital <- congenital %>%
-  select(!c(1))
-
-congenital <- rename(
-  congenital, c("NOMBDEP"="DEPARTAMENTO","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
-
-congenital_long <- pivot_longer(congenital, cols = c(4:12), 
-                                names_to = "year", values_to = "congenital")
-
-
 ```
 
 ```{r}
-congenital_long$year = as.numeric(congenital_long$year) 
 
-#Rates by departments
+data_maternal_dep <- maternal_long %>%
+group_by(NOMBDEP, year) %>%
+filter( year > 2014) %>%
+summarise(maternal =sum(maternal, na.rm = TRUE)) %>%
+mutate(year=as.numeric(year))%>%
+ungroup()
 
-congenital_long_dep <- congenital_long %>%
-  group_by(NOMBDEP, year) %>%
-  filter (year >2014) %>%
-  summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
-  unnest(congenital) %>%
-  ungroup()
-
-data_congenital_dep <- congenital_long_dep %>%
+#Calculating rates of maternal syphilis 
+data_maternal_dep <- data_maternal_dep %>%
   left_join(newborn, by = c("NOMBDEP","year")) %>%
-  mutate(rate_con = (congenital/newborn)*1000) %>% 
+  mutate(rate_mat = (maternal/newborn)*1000) %>% 
   mutate_if(is.numeric, round, 2) %>%
   mutate(year = as.character(year))
+
 ```
 
 ```{r}
-## Congenital syphilis and poverty
+## Maternal syphilis and poverty
 poverty = 
   data_enaho %>%
-  left_join(data_congenital_dep, by = c("year","NOMBDEP")) %>%
-  select(poverty,year,NOMBDEP,conglome,estrato,facpob07,rate_con) %>%
+  left_join(data_maternal_dep, by = c("year","NOMBDEP")) %>%
+  select(poverty,year,NOMBDEP,conglome,estrato,facpob07,rate_mat) %>%
   filter(!is.na(poverty))%>%
   mutate(
     NOMBDEP = as.factor(NOMBDEP),
@@ -125,7 +120,7 @@ syphilis_poverty<- svyby(~poverty,~NOMBDEP+year,svymean,design=design,deff=TRUE,
 syphilis_poverty = as.data.frame(syphilis_poverty) 
 syphilis_poverty <- syphilis_poverty %>%
   mutate(year = as.character(year))  %>%
-  left_join(data_congenital_dep, by = c("NOMBDEP", "year")) %>%
+  left_join(data_maternal_dep, by = c("NOMBDEP", "year")) %>%
   left_join(departamentos, by = "NOMBDEP")
 
 custom_pal2 <- c(
@@ -141,7 +136,7 @@ in the departments of Peru
 
 ```{r, echo=FALSE, fig.height=6, fig.width=8}
 
-datamap <- bi_class(syphilis_poverty, x = rate_con, y = povertypoor, style = "quantile", dim = 2)
+datamap <- bi_class(syphilis_poverty, x = rate_mat, y = povertypoor, style = "quantile", dim = 2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
@@ -175,7 +170,7 @@ syphilis_poverty15 = syphilis_poverty %>%
   filter(
     year == "2015"
   )
-datamap <- bi_class(syphilis_poverty15, x = rate_con, y = povertypoor, style = "quantile", dim = 2)
+datamap <- bi_class(syphilis_poverty15, x = rate_mat, y = povertypoor, style = "quantile", dim = 2)
 
 map15 <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
@@ -211,7 +206,7 @@ syphilis_poverty18 = syphilis_poverty %>%
     year == "2018"
   )
 
-datamap <- bi_class(syphilis_poverty18, x = rate_con, y = povertypoor, style = "quantile", dim = 2)
+datamap <- bi_class(syphilis_poverty18, x = rate_mat, y = povertypoor, style = "quantile", dim = 2)
 
 map18 <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
@@ -247,7 +242,7 @@ syphilis_poverty22 = syphilis_poverty %>%
     year == "2022"
   )
 
-datamap <- bi_class(syphilis_poverty22, x = rate_con, y = povertypoor, style = "quantile", dim = 2)
+datamap <- bi_class(syphilis_poverty22, x = rate_mat, y = povertypoor, style = "quantile", dim = 2)
 
 map22 <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
@@ -278,6 +273,11 @@ finalPlot22
 
 
 ```{r, echo = FALSE,fig.height = 5, fig.width = 10}
+legend <- bi_legend(pal = custom_pal2,
+                    dim = 2,
+                    xlab = "Rate",
+                    ylab = "Poverty",
+                    size = 8)
 
 mappoverty <- map | map15 | map18 |map22 | (legend/plot_spacer())
  #+ plot_layout(widths = c(1, 1, 1, 1, 1))
@@ -291,8 +291,9 @@ EDUCATION:
 ## Congenital syphilis and education
 education = 
   data_enaho %>%
+  left_join(data_maternal_dep, by = c("year","NOMBDEP")) %>%
   left_join(data_congenital_dep, by = c("year","NOMBDEP")) %>%
-  select(education_level,year,NOMBDEP,conglome,estrato,facpob07,rate_con) %>%
+  select(education_level,year,NOMBDEP,conglome,estrato,facpob07,rate_mat,rate_con) %>%
   filter(!is.na(education_level))%>%
   mutate(
     NOMBDEP = as.factor(NOMBDEP),
@@ -312,6 +313,7 @@ syphilis_education = as.data.frame(syphilis_education)
 syphilis_education <- syphilis_education %>%
   mutate(year = as.character(year))  %>%
   left_join(data_congenital_dep, by = c("NOMBDEP", "year")) %>%
+  left_join(data_maternal_dep, by = c("NOMBDEP", "year")) %>%
   left_join(departamentos, by = "NOMBDEP") %>%
   rename("less_than_secondary" = `education_levelless than secondary`)
 
@@ -322,7 +324,7 @@ in the departments of Peru
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
 
-datamap <- bi_class(syphilis_education, x = rate_con, y = less_than_secondary, style = "quantile", dim = 2)
+datamap <- bi_class(syphilis_education, x = rate_mat, y = less_than_secondary, style = "quantile", dim = 2)
 
 map <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
@@ -357,7 +359,7 @@ syphilis_education15 = syphilis_education %>%
     year == "2015"
   )
 
-datamap <- bi_class(syphilis_education15, x = rate_con, y = less_than_secondary, style = "quantile", dim = 2)
+datamap <- bi_class(syphilis_education15, x = rate_mat, y = less_than_secondary, style = "quantile", dim = 2)
 
 
 map15 <- ggplot() +
@@ -394,7 +396,7 @@ syphilis_education18 = syphilis_education %>%
     year == "2018"
   )
 
-datamap <- bi_class(syphilis_education18, x = rate_con, y = less_than_secondary, style = "quantile", dim = 2)
+datamap <- bi_class(syphilis_education18, x = rate_mat, y = less_than_secondary, style = "quantile", dim = 2)
 
 map18 <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
@@ -429,7 +431,7 @@ syphilis_education22 = syphilis_education %>%
     year == "2022"
   )
 
-datamap <- bi_class(syphilis_education22, x = rate_con, y = less_than_secondary, style = "quantile", dim = 2)
+datamap <- bi_class(syphilis_education22, x = rate_mat, y = less_than_secondary, style = "quantile", dim = 2)
 
 map22 <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
@@ -457,9 +459,16 @@ finalPlot22
 ```
 
 ```{r, echo = FALSE,fig.height = 5, fig.width = 10}
+legend <- bi_legend(pal = custom_pal2,
+                    dim = 2,
+                    xlab = "Rate",
+                    ylab = "Primary education",
+                    size = 8)
 
 mapeducation <- map | map15 | map18 |map22 | (legend/plot_spacer())
  #+ plot_layout(widths = c(1, 1, 1, 1, 1))
 
 mapeducation
 ```
+
+
