@@ -788,13 +788,13 @@ Selva_obj3  <- Selva_obj3  +
 
 ## Gráfico general
 ```{r, fig.height=6, fig.width=12}
-combined_plot <- National_obj2 + Costa_obj2 + Sierra_obj2 +  Selva_obj2 + National_obj3 + Costa_obj3 + Sierra_obj3 + Selva_obj3 +
+combined_plot <- National_obj3 + Costa_obj3 + Sierra_obj3 + Selva_obj3 + National_obj2 + Costa_obj2 + Sierra_obj2 +  Selva_obj2 + 
   plot_layout(ncol = 4, guides = 'collect') &  
   theme(legend.position = 'bottom')
 
 Poverty_graph  <- combined_plot + 
   plot_annotation(
-    title = "Trends of Syphilis in Peru by Poverty", 
+    title = "Poverty", 
     theme = theme(
       plot.title = element_text(size = 14, hjust = 0.5, face = "bold")
     )
@@ -1318,7 +1318,7 @@ options(survey.lonely.psu="remove")
 
 ## TERCILES
 
-Poverty objective 2 (terciles)
+Education objective 2 (terciles)
 ```{r}
 education_mr = 
   education %>%
@@ -1385,7 +1385,7 @@ Selva_obj2  <- Selva_obj2  +
   scale_color_manual(values = selected_colors)
 ```
 
-Poverty objective 3 (terciles)
+Education objective 3 (terciles)
 ```{r}
 education_cr = 
   education %>%
@@ -1456,13 +1456,13 @@ Selva_obj3  <- Selva_obj3  +
 
 ## Gráfico general
 ```{r, fig.height=6, fig.width=12}
-combined_plot <- National_obj2 + Costa_obj2 + Sierra_obj2 +  Selva_obj2 + National_obj3 + Costa_obj3 + Sierra_obj3 + Selva_obj3 +
+combined_plot <- National_obj3 + Costa_obj3 + Sierra_obj3 + Selva_obj3 + National_obj2 + Costa_obj2 + Sierra_obj2 +  Selva_obj2 +
   plot_layout(ncol = 4, guides = 'collect') &  
   theme(legend.position = 'bottom')
 
 Education_graph  <- combined_plot + 
   plot_annotation(
-    title = "Trends of Syphilis in Peru by Education", 
+    title = "Lower education", 
     theme = theme(
       plot.title = element_text(size = 14, hjust = 0.5, face = "bold")
     )
