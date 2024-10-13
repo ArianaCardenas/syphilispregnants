@@ -794,7 +794,7 @@ combined_plot <- National_obj2 + Costa_obj2 + Sierra_obj2 +  Selva_obj2 + Nation
 
 Poverty_graph  <- combined_plot + 
   plot_annotation(
-    title = "Objectives by Poverty", 
+    title = "Trends of Syphilis in Peru by Poverty", 
     theme = theme(
       plot.title = element_text(size = 14, hjust = 0.5, face = "bold")
     )
@@ -1462,7 +1462,7 @@ combined_plot <- National_obj2 + Costa_obj2 + Sierra_obj2 +  Selva_obj2 + Nation
 
 Education_graph  <- combined_plot + 
   plot_annotation(
-    title = "Objectives by Education", 
+    title = "Trends of Syphilis in Peru by Education", 
     theme = theme(
       plot.title = element_text(size = 14, hjust = 0.5, face = "bold")
     )
