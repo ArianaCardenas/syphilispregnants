@@ -94,9 +94,9 @@ syphcongenita <- ggplot(syphcongenita, aes(x = rate, y = reorder(NOMBDEP,desc(ZO
   geom_line() +
   geom_point(aes(color = year), size = 3) +
   scale_color_manual(values = c("#3B99B1", "#EACB2B", "#F5191C")) +
-  xlab("Rate per 1000 newborn")+
+  xlab("Rate per 10,000 newborns")+
   ylab("Departments") +
-  labs(title = "Congenital") +
+  labs(title = "Congenital Syphilis") +
   theme_bw() +
   theme(
     axis.title = element_text(face ="bold", size = 11),
@@ -200,3 +200,17 @@ ggplot() +
   labs(title="Rate of congenital syphilis per 1000 newborn",
        fill = "Rate")
 ```
+
+Joining Dumbell plots:
+
+```{r fig.height=13.5, fig.width=8.5}
+# Run "Mapas I.Rmd" to obtain Screening Syphilis Dumbell Plot
+# Run "Mapas Syphilis INS.Rmd" to obtain Maternal Syphilis Dumbell Plot
+library(patchwork)
+
+combineddumbell = syphcongenita/syphmaterna/d15_d22_screening +
+  plot_annotation(tag_levels = "a")
+
+combineddumbell
+```
+

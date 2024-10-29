@@ -103,9 +103,9 @@ syphmaterna <- ggplot(syphmaterna, aes(x = rate, y = reorder(NOMBDEP,desc(ZONA))
   geom_line() +
   geom_point(aes(color = year), size = 3) +
   scale_color_manual(values = c("#3B99B1", "#EACB2B", "#F5191C")) +
-  xlab("Rate per 1000 newborn")+
+  xlab("Rate per 10,000 newborns")+
   ylab("Departments") +
-  labs(title = "Maternal") +
+  labs(title = "Maternal Syphilis") +
   theme_bw() +
   theme(
     axis.title = element_text(face ="bold", size = 11),
@@ -122,7 +122,7 @@ syphmaterna <- ggplot(syphmaterna, aes(x = rate, y = reorder(NOMBDEP,desc(ZONA))
   ) 
 
 syphmaterna
-ggsave("Graph_dumbell_maternal.png", plot = syphmaterna, width = 8, height = 4, dpi = 300)
+#ggsave("Graph_dumbell_maternal.png", plot = syphmaterna, width = 8, height = 4, dpi = 300)
 ```
 
 Tabla de las 10 provincias con más casos de sífilis materna por 1000 nacidos vivos.
