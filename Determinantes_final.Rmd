@@ -382,7 +382,7 @@ Costa_obj2 =
   )
 
 Costa_obj2 <- Costa_obj2 +
-  ggtitle("Maternal - Costa") +
+  ggtitle("Maternal - Coast") +
   theme(
     plot.title = element_text(size = 10), 
     legend.position = "bottom", 
@@ -451,7 +451,7 @@ Costa_obj3 =
   )
 
 Costa_obj3  <- Costa_obj3  +
-  ggtitle("Congenital - Costa") +
+  ggtitle("Congenital - Coast") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -545,7 +545,7 @@ Sierra_obj2 =
   )
 
 Sierra_obj2 <- Sierra_obj2 +
-  ggtitle("Maternal - Sierra") +
+  ggtitle("Maternal - Highlands") +
   theme(
     plot.title = element_text(size = 10), 
     legend.position = "bottom", 
@@ -614,7 +614,7 @@ Sierra_obj3 =
   )
 
 Sierra_obj3  <- Sierra_obj3  +
-  ggtitle("Congenital - Sierra") +
+  ggtitle("Congenital - Highlands") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -708,7 +708,7 @@ Selva_obj2 =
   )
 
 Selva_obj2 <- Selva_obj2 +
-  ggtitle("Maternal - Selva") +
+  ggtitle("Maternal - Jungle") +
   theme(
     plot.title = element_text(size = 10), 
     legend.position = "bottom", 
@@ -777,7 +777,7 @@ Selva_obj3 =
   )
 
 Selva_obj3  <- Selva_obj3  +
-  ggtitle("Congenital - Selva") +
+  ggtitle("Congenital - Jungle") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -801,6 +801,7 @@ Poverty_graph  <- combined_plot +
   )
 
 Poverty_graph
+ggsave("Poverty.png", plot = Poverty_graph)
 ```
 
 # Education National
@@ -1050,7 +1051,7 @@ Costa_obj2 =
   )
 
 Costa_obj2  <- Costa_obj2  +
-  ggtitle("Maternal - Costa") +
+  ggtitle("Maternal - Coast") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -1119,7 +1120,7 @@ Costa_obj3 =
   )
 
 Costa_obj3  <- Costa_obj3  +
-  ggtitle("Congenital - Costa") +
+  ggtitle("Congenital - Coast") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -1213,7 +1214,7 @@ Sierra_obj2 =
   )
 
 Sierra_obj2  <- Sierra_obj2  +
-  ggtitle("Maternal - Sierra") +
+  ggtitle("Maternal - Highlands") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -1282,7 +1283,7 @@ Sierra_obj3 =
   )
 
 Sierra_obj3  <- Sierra_obj3  +
-  ggtitle("Congenital - Sierra") +
+  ggtitle("Congenital - Highlands") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -1376,7 +1377,7 @@ Selva_obj2 =
   )
 
 Selva_obj2  <- Selva_obj2  +
-  ggtitle("Maternal - Selva") +
+  ggtitle("Maternal - Jungle") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -1445,7 +1446,7 @@ Selva_obj3 =
   )
 
 Selva_obj3  <- Selva_obj3  +
-  ggtitle("Congenital - Selva") +
+  ggtitle("Congenital - Jungle") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
@@ -1469,4 +1470,5 @@ Education_graph  <- combined_plot +
   )
 
 Education_graph
+ggsave("Lower_education.png", plot = Education_graph)
 ```

@@ -245,6 +245,5 @@ Figure2 = figure_2a / Figure_2b +
   plot_layout(heights = unit(c(6, 10), c('null', 'cm')))
 
 Figure2
+ggsave("Goals_2022.png", plot = Figure2)
 ```
-
-

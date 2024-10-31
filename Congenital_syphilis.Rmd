@@ -94,7 +94,7 @@ syphcongenita <- ggplot(syphcongenita, aes(x = rate, y = reorder(NOMBDEP,desc(ZO
   geom_line() +
   geom_point(aes(color = year), size = 3) +
   scale_color_manual(values = c("#3B99B1", "#EACB2B", "#F5191C")) +
-  xlab("Rate per 10,000 newborns")+
+  xlab("Rate per 1000 newborns")+
   ylab("Departments") +
   labs(title = "Congenital Syphilis") +
   theme_bw() +
@@ -212,5 +212,6 @@ combineddumbell = syphcongenita/syphmaterna/d15_d22_screening +
   plot_annotation(tag_levels = "a")
 
 combineddumbell
+ggsave("Dumbells_final.png", plot=combineddumbell)
 ```
 

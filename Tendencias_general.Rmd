@@ -287,5 +287,6 @@ tendenciaslong <- congenital_line / maternal_line / syphi_tamizaje +
   plot_annotation(tag_levels = "a")
 
 tendenciaslong
-```
+ggsave("Trends_2015-2022.png", plot = tendenciaslong)
 
+```
