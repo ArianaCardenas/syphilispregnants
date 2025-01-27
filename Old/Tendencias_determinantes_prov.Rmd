@@ -1,0 +1,365 @@
+---
+title: "Tendencias_determinantes"
+output: html_document
+date: "2024-02-14"
+---
+
+```{r}
+library(sf)
+library(purrr)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+library(readr)
+library(survey)
+library(gridExtra)
+library(cowplot)
+```
+
+```{r}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	cache = FALSE,
+	dev = "png",
+	dpi = 300
+)
+```
+
+Uploading ENDES data:
+ 
+```{r, echo =FALSE}
+data_ubigeo <- read_csv("Data_final/data_ubigeo_innovalab.csv")
+data_ubigeo_2022_innova <- read_csv("Data_final/data_ubigeo_2022_innova.csv")
+
+data_ubigeo_2022_innova = data_ubigeo_2022_innova[,c(2:6,1,7:9)]
+data_ubigeo = data_ubigeo[,c(1:6,8,10,12)]
+
+data_ubigeo_2022_innova = rename(data_ubigeo_2022_innova, c("NOMBDEP"="DEPARTAMEN","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
+
+data_ubigeo = rbind(data_ubigeo,data_ubigeo_2022_innova)
+
+rm(data_ubigeo_2022_innova)
+
+departamentos <- read_sf("Límites - mapas/DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp")
+data_syphilis <- read_csv("Data_final/data_syphilis.csv")
+
+data_endes <- data_syphilis%>% 
+  left_join(data_ubigeo, by = c("caseid","year"))
+
+data_endes <- data_endes %>%
+  left_join(departamentos, by = c("NOMBDEP"))
+
+rm(data_syphilis,data_ubigeo,departamentos)
+```
+
+Uploading MINSA data (maternal and congenital syphilis):
+
+```{r, echo=FALSE}
+data_ins_long <- read_csv("Data_final/ins_final_long.csv")
+newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
+
+data_ins_long = rename(
+  data_ins_long, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
+newborn = rename(
+  newborn, c("NOMBDEP"="departamento","NOMBPROV"="provincia","year"="years"))
+
+congenital <- read_csv("Data_final/syphilis_congenital.csv")
+
+congenital <- congenital %>%
+  select(c(1:16)) %>%
+  select(!c(4:7))
+
+congenital <- rename(
+  congenital, c("NOMBDEP"="DEPARTAMENTO","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
+
+congenital_long <- pivot_longer(congenital, cols = c(4:12), 
+                                names_to = "year", values_to = "congenital")
+
+#Provincial
+newborn_prov <- newborn %>%
+  group_by(NOMBDEP, NOMBPROV, year) %>%
+  summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
+  ungroup()
+
+#Regional
+newborn_dep <- newborn %>%
+  group_by(NOMBDEP, year) %>%
+  summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
+  ungroup()
+
+#National
+newborn_nac <- newborn %>%
+  group_by(year) %>%
+  summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
+  ungroup()
+
+rm(congenital,newborn)
+```
+
+Maternal 
+
+```{r}
+data_maternal_prov <- data_ins_long %>%
+  group_by(NOMBDEP, NOMBPROV, year) %>%
+  filter( year > 2013) %>%
+  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
+  ungroup()
+
+data_maternal_dep <- data_ins_long %>%
+  group_by(NOMBDEP, year) %>%
+  filter( year > 2013) %>%
+  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
+  ungroup()
+
+data_maternal_nac<- data_ins_long %>%
+  group_by(year) %>%
+  filter( year > 2013) %>%
+  summarise(tamizaje_reactivo =sum(tamizaje_reactivo)) %>%
+  ungroup()
+
+#Calculating rates of maternal syphilis 
+data_maternal_prov <- data_maternal_prov %>%
+  left_join(newborn_prov, by = c("NOMBDEP","NOMBPROV","year")) %>%
+  mutate(rate_mat = (tamizaje_reactivo/newborntotal)*1000)
+
+data_maternal_dep <- data_maternal_dep %>%
+  left_join(newborn_dep, by = c("NOMBDEP","year")) %>%
+  mutate(rate_mat = (tamizaje_reactivo/newborntotal)*1000)
+
+data_maternal_nac <- data_maternal_nac %>%
+  left_join(newborn_nac, by = c("year")) %>%
+  mutate(rate_mat = (tamizaje_reactivo/newborntotal)*1000)
+```
+
+Congenital:
+
+```{r}
+congenital_long$year = as.numeric(congenital_long$year) 
+
+#Provincial
+congenital_long_prov <- congenital_long %>%
+  group_by(NOMBDEP,NOMBPROV, year) %>%
+  summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  unnest(congenital)
+
+data_congenital_prov <- congenital_long_prov %>%
+  left_join(newborn_prov, by = c("NOMBDEP","NOMBPROV","year")) %>%
+  mutate(rate_con = (congenital/newborntotal)*1000) %>% 
+  mutate_if(is.numeric, round, 2) %>%
+  filter(rate_con < 100.0)
+
+#Regional
+congenital_long_dep <- congenital_long %>%
+  group_by(NOMBDEP,year) %>%
+  summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  unnest(congenital)
+
+data_congenital_dep <- congenital_long_dep %>%
+  left_join(newborn_dep, by = c("NOMBDEP","year")) %>%
+  mutate(rate_con = (congenital/newborntotal)*1000) %>% 
+  mutate_if(is.numeric, round, 2) %>%
+  filter(rate_con < 100.0)
+
+#National
+congenital_long_nac <- congenital_long %>%
+  mutate(
+  congenital = ifelse(year==2014&NOMBPROV=="BARRANCA",NA,congenital_long$congenital))%>%
+  group_by(year) %>%
+  summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  unnest(congenital)
+
+data_congenital_nac <- congenital_long_nac %>%
+  left_join(newborn_nac, by = c("year")) %>%
+  mutate(rate_con = (congenital/newborntotal)*1000) %>% 
+  mutate_if(is.numeric, round, 2)
+
+rm(congenital_long,congenital_long_prov,congenital_long_dep,congenital_long_nac,newborn_nac,newborn_dep,newborn_prov,data_ins_long)
+```
+
+```{r}
+data_endes <- data_endes %>%
+  mutate(
+    syphilis_screening=ifelse(syphilis_screening=="Yes",1, 0)
+  )
+
+data_endes$syphilis_screening <- ifelse(is.na(data_endes$syphilis_screening),0,data_endes$syphilis_screening)
+
+data_endes$syphilis_screening = as.factor(data_endes$syphilis_screening)
+```
+
+## wealth_index 
+
+```{r}
+library(RSQLite)
+poverty = 
+  data_endes %>%
+  left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
+  select(wealth_index,year,NOMBDEP,NOMBPROV,v001,v022,v005,syphilis_screening,rate_mat,rate_con) %>%
+  filter(!is.na(wealth_index))%>%
+  filter(year > "2013") %>%
+  mutate(
+    NOMBDEP = as.factor(NOMBDEP),
+    NOMBPROV = as.factor(NOMBPROV),
+    year = as.factor(year),
+    wealth_index = as.factor(wealth_index)
+  ) %>%
+  group_by(year) %>%
+  nest() %>%
+  mutate(
+    df = map(.x=data,
+             .f = ~svydesign(id = ~ v001, strata = ~ v022, weights = ~ v005, data = .x))
+  )
+
+options(survey.lonely.psu="remove")
+```
+
+Wealth index objective 1
+```{r}
+poverty_sc = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    syphilis = map(.x = df,
+              .f = ~svyby(~as.factor(syphilis_screening), by = ~wealth_index, design = .x, FUN =svyciprop, vartype=c('se','ci')) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(syphilis) 
+options(survey.lonely.psu="remove")
+
+poverty_sc %>% 
+  mutate(
+    across(`as.factor(syphilis_screening)`:ci_u,.fns = ~round(.,3)*100)) %>% 
+  
+    DT::datatable()
+```
+
+```{r}
+poverty_scg =
+  ggplot(data = poverty_sc,aes(x = year, y = `as.factor(syphilis_screening)`, ymin = ci_l, ymax = ci_u, group = wealth_index))+
+  geom_line(size = 1.2, aes(col = wealth_index))+
+  geom_ribbon(aes(fill = wealth_index), alpha = 0.1)+
+  xlab("Years") +
+  ylab("Prop. %") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+```
+
+Wealth index objective 2
+
+```{r}
+poverty_mr = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~wealth_index, by =~rate_mat , design = .x, FUN =svymean) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+poverty_mr = poverty_mr %>%  
+  mutate(
+    wealth_index = ifelse(wealth_indexRichest > wealth_indexRich & wealth_indexRichest > wealth_indexMiddle & wealth_indexRichest > wealth_indexPoor & wealth_indexRichest > wealth_indexPoorest, "Richest", ifelse(wealth_indexRich > wealth_indexRichest & wealth_indexRich > wealth_indexMiddle & wealth_indexRich > wealth_indexPoor & wealth_indexRich > wealth_indexPoorest, "Rich", ifelse(wealth_indexMiddle > wealth_indexRichest & wealth_indexMiddle > wealth_indexRich & wealth_indexMiddle > wealth_indexPoor & wealth_indexMiddle > wealth_indexPoorest,"Middle",ifelse(wealth_indexPoor > wealth_indexRichest & wealth_indexPoor > wealth_indexRich & wealth_indexPoor > wealth_indexMiddle & wealth_indexPoor > wealth_indexPoorest,"Poor", ifelse(wealth_indexPoorest > wealth_indexRichest & wealth_indexPoorest > wealth_indexRich & wealth_indexPoorest > wealth_indexMiddle & wealth_indexPoorest > wealth_indexPoor,"Poorest", NA )))))) %>%
+  group_by(year,wealth_index)%>%
+  filter(!is.na(wealth_index))%>%
+  summarize(rate_mat_mean=mean(rate_mat))
+
+poverty_mr %>% 
+     DT::datatable()
+``` 
+
+
+```{r}
+poverty_mrg =
+  ggplot(data = poverty_mr,aes(x = year, y = rate_mat_mean, group = wealth_index))+
+  geom_line(size = 1.2, aes(col = wealth_index))+
+  xlab("Years") +
+  ylab("Prop. %") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+#ggsave("prov_wealth_obj2.png", plot = poverty_mrg, width = 8, height = 4, dpi = 300)
+```
+
+Wealth index objective 3
+
+```{r}
+poverty_cr = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~wealth_index, by =~rate_con , design = .x, FUN =svymean) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+poverty_cr = poverty_cr %>%  
+  mutate(
+    wealth_index = ifelse(wealth_indexRichest > wealth_indexRich & wealth_indexRichest > wealth_indexMiddle & wealth_indexRichest > wealth_indexPoor & wealth_indexRichest > wealth_indexPoorest, "Richest", ifelse(wealth_indexRich > wealth_indexRichest & wealth_indexRich > wealth_indexMiddle & wealth_indexRich > wealth_indexPoor & wealth_indexRich > wealth_indexPoorest, "Rich", ifelse(wealth_indexMiddle > wealth_indexRichest & wealth_indexMiddle > wealth_indexRich & wealth_indexMiddle > wealth_indexPoor & wealth_indexMiddle > wealth_indexPoorest,"Middle",ifelse(wealth_indexPoor > wealth_indexRichest & wealth_indexPoor > wealth_indexRich & wealth_indexPoor > wealth_indexMiddle & wealth_indexPoor > wealth_indexPoorest,"Poor", ifelse(wealth_indexPoorest > wealth_indexRichest & wealth_indexPoorest > wealth_indexRich & wealth_indexPoorest > wealth_indexMiddle & wealth_indexPoorest > wealth_indexPoor,"Poorest", NA ))))))%>%
+  group_by(year,wealth_index)%>%
+  filter(!is.na(wealth_index))%>%
+  summarize(rate_con_mean=mean(rate_con))
+
+poverty_mr %>% 
+     DT::datatable()
+```
+
+```{r}
+poverty_crg =
+  ggplot(data = poverty_cr,aes(x = year, y = rate_con_mean, group = wealth_index))+
+  geom_line(size = 1.2, aes(col = wealth_index))+
+  xlab("Years") +
+  ylab("Prop. %") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+#ggsave("prov_wealth_obj3.png", plot = poverty_crg, width = 8, height = 4, dpi = 300)
+```
+
+final_nac_plot = ggdraw() +
+  draw_plot(peru1, 0, .14, .3, .8) +
+  draw_plot(peru2, .3, 0, .3, .95) +
+  draw_plot(peru3, .6, .14, .3, .8) +
+  draw_plot_label(c("Peru objective 1","Peru objective 2","Peru objective 3"),c(0,.3,.6),c(.99,.99,.99),size=10)
+
+final_nac_plot

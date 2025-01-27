@@ -1,0 +1,671 @@
+---
+title: "data_enaho"
+output: html_document
+date: "2024-05-25"
+---
+
+```{r}
+library(rio)
+library(tidyverse)
+library(janitor)
+library(utils)
+```
+
+Solo de pobreza y educación. Un gráfico por departamento. El color entero va para el determinante. 
+
+Educativo (P301A): del 1 al 5, incluyendo el 12 y del 6 al 11. (menos de secundaria o secundaria completa a más)
+POBREZA (POBREZA): del 1 al 2, y el 3
+
+2015
+```{r}
+#Limpieza general
+personas = import("2015/Enaho01-2015-200.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #solo tiene CODPERSO
+
+personas = personas%>%
+  select(AÑO, 
+         UBIGEO,
+         CASEID,
+         CONGLOME,
+         ESTRATO,
+         CODPERSO,
+         FACPOB07,
+         P207,
+         P208A,
+         P209) %>%
+  clean_names()
+
+educacion = import("2015/Enaho01A-2015-300.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE) 
+
+educacion = educacion %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         FACTOR07,
+         P300A,
+         P301A) %>%
+  clean_names()
+
+salud = import("2015/Enaho01A-2015-400.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ", remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE)
+
+salud = salud %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         CODPERSO,
+         `P414$15`,
+         P4041,
+         P4042,
+         P4043,
+         P4044,
+         P4045,
+         P4046,
+         P4047,
+         P4191,
+         P4192,
+         P4193,
+         P4194,
+         P4195,
+         P4196,
+         P4197,
+         P4198) %>%
+  clean_names()
+
+sumatoria = import("2015/SUMARIA-2015.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
+
+sumatoria = sumatoria %>%
+  select(CASEID,
+         UBIGEO,
+         POBREZA,
+         LINPE,
+         LINEA) %>%
+  clean_names()
+
+#Unión de datas 
+data2015 = personas %>%
+  left_join(sumatoria, by = c("caseid","ubigeo")) %>%
+  left_join(salud, by = c("caseid","codperso","ubigeo")) %>%
+  left_join(educacion, by = c("caseid","caseid2","ubigeo")) 
+
+rm(personas, educacion, salud, sumatoria)
+```
+
+2016
+```{r}
+ #Limpieza general 
+personas = import("2016/Enaho01-2016-200.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #solo tiene CODPERSO
+
+personas = personas%>%
+  select(AÑO,
+         UBIGEO,
+         CASEID,
+         CONGLOME,
+         ESTRATO,
+         CODPERSO,
+         FACPOB07,
+         P207,
+         P208A,
+         P209) %>%
+  clean_names()
+
+educacion = import("2016/Enaho01A-2016-300.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE) 
+
+educacion = educacion %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         FACTOR07,
+         P300A,
+         P301A) %>%
+  clean_names()
+
+salud = import("2016/Enaho01A-2016-400.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ", remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE)
+
+salud = salud %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         CODPERSO,
+         `P414$15`,
+         P4041,
+         P4042,
+         P4043,
+         P4044,
+         P4045,
+         P4046,
+         P4047,
+         P4191,
+         P4192,
+         P4193,
+         P4194,
+         P4195,
+         P4196,
+         P4197,
+         P4198) %>%
+  clean_names()
+
+sumatoria = import("2016/SUMARIA-2016.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
+
+sumatoria = sumatoria %>%
+  select(CASEID,
+         UBIGEO,
+         POBREZA,
+         LINPE,
+         LINEA) %>%
+  clean_names()
+
+#Unión de datas
+data2016 = personas %>%
+  left_join(sumatoria, by = c("caseid","ubigeo")) %>%
+  left_join(salud, by = c("caseid","codperso","ubigeo")) %>%
+  left_join(educacion, by = c("caseid","caseid2","ubigeo")) 
+
+rm(personas, educacion, salud, sumatoria)
+```
+
+2017
+```{r}
+ #Limpieza general 
+personas = import("2017/Enaho01-2017-200.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #solo tiene CODPERSO
+
+personas = personas%>%
+  select(AÑO, 
+         UBIGEO,
+         CASEID,
+         CONGLOME,
+         ESTRATO,
+         CODPERSO,
+         FACPOB07,
+         P207,
+         P208A,
+         P209) %>%
+  clean_names()
+
+educacion = import("2017/Enaho01A-2017-300.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE) 
+
+educacion = educacion %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         FACTOR07,
+         P300A,
+         P301A) %>%
+  clean_names()
+
+salud = import("2017/Enaho01A-2017-400.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ", remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE)
+
+salud = salud %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         CODPERSO,
+         `P414$15`,
+         P4041,
+         P4042,
+         P4043,
+         P4044,
+         P4045,
+         P4046,
+         P4047,
+         P4191,
+         P4192,
+         P4193,
+         P4194,
+         P4195,
+         P4196,
+         P4197,
+         P4198) %>%
+  clean_names()
+
+sumatoria = import("2017/SUMARIA-2017.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
+
+sumatoria = sumatoria %>%
+  select(CASEID,
+         UBIGEO,
+         POBREZA,
+         LINPE,
+         LINEA) %>%
+  clean_names()
+
+#Unión de datas
+data2017 = personas %>%
+  left_join(sumatoria, by = c("caseid","ubigeo")) %>%
+  left_join(salud, by = c("caseid","codperso","ubigeo")) %>%
+  left_join(educacion, by = c("caseid","caseid2","ubigeo")) 
+
+rm(personas, educacion, salud, sumatoria)
+```
+
+2018
+```{r}
+ #Limpieza general 
+personas = import("2018/Enaho01-2018-200.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #solo tiene CODPERSO
+
+personas = personas%>%
+  select(AÑO, 
+         UBIGEO,
+         CASEID,
+         CONGLOME,
+         ESTRATO,
+         CODPERSO,
+         FACPOB07,
+         P207,
+         P208A,
+         P209) %>%
+  clean_names()
+
+educacion = import("2018/Enaho01A-2018-300.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE) 
+
+educacion = educacion %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         FACTOR07,
+         P300A,
+         P301A) %>%
+  clean_names()
+
+salud = import("2018/Enaho01A-2018-400.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ", remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE)
+
+salud = salud %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         CODPERSO,
+         `P414$15`,
+         P4041,
+         P4042,
+         P4043,
+         P4044,
+         P4045,
+         P4046,
+         P4047,
+         P4191,
+         P4192,
+         P4193,
+         P4194,
+         P4195,
+         P4196,
+         P4197,
+         P4198) %>%
+  clean_names()
+
+sumatoria = import("2018/SUMARIA-2018.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
+
+sumatoria = sumatoria %>%
+  select(CASEID,
+         UBIGEO,
+         POBREZA,
+         LINPE,
+         LINEA) %>%
+  clean_names()
+
+#Unión de datas
+data2018 = personas %>%
+  left_join(sumatoria, by = c("caseid","ubigeo")) %>%
+  left_join(salud, by = c("caseid","codperso","ubigeo")) %>%
+  left_join(educacion, by = c("caseid","caseid2","ubigeo")) 
+
+rm(personas, educacion, salud, sumatoria)
+```
+
+2019
+```{r}
+ #Limpieza general 
+personas = import("2019/Enaho01-2019-200.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #solo tiene CODPERSO
+
+personas = personas%>%
+  select(AÑO, 
+         UBIGEO,
+         CASEID,
+         CONGLOME,
+         ESTRATO,
+         CODPERSO,
+         FACPOB07,
+         P207,
+         P208A,
+         P209) %>%
+  clean_names()
+
+educacion = import("2019/Enaho01A-2019-300.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE) 
+
+educacion = educacion %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         FACTOR07,
+         P300A,
+         P301A) %>%
+  clean_names()
+
+salud = import("2019/Enaho01A-2019-400.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ", remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE)
+
+salud = salud %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         CODPERSO,
+         `P414$15`,
+         P4041,
+         P4042,
+         P4043,
+         P4044,
+         P4045,
+         P4046,
+         P4047,
+         P4191,
+         P4192,
+         P4193,
+         P4194,
+         P4195,
+         P4196,
+         P4197,
+         P4198) %>%
+  clean_names()
+
+sumatoria = import("2019/SUMARIA-2019.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
+
+sumatoria = sumatoria %>%
+  select(CASEID,
+         UBIGEO,
+         POBREZA,
+         LINPE,
+         LINEA) %>%
+  clean_names()
+
+#Unión de datas
+data2019 = personas %>%
+  left_join(sumatoria, by = c("caseid","ubigeo")) %>%
+  left_join(salud, by = c("caseid","codperso","ubigeo")) %>%
+  left_join(educacion, by = c("caseid","caseid2","ubigeo")) 
+
+rm(personas, educacion, salud, sumatoria)
+```
+
+2020
+```{r}
+ #Limpieza general 
+personas = import("2020/Enaho01-2020-200.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #solo tiene CODPERSO
+
+personas = personas%>%
+  select(AÑO, 
+         UBIGEO,
+         CASEID,
+         CONGLOME,
+         ESTRATO,
+         CODPERSO,
+         FACPOB07,
+         P207,
+         P208A,
+         P209) %>%
+  clean_names()
+
+educacion = import("2020/Enaho01A-2020-300.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE) 
+
+educacion = educacion %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         FACTOR07,
+         P300A,
+         P301A) %>%
+  clean_names()
+
+salud = import("2020/Enaho01A-2020-400.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ", remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE)
+
+salud = salud %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         CODPERSO,
+         `P414$15`,
+         P4041,
+         P4042,
+         P4043,
+         P4044,
+         P4045,
+         P4046,
+         P4047,
+         P4191,
+         P4192,
+         P4193,
+         P4194,
+         P4195,
+         P4196,
+         P4197,
+         P4198) %>%
+  clean_names()
+
+sumatoria = import("2020/SUMARIA-2020.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
+
+sumatoria = sumatoria %>%
+  select(CASEID,
+         UBIGEO,
+         POBREZA,
+         LINPE,
+         LINEA) %>%
+  clean_names()
+
+#Unión de datas
+data2020 = personas %>%
+  left_join(sumatoria, by = c("caseid","ubigeo")) %>%
+  left_join(salud, by = c("caseid","codperso","ubigeo")) %>%
+  left_join(educacion, by = c("caseid","caseid2","ubigeo")) 
+
+rm(personas, educacion, salud, sumatoria)
+```
+
+2021
+```{r}
+ #Limpieza general 
+personas = import("2021/Enaho01-2021-200.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #solo tiene CODPERSO
+
+personas = personas%>%
+  select(AÑO, 
+         UBIGEO,
+         CASEID,
+         CONGLOME,
+         ESTRATO,
+         CODPERSO,
+         FACPOB07,
+         P207,
+         P208A,
+         P209) %>%
+  clean_names()
+
+educacion = import("2021/Enaho01A-2021-300.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE) 
+
+educacion = educacion %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         FACTOR07,
+         P300A,
+         P301A) %>%
+  clean_names()
+
+salud = import("2021/Enaho01A-2021-400.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ", remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE)
+
+salud = salud %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         CODPERSO,
+         `P414$15`,
+         P4041,
+         P4042,
+         P4043,
+         P4044,
+         P4045,
+         P4046,
+         P4047,
+         P4191,
+         P4192,
+         P4193,
+         P4194,
+         P4195,
+         P4196,
+         P4197,
+         P4198) %>%
+  clean_names()
+
+sumatoria = import("2021/SUMARIA-2021.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
+
+sumatoria = sumatoria %>%
+  select(CASEID,
+         UBIGEO,
+         POBREZA,
+         LINPE,
+         LINEA) %>%
+  clean_names()
+
+#Unión de datas
+data2021 = personas %>%
+  left_join(sumatoria, by = c("caseid","ubigeo")) %>%
+  left_join(salud, by = c("caseid","codperso","ubigeo")) %>%
+  left_join(educacion, by = c("caseid","caseid2","ubigeo")) 
+
+rm(personas, educacion, salud, sumatoria)
+```
+
+2022
+```{r}
+ #Limpieza general 
+personas = import("2022/Enaho01-2022-200.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #solo tiene CODPERSO
+
+personas = personas%>%
+  select(AÑO, 
+         UBIGEO,
+         CASEID,
+         CONGLOME,
+         ESTRATO,
+         CODPERSO,
+         FACPOB07,
+         P207,
+         P208A,
+         P209) %>%
+  clean_names()
+
+educacion = import("2022/Enaho01A-2022-300.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE) 
+
+educacion = educacion %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         FACTOR07,
+         P300A,
+         P301A) %>%
+  clean_names()
+
+salud = import("2022/Enaho01A-2022-400.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ", remove = FALSE) %>% unite("CASEID2", CODPERSO, CODINFOR, sep = "  ", remove = FALSE)
+
+salud = salud %>%
+  select(CASEID,
+         CASEID2,
+         UBIGEO,
+         CODPERSO,
+         `P414$15`,
+         P4041,
+         P4042,
+         P4043,
+         P4044,
+         P4045,
+         P4046,
+         P4047,
+         P4191,
+         P4192,
+         P4193,
+         P4194,
+         P4195,
+         P4196,
+         P4197,
+         P4198) %>%
+  clean_names()
+
+sumatoria = import("2022/SUMARIA-2022.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
+
+sumatoria = sumatoria %>%
+  select(CASEID,
+         UBIGEO,
+         POBREZA,
+         LINPE,
+         LINEA) %>%
+  clean_names()
+
+#Unión de datas
+data2022 = personas %>%
+  left_join(sumatoria, by = c("caseid","ubigeo")) %>%
+  left_join(salud, by = c("caseid","codperso","ubigeo")) %>%
+  left_join(educacion, by = c("caseid","caseid2","ubigeo")) 
+
+rm(personas, educacion, salud, sumatoria)
+```
+
+Unión de todas las datas
+```{r}
+enaho = rbind(data2015,data2016,data2017,data2018,data2019,data2020,data2021,data2022)
+
+rm(data2015,data2016,data2017,data2018,data2019,data2020,data2021,data2022)
+```
+
+Configuración de variables
+```{r}
+enaho = rename(enaho,"year"="ano", "sex"="p207","age"="p208a","civil_status"="p209","visit_preg"="p414_15","language"="p300a","education_level"= "p301a","poverty"="pobreza")
+
+enaho = enaho %>%
+  mutate(
+    estrato = case_when(year==2015 & estrato<=4 ~ "urban",
+                        year!=2015 & estrato<=5 ~ "urban",
+                        year==2015 & estrato>=5 ~ "rural",
+                        year!=2015 & estrato>=6 ~ "rural",
+                        is.na(estrato) ~ NA
+    ),
+    sex = case_when(sex==1 ~ "man",
+                    sex==2 ~ "woman",
+                    is.na(sex) ~ NA
+    ),
+    civil_status = case_when(civil_status>=3 ~ "no married/living_together",
+                    civil_status>=2 ~ "married/living_together",
+                    is.na(civil_status) ~ NA
+    ),
+    language = case_when(language==4 ~ "spanish",
+                    language>=3 | language>=6 & language<=7 | language>=10 & language<=15 ~ "no spanish",
+                    is.na(language) ~ NA
+    ),
+    education_level = case_when(education_level<=5 | education_level==12 ~ "less than secondary",
+                    education_level>=6 & education_level<=11 ~ "secondary or more",
+                    is.na(education_level) ~ NA
+    ),
+    visit_preg = case_when(visit_preg == 1 ~ "yes",
+                           visit_preg == 2 ~ "no",
+                           is.na(visit_preg) ~ NA
+    ),
+    who_assisted_you = case_when(p4041 == 1 | p4043 == 1 | p4044 == 1 ~ "doctor/nurse/obstetrician",
+                                 p4042 == 1 | p4045 == 1 | p4046 == 1 | p4047 == 1 ~ "other",
+    ),
+    health_insurance = case_when(p4191 == 1 | p4192 == 1 | p4193 == 1 | p4194 == 1 | p4195 == 1 | p4196 == 1 | p4197 == 1 ~ "yes"
+    ),
+    poverty = case_when(poverty == 1 | poverty == 2 ~ "poor",
+                        poverty == 3 ~ "no poor",
+                        is.na(poverty) ~ NA
+  )
+)
+```
+
+#Preguntar por lo de year - AÑO, UBIGEO, UBIGEO, de nacimiento y lo de slice:
+group_by(caseid) %>% 
+slice(1)
+
+```{r}
+ enaho2 = enaho %>%
+  filter(sex=="woman") %>%
+  #distinct(ubigeo, .keep_all = TRUE) %>% 
+  group_by(caseid) %>% 
+  slice(1) %>% 
+  
+  ungroup()
+```
+
+```{r}
+write.csv(enaho2,"./enaho2.csv", row.names = F)
+```
+

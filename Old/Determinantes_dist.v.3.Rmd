@@ -1,0 +1,718 @@
+---
+title: "Determinantes 3"
+output: html_document
+date: "2024-05-30"
+---
+```{r}
+library(sf)
+library(purrr)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+library(readr)
+library(survey)
+library(gridExtra)
+library(cowplot)
+library(readxl)
+```
+
+```{r}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	cache = FALSE,
+	dev = "png",
+	dpi = 300
+)
+```
+
+```{r}
+data_enaho <- read_csv("Data_enaho/enaho2.csv")
+
+data_ubigeo <- read_csv("Data_final/data_ubigeo_innovalab.csv")
+
+departamentos <- read_sf("Límites - mapas/DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp")
+#data_syphilis <- read_csv("Data_final/data_syphilis.csv")
+
+data_enaho = rename(data_enaho, c("UBIGEO"="ubigeo"))
+
+data_ubigeo = data_ubigeo %>%
+  filter(year > 2014)
+
+data_ubigeo = data_ubigeo [,c(8,10,12,14)]
+
+data_ubigeo = distinct(data_ubigeo)
+
+data_enaho <- data_enaho %>%
+  left_join(data_ubigeo, by = c("UBIGEO")) %>%
+  mutate(
+    year = as.numeric(data_enaho$year)
+  )
+
+rm(data_syphilis,data_ubigeo)
+```
+
+Uploading MINSA data (maternal and congenital syphilis):
+
+```{r, echo=FALSE}
+maternal <- read_csv("Data_final/syphilis_maternal.csv")
+newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
+newborn_distrito <- read_excel("Data_final/Reniec_Nacimientos_Distritos.xlsx")
+
+newborn_distrito = newborn_distrito %>% 
+  mutate(across(c(NOMBDEP, NOMBPROV, NOMBDIST),
+                ~ toupper(.x) %>%
+                  stringi::stri_trans_general("Latin-ASCII")))
+
+maternal = rename(
+  maternal, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
+newborn = rename(
+  newborn, c("NOMBDEP"="departamento","NOMBPROV"="provincia","year"="years"))
+
+maternal_long <- pivot_longer(maternal, cols = c(4:11), 
+                                names_to = "year", values_to = "maternal")
+
+congenital <- read_csv("Data_final/syphilis_congenital.csv")
+
+congenital <- congenital %>%
+  select(!c(1))
+
+congenital <- rename(
+  congenital, c("NOMBDEP"="DEPARTAMENTO","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
+
+congenital_long <- pivot_longer(congenital, cols = c(4:12), 
+                                names_to = "year", values_to = "congenital")
+
+#Provincial
+#newborn_prov <- newborn %>%
+  #group_by(NOMBDEP, NOMBPROV, year) %>%
+  #summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
+  #ungroup()
+
+#Regional
+#newborn_dep <- newborn %>%
+  #group_by(NOMBDEP, year) %>%
+  #summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
+  #ungroup()
+
+#National
+#newborn_nac <- newborn %>%
+  #group_by(year) %>%
+  #summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
+  #ungroup()
+
+rm(maternal,congenital,newborn)
+```
+
+Maternal 
+
+```{r}
+data_maternal_dist <- maternal_long %>%
+  group_by(NOMBDEP, NOMBPROV, NOMBDIST, year) %>%
+  filter( year > 2014) %>%
+  summarise(maternal =sum(maternal, na.rm = TRUE)) %>%
+  mutate(year=as.numeric(year))%>%
+  ungroup()
+
+#data_maternal_prov <- maternal_long %>%
+  #group_by(NOMBDEP, NOMBPROV, year) %>%
+  #filter( year > 2014) %>%
+  #summarise(maternal =sum(maternal, na.rm = TRUE)) %>%
+  #mutate(year=as.numeric(year))%>%
+  #ungroup()
+
+#data_maternal_dep <- maternal_long %>%
+  #group_by(NOMBDEP, year) %>%
+  #filter( year > 2014) %>%
+  #summarise(maternal =sum(maternal, na.rm = TRUE)) %>%
+  #mutate(year=as.numeric(year))%>%
+  #ungroup()
+
+#data_maternal_nac<- maternal_long %>%
+  #group_by(year) %>%
+  #filter( year > 2014) %>%
+  #summarise(maternal =sum(maternal, na.rm = TRUE)) %>%
+  #mutate(year=as.numeric(year))%>%
+  #ungroup()
+
+#Calculating rates of maternal syphilis 
+data_maternal_dist <- data_maternal_dist %>%
+  left_join(newborn_distrito, by = c("NOMBDEP","NOMBPROV","NOMBDIST","year")) %>%
+  mutate(rate_mat = (maternal/newborntotal)*1000)
+
+#data_maternal_prov <- data_maternal_prov %>%
+  #left_join(newborn_prov, by = c("NOMBDEP","NOMBPROV","year")) %>%
+  #mutate(rate_mat = (maternal/newborntotal)*1000)
+
+#data_maternal_dep <- data_maternal_dep %>%
+  #left_join(newborn_dep, by = c("NOMBDEP","year")) %>%
+  #mutate(rate_mat = (maternal/newborntotal)*1000) %>% 
+  #mutate_if(is.numeric, round, 2)
+
+#data_maternal_nac <- data_maternal_nac %>%
+  #left_join(newborn_nac, by = c("year")) %>%
+  #mutate(rate_mat = (maternal/newborntotal)*1000) %>% 
+  #mutate_if(is.numeric, round, 2)
+```
+
+Congenital:
+
+```{r}
+congenital_long$year = as.numeric(congenital_long$year) 
+
+#Distrital
+congenital_long_dist <- congenital_long %>%
+  group_by(NOMBDEP,NOMBPROV,NOMBDIST, year) %>%
+  filter (year >2014) %>%
+  summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  unnest(congenital)
+
+data_congenital_dist <- congenital_long_dist %>%
+  left_join(newborn_distrito, by = c("NOMBDEP","NOMBPROV","NOMBDIST","year")) %>%
+  mutate(rate_con = (congenital/newborntotal)*1000) %>% 
+  mutate_if(is.numeric, round, 2) 
+
+#Provincial
+#congenital_long_prov <- congenital_long %>%
+  #group_by(NOMBDEP,NOMBPROV, year) %>%
+  #summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  #unnest(congenital)
+
+#data_congenital_prov <- congenital_long_prov %>%
+  #left_join(newborn_prov, by = c("NOMBDEP","NOMBPROV","year")) %>%
+  #mutate(rate_con = (congenital/newborntotal)*1000) %>% 
+  #mutate_if(is.numeric, round, 2) %>%
+  #filter(rate_con < 100.0)
+
+#Regional
+#congenital_long_dep <- congenital_long %>%
+  #group_by(NOMBDEP,year) %>%
+  #summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  #unnest(congenital)
+
+#data_congenital_dep <- congenital_long_dep %>%
+  #left_join(newborn_dep, by = c("NOMBDEP","year")) %>%
+  #mutate(rate_con = (congenital/newborntotal)*1000) %>% 
+  #mutate_if(is.numeric, round, 2) %>%
+  #filter(rate_con < 100.0)
+
+#National
+#congenital_long_nac <- congenital_long %>%
+  #group_by(year) %>%
+  #summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  #unnest(congenital)
+
+#data_congenital_nac <- congenital_long_nac %>%
+  #left_join(newborn_nac, by = c("year")) %>%
+  #mutate(rate_con = (congenital/newborntotal)*1000) %>% 
+  #mutate_if(is.numeric, round, 2)
+
+rm(congenital_long,congenital_long_dep,congenital_long_nac,newborn_nac,newborn_dep,data_ins_long,newborn_nac,newborn_dep)
+```
+
+## Poverty
+
+```{r}
+library(RSQLite)
+poverty = 
+  data_enaho %>%
+  left_join(data_maternal_dist, by = c("year","NOMBDEP","NOMBPROV","NOMBDIST")) %>%
+  left_join(data_congenital_dist, by = c("year","NOMBDEP","NOMBPROV","NOMBDIST")) %>%
+  select(poverty,year,NOMBDEP,NOMBPROV,NOMBDIST,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(poverty))%>%
+  filter(year > "2014") %>%
+  mutate(
+    NOMBDIST = as.factor(NOMBDIST),
+    year = as.factor(year),
+    poverty = as.factor(poverty)
+  ) %>%
+  group_by(year) %>%
+  nest() %>%
+  mutate(
+    df = map(.x=data,
+             .f = ~svydesign(id = ~ conglome, strata = ~ estrato, weights = ~ facpob07, data = .x))
+  )
+
+options(survey.lonely.psu="remove")
+```
+
+Poverty objective 2
+```{r}
+poverty_mr = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~poverty, by =~rate_mat , design = .x, FUN =svymean) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+poverty_mr1 = poverty_mr %>%  
+  mutate(
+    poverty = povertypoor*100) %>%
+  filter(!is.na(poverty))%>%
+  group_by(year,poverty)%>%
+  summarize(rate_mat_mean=mean(rate_mat))
+
+poverty_mr2 = poverty_mr %>%  
+  mutate(
+    poverty = povertypoor*100) %>%
+  filter(!is.na(poverty))%>%
+  group_by(poverty)%>%
+  summarize(rate_mat_mean=mean(rate_mat))
+
+poverty_mr1 %>% 
+     DT::datatable()
+``` 
+
+```{r}
+poverty_mrg =
+  ggplot(data = poverty_mr2,aes(x = poverty, y = rate_mat_mean
+                                #,
+                                ))+ 
+                                #group = year))+
+  geom_line(size = 1.2
+            #,
+            )+
+            #aes(col = year))+
+  xlab("Poverty (%)") +
+  ylab("Rate") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+poverty_mrg <- poverty_mrg +
+  ggtitle("Objective Two") +
+  theme(
+    plot.title = element_text(size = 10), 
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1))
+
+#ggsave("dep_wealth_obj2.png", plot = poverty_mrg, width = 8, height = 4, dpi = 300)
+```
+
+Poverty objective 3
+
+```{r}
+poverty_cr = 
+  poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~poverty, by =~rate_con , design = .x, FUN =svymean) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+poverty_cr1 = poverty_cr %>%  
+  mutate(
+    poverty = povertypoor*100) %>%
+  filter(!is.na(poverty))%>%
+  group_by(year,poverty)%>%
+  summarize(rate_con_mean=mean(rate_con))
+
+poverty_cr2 = poverty_cr %>%  
+  mutate(
+    poverty = povertypoor*100) %>%
+  filter(!is.na(poverty))%>%
+  group_by(poverty)%>%
+  summarize(rate_con_mean=mean(rate_con))
+
+poverty_cr1 %>% 
+     DT::datatable()
+```
+
+```{r}
+poverty_crg =
+  ggplot(data = poverty_cr2,aes(x = poverty, y = rate_con_mean
+                                #,
+                                ))+ 
+                                #group = year))+
+  geom_line(size = 1.2
+            #,
+            )+
+            #aes(col = year))+
+  xlab("Poverty (%)") +
+  ylab("Rate") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+poverty_crg <- poverty_crg +
+  ggtitle("Objective Three") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) 
+
+#ggsave("prov_wealth_obj3.png", plot = poverty_crg, width = 8, height = 4, dpi = 300)
+```
+
+```{r}
+library(patchwork)
+combined_plot <- poverty_mrg + poverty_crg + 
+  plot_layout(guides = 'collect') & 
+  theme(legend.position = 'bottom')
+
+National  <- combined_plot + 
+  plot_annotation(
+    title = "Objectives by Poverty at the National Level", 
+    theme = theme(
+      plot.title = element_text(size = 14, hjust = 0.5, face = "bold"), 
+      plot.margin = margin(5, 5, 5, 5)  
+    )
+  )
+National
+```
+
+##FALTA MODIFICAR
+
+## Poverty base AMAZONAS
+```{r}
+dep_poverty = 
+  data_enaho %>%
+  left_join(data_maternal_dist, by = c("year","NOMBDEP","NOMBPROV","NOMBDIST")) %>%
+  left_join(data_congenital_dist, by = c("year","NOMBDEP","NOMBPROV","NOMBDIST")) %>%
+  select(poverty,year,NOMBDEP,NOMBPROV,NOMBDIST,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(poverty))%>%
+  filter(year > "2014") %>%
+  filter(NOMBDEP== "AMAZONAS") %>%
+  mutate(
+    NOMBDIST = as.factor(NOMBDIST),
+    year = as.factor(year),
+    poverty = as.factor(poverty)
+  ) %>%
+  group_by(year) %>%
+  nest() %>%
+  mutate(
+    df = map(.x=data,
+             .f = ~svydesign(id = ~ conglome, strata = ~ estrato, weights = ~ facpob07, data = .x))
+  )
+
+options(survey.lonely.psu="remove")
+```
+
+#### Poverty objective 2 AMAZONAS
+```{r}
+dep_poverty_mr = 
+  dep_poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~poverty, by =~rate_mat , design = .x, FUN =svymean) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+#media: 0.3180768
+#mediana: 0.2836331
+
+dep_poverty_mr = dep_poverty_mr %>%  
+ mutate(
+    poverty = ifelse(povertypoor < 0.3180768, "Poor", "No Poor")) %>%
+  filter(!is.na(poverty))%>%
+  group_by(year,poverty)%>%
+  summarize(rate_mat_mean=mean(rate_mat))
+
+dep_poverty_mr %>% 
+     DT::datatable()
+``` 
+
+```{r}
+dep_poverty_mrg =
+  ggplot(data = dep_poverty_mr,aes(x = year, y = rate_mat_mean, group = poverty))+
+  geom_line(size = 1.2, aes(col = poverty))+
+  xlab("Years") +
+  ylab("Rate") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+dep_poverty_mrg
+
+dep_poverty_mrg <- dep_poverty_mrg +
+  ggtitle("Objective Two") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) 
+```
+
+Poverty objective 3 AMAZONAS
+```{r}
+dep_poverty_cr = 
+  dep_poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~poverty, by =~rate_con , design = .x, FUN =svymean) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+#media: 0.285089
+#mediana: 0.2277509
+
+dep_poverty_cr = dep_poverty_cr %>%  
+ mutate(
+    poverty = ifelse(povertypoor < 0.2850898, "Poor", "No Poor"))%>%
+  filter(!is.na(poverty))%>%
+  group_by(year,poverty)%>%
+  summarize(rate_con_mean=mean(rate_con))
+
+dep_poverty_cr %>% 
+     DT::datatable()
+```
+
+```{r}
+dep_poverty_crg =
+  ggplot(data = dep_poverty_cr,aes(x = year, y = rate_con_mean, group = poverty))+
+  geom_line(size = 1.2, aes(col = poverty))+
+  xlab("Years") +
+  ylab("Rate") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+dep_poverty_crg 
+
+dep_poverty_crg <- dep_poverty_crg +
+  ggtitle("Objective Three") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) 
+```
+
+```{r}
+combined_plot <- dep_poverty_mrg + dep_poverty_crg + 
+  plot_layout(guides = 'collect') & 
+  theme(legend.position = 'bottom')
+
+Amazonas <- combined_plot + 
+  plot_annotation(
+    title = "Objectives by Poverty at Amazonas", 
+    theme = theme(
+      plot.title = element_text(size = 14, hjust = 0.5, face = "bold"), 
+      plot.margin = margin(5, 5, 5, 5)  
+    )
+  )
+
+Amazonas
+```
+
+## Poverty base LIMA
+```{r}
+dep_poverty = 
+  data_enaho %>%
+  left_join(data_maternal_dist, by = c("year","NOMBDEP","NOMBPROV","NOMBDIST")) %>%
+  left_join(data_congenital_dist, by = c("year","NOMBDEP","NOMBPROV","NOMBDIST")) %>%
+  select(poverty,year,NOMBDEP,NOMBPROV,NOMBDIST,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(poverty))%>%
+  filter(year > "2014") %>%
+  filter(NOMBDEP== "LIMA") %>%
+  mutate(
+    NOMBDIST = as.factor(NOMBDIST),
+    year = as.factor(year),
+    poverty = as.factor(poverty)
+  ) %>%
+  group_by(year) %>%
+  nest() %>%
+  mutate(
+    df = map(.x=data,
+             .f = ~svydesign(id = ~ conglome, strata = ~ estrato, weights = ~ facpob07, data = .x))
+  )
+
+options(survey.lonely.psu="remove")
+```
+
+#### Poverty objective 2 LIMA
+```{r}
+dep_poverty_mr = 
+  dep_poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~poverty, by =~rate_mat , design = .x, FUN =svymean) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+#media: 0.1197149
+#mediana: 0.109679
+
+dep_poverty_mr = dep_poverty_mr %>%  
+ mutate(
+    poverty = ifelse(povertypoor < 0.1197149, "Poor", "No Poor" )) %>%
+  filter(!is.na(poverty))%>%
+  group_by(year,poverty)%>%
+  summarize(rate_mat_mean=mean(rate_mat))
+
+#intentar como punto de corte la mediana 
+
+dep_poverty_mr %>% 
+     DT::datatable()
+``` 
+
+```{r}
+dep_poverty_mrg =
+  ggplot(data = dep_poverty_mr,aes(x = year, y = rate_mat_mean, group = poverty))+
+  geom_line(size = 1.2, aes(col = poverty))+
+  xlab("Years") +
+  ylab("Rate") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+dep_poverty_mrg
+
+dep_poverty_mrg <- dep_poverty_mrg +
+  ggtitle("Objective Two") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) 
+```
+
+Poverty objective 3 LIMA
+```{r}
+dep_poverty_cr = 
+  dep_poverty %>%
+  group_by(year) %>%
+  mutate(
+    wi = map(.x = df,
+              .f = ~svyby(~poverty, by =~rate_con , design = .x, FUN =svymean) %>% 
+                as.data.frame())
+  ) %>%
+  unnest(wi) 
+options(survey.lonely.psu="remove")
+
+#media: 0.1257582
+#mediana: 0.1136559
+
+dep_poverty_cr = dep_poverty_cr %>%  
+ mutate(
+    poverty = ifelse(povertypoor < 0.1257582, "Poor", "No Poor" )) %>%
+  filter(!is.na(poverty))%>%
+  group_by(year,poverty)%>%
+  summarize(rate_con_mean=mean(rate_con))
+
+dep_poverty_cr %>% 
+     DT::datatable()
+```
+
+```{r}
+dep_poverty_crg =
+  ggplot(data = dep_poverty_cr,aes(x = year, y = rate_con_mean, group = poverty))+
+  geom_line(size = 1.2, aes(col = poverty))+
+  xlab("Years") +
+  ylab("Rate") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 11),
+    legend.text = element_text(size = 8, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text( size = 9),
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", size = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+
+dep_poverty_crg 
+
+dep_poverty_crg <- dep_poverty_crg +
+  ggtitle("Objective Three") +
+  theme(
+    plot.title = element_text(size = 10),  
+    legend.position = "bottom", 
+    legend.justification = "center") +
+  guides(fill = guide_legend(nrow = 1)) 
+```
+
+```{r}
+combined_plot <- dep_poverty_mrg + dep_poverty_crg + 
+  plot_layout(guides = 'collect') & 
+  theme(legend.position = 'bottom')
+
+Lima <- combined_plot + 
+  plot_annotation(
+    title = "Objectives by Poverty at Lima", 
+    theme = theme(
+      plot.title = element_text(size = 14, hjust = 0.5, face = "bold"), 
+      plot.margin = margin(5, 5, 5, 5)  
+    )
+  )
+
+Lima
+```
+
+#Usar la variable de pobreza en el eje x y los años como líneas.
