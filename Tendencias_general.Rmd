@@ -92,9 +92,9 @@ syphilis_df %>%
 ```{r}
 syphi_tamizaje<-
   ggplot(syphilis_df %>%
-           filter(var== "Yes"), aes(x = year, y = sypprop*100, ymin = `2.5 %`*100, ymax = `97.5 %`*100)) + 
+           filter(var== "Yes"), aes(x = year, y = sypprop, ymin = `2.5 %`, ymax = `97.5 %`)) + 
   geom_line(size = 1.2, aes(col = var))+
-  geom_hline(yintercept = 95,color = "black", linetype = "dashed", size=1.2) +
+  geom_hline(yintercept = 0.95,color = "black", linetype = "dashed", size=1.2) +
   geom_ribbon(aes(fill = var), alpha = 0.1)+
   scale_fill_manual(values = "#3B99B1") +
   xlab("Years") +

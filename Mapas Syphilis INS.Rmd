@@ -122,7 +122,7 @@ syphmaterna <- ggplot(syphmaterna, aes(x = rate, y = reorder(NOMBDEP,desc(ZONA))
   ) 
 
 syphmaterna
-#ggsave("Graph_dumbell_maternal.png", plot = syphmaterna, width = 8, height = 4, dpi = 300)
+ggsave("Graph_dumbell_maternal.png", plot = syphmaterna, width = 8, height = 4, dpi = 300)
 ```
 
 Tabla de las 10 provincias con más casos de sífilis materna por 1000 nacidos vivos.
