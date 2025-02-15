@@ -327,7 +327,7 @@ d15_d22_screening <-
   geom_vline(xintercept = 0.95,color = "black", linetype = "dashed", size=1.2) +
   scale_color_manual(values = c("#3B99B1", "#EACB2B", "#F5191C")) +
   labs(title = "Syphilis Screening") +
-  xlab("Prop%")+
+  xlab("Prop")+
   ylab("Deparments") +
   theme_bw() +
   theme(

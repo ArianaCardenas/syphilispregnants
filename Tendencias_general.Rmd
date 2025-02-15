@@ -98,7 +98,7 @@ syphi_tamizaje<-
   geom_ribbon(aes(fill = var), alpha = 0.1)+
   scale_fill_manual(values = "#3B99B1") +
   xlab("Years") +
-  ylab("Prop. %")+
+  ylab("Prop.")+
   labs( title = "Syphilis screening") + 
   scale_x_continuous(expand = c(0, 0), breaks = c(2015:2022), limits = c(2015,2022.1))+
   ggsci::scale_fill_aaas(alpha = 0.8)+

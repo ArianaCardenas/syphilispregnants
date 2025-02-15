@@ -1475,7 +1475,9 @@ ggsave("Lower_education.png", plot = Education_graph)
 
 # Prenatal visit 
 ```{r}
-table(data_enaho$visit_preg,data_enaho$year)
+table(data_enaho$control_iron,data_enaho$year,data_enaho$visit_preg)
+table(data_enaho$control_iron,data_enaho$year)
+table(data_enaho$control_iron,data_enaho$visit_preg)
 ```
 
 ```{r}
@@ -1483,8 +1485,10 @@ no_pre =
   data_enaho %>%
   left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
-  select(visit_preg, year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  select(visit_preg, control_iron, year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
   filter(!is.na(visit_preg))%>%
+  filter(!is.na(control_iron))%>%
+  filter(control_iron != "not_correspond")%>%
   filter(year > "2014") %>%
   mutate(
     NOMBPROV = as.factor(NOMBPROV),
@@ -1521,8 +1525,8 @@ quantile(no_pre_mr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_mr = no_pre_mr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_preno <94.93 ~ "First tercile",
-                            no_preno >=94.93 & no_preno <97.21 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <55.28 ~ "First tercile",
+                            no_pre >=55.28 & no_pre <81.38 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -1592,8 +1596,8 @@ quantile(no_pre_cr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_cr = no_pre_cr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_preno <94.84 ~ "First tercile",
-                            no_preno >=94.84 & no_preno <96.63 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <57.53 ~ "First tercile",
+                            no_pre >=57.53 & no_pre <79.55 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -1649,8 +1653,10 @@ no_pre=
   data_enaho %>%
   left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
-  select(visit_preg,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  select(visit_preg, control_iron, year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
   filter(!is.na(visit_preg))%>%
+  filter(!is.na(control_iron))%>%
+  filter(control_iron != "not_correspond")%>%
   filter(year > "2014") %>%
   filter(region_natural== "COSTA") %>%
   mutate(
@@ -1688,8 +1694,8 @@ quantile(no_pre_mr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_mr = no_pre_mr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_preno <95.73 ~ "First tercile",
-                             no_preno >=95.73 & no_preno <97.28 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <65.74 ~ "First tercile",
+                             no_pre >=65.74 & no_pre <85.34 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -1755,8 +1761,8 @@ quantile(no_pre_cr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_cr = no_pre_cr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_preno <95.61 ~ "First tercile",
-                             no_preno >=95.61 & no_preno <96.73 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <68.02 ~ "First tercile",
+                             no_pre >=68.02 & no_pre <83.57 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -1775,7 +1781,7 @@ no_pre_cr %>%
 
 ```{r}
 Costa_obj3 =
-  ggplot(data = no_pre_cr,aes(x = year, y = rate_con_mean, group = no_pred_cod))+
+  ggplot(data = no_pre_cr,aes(x = year, y = rate_con_mean, group = no_pre_cod))+
   geom_line(size = 1.2, aes(col = no_pre_cod))+
   geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
   xlab("Years") +
@@ -1812,8 +1818,10 @@ no_pre=
   data_enaho %>%
   left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
-  select(visit_preg,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  select(visit_preg, control_iron, year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
   filter(!is.na(visit_preg))%>%
+  filter(!is.na(control_iron))%>%
+  filter(control_iron != "not_correspond")%>%
   filter(year > "2014") %>%
   filter(region_natural== "SIERRA") %>%
   mutate(
@@ -1852,8 +1860,8 @@ quantile(no_pre_mr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_mr = no_pre_mr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_preno <95.22 ~ "First tercile",
-                             no_preno >=95.22 & no_preno <97.61 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <49.89 ~ "First tercile",
+                             no_pre >=49.89 & no_pre <79.45 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -1919,8 +1927,8 @@ quantile(no_pre_cr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_cr = no_pre_cr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_preno <94.96 ~ "First tercile",
-                             no_preno >=94.96 & no_preno <97.20 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <55.64 ~ "First tercile",
+                             no_pre >=55.64 & no_pre <74.85 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -1976,8 +1984,10 @@ no_pre=
   data_enaho %>%
   left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
-  select(visit_preg,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  select(visit_preg, control_iron, year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
   filter(!is.na(visit_preg))%>%
+  filter(!is.na(control_iron))%>%
+  filter(control_iron != "not_correspond")%>%
   filter(year > "2014") %>%
   filter(region_natural== "SELVA") %>%
   mutate(
@@ -2016,8 +2026,8 @@ quantile(no_pre_mr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_mr = no_pre_mr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_preno <92.59 ~ "First tercile",
-                             no_preno >=92.59 & no_preno <95.50 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <45.02 ~ "First tercile",
+                             no_pre >=45.02 & no_pre <66.07 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -2083,8 +2093,8 @@ quantile(no_pre_cr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_cr = no_pre_cr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_preno <92.45 ~ "First tercile",
-                             no_preno >=92.45 & no_preno <94.87 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <48.88 ~ "First tercile",
+                             no_pre >=48.88 & no_pre <67.46 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
