@@ -67,7 +67,9 @@ salud = salud %>%
          P4195,
          P4196,
          P4197,
-         P4198) %>%
+         P4198,
+         P413B1,
+         P413D2) %>%
   clean_names()
 
 sumatoria = import("2015/SUMARIA-2015.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
@@ -140,7 +142,9 @@ salud = salud %>%
          P4195,
          P4196,
          P4197,
-         P4198) %>%
+         P4198,
+         P413B1,
+         P413D2) %>%
   clean_names()
 
 sumatoria = import("2016/SUMARIA-2016.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
@@ -213,7 +217,9 @@ salud = salud %>%
          P4195,
          P4196,
          P4197,
-         P4198) %>%
+         P4198,
+         P413B1,
+         P413D2) %>%
   clean_names()
 
 sumatoria = import("2017/SUMARIA-2017.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
@@ -286,7 +292,9 @@ salud = salud %>%
          P4195,
          P4196,
          P4197,
-         P4198) %>%
+         P4198,
+         P413B1,
+         P413D2) %>%
   clean_names()
 
 sumatoria = import("2018/SUMARIA-2018.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
@@ -359,7 +367,9 @@ salud = salud %>%
          P4195,
          P4196,
          P4197,
-         P4198) %>%
+         P4198,
+         P413B1,
+         P413D2) %>%
   clean_names()
 
 sumatoria = import("2019/SUMARIA-2019.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
@@ -432,7 +442,9 @@ salud = salud %>%
          P4195,
          P4196,
          P4197,
-         P4198) %>%
+         P4198,
+         P413B1,
+         P413D2) %>%
   clean_names()
 
 sumatoria = import("2020/SUMARIA-2020.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
@@ -505,7 +517,9 @@ salud = salud %>%
          P4195,
          P4196,
          P4197,
-         P4198) %>%
+         P4198,
+         P413B1,
+         P413D2) %>%
   clean_names()
 
 sumatoria = import("2021/SUMARIA-2021.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
@@ -578,7 +592,9 @@ salud = salud %>%
          P4195,
          P4196,
          P4197,
-         P4198) %>%
+         P4198,
+         P413B1,
+         P413D2) %>%
   clean_names()
 
 sumatoria = import("2022/SUMARIA-2022.sav") %>% unite("CASEID", MES, CONGLOME, VIVIENDA, HOGAR, UBIGEO, sep = "  ",remove = FALSE) #No tiene CODPERSO
@@ -647,7 +663,17 @@ enaho = enaho %>%
     poverty = case_when(poverty == 1 | poverty == 2 ~ "poor",
                         poverty == 3 ~ "no poor",
                         is.na(poverty) ~ NA
-  )
+  ),
+  control_bb = case_when(p413b1 == 1 ~ "yes",
+                         p413b1 == 2 ~ "no",
+                         p413b1 == 3 ~ "not_correspond",
+                         is.na(p413b1) ~ NA
+                         ),
+   control_iron = case_when(p413d2 == 1 ~ "yes",
+                            p413d2 == 2 ~ "no",
+                            p413d2 == 3 ~ "not_correspond",
+                            is.na(p413d2) ~ NA
+                         )
 )
 ```
 
@@ -658,7 +684,7 @@ slice(1)
 ```{r}
  enaho2 = enaho %>%
   filter(sex=="woman") %>%
-  #distinct(ubigeo, .keep_all = TRUE) %>% 
+  #distinct(ubigeo, .keep_all = TRUE) %>% (enaho3)
   group_by(caseid) %>% 
   slice(1) %>% 
   
