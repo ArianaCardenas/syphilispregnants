@@ -1,0 +1,1834 @@
+---
+title: "Exploración I"
+output: html_document
+date: "2023-07-21"
+---
+#Exploración (porcentajes e ic y mapas)
+
+```{r}
+library(readr)
+library(tidyverse)
+library(survey)
+data <- read_csv("Data_final/data_syphilis.csv")
+```
+
+#Tabla 1. Individual-level charateristic of women
+
+```{r}
+data = data %>%
+    mutate(
+      education_level_reco = case_when(education_level == "None/Preschool"|education_level == "Primary"  ~ "None/Preschool/Primary",
+      education_level == "Secondary" ~ "Secondary",
+      education_level == "Higher"  ~ "Higher",
+      TRUE ~ NA),
+      violence_physical = case_when(
+      minor_physical_violence=="Yes"&severe_physical_violence=="No" ~ "Yes",
+      minor_physical_violence=="Yes"&severe_physical_violence=="Yes" ~ "Yes",
+      minor_physical_violence=="No"&severe_physical_violence=="Yes" ~ "Yes",
+      minor_physical_violence=="No"&severe_physical_violence=="No" ~ "No",
+      TRUE ~ NA),
+      children_born = case_when(
+      v219 <= 1  ~ "0-1",
+      v219 == 2 | v219 == 3  ~ "2-3",
+      v219 >= 4  ~ "More than 3",
+      TRUE ~ NA)) 
+      
+data_nueva = data %>%
+    filter(year!=2010&year!=2011)
+
+# Crear el diseño de muestreo estratificado y anidado
+design_total <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_nueva)
+
+options(survey.lonely.psu="adjust")
+
+#2010
+data_filtered_2010 <- data %>%
+  filter(year==2010)
+
+# Crear el diseño de muestreo estratificado y anidado
+design_2010 <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_filtered_2010)
+
+options(survey.lonely.psu="adjust")
+
+#2012
+data_filtered_2012 <- data %>%
+  filter(year==2012)
+
+# Crear el diseño de muestreo estratificado y anidado
+design_2012 <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_filtered_2012)
+
+options(survey.lonely.psu="adjust")
+
+#2016
+data_filtered_2016 <- data %>%
+  filter(year==2016)
+
+# Crear el diseño de muestreo estratificado y anidado
+design_2016 <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_filtered_2016)
+
+options(survey.lonely.psu="adjust")
+
+#2017
+data_filtered_2017 <- data %>%
+  filter(year==2017)
+
+# Crear el diseño de muestreo estratificado y anidado
+design_2017 <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_filtered_2017)
+
+options(survey.lonely.psu="adjust")
+
+#2022
+data_filtered_2022 <- data %>%
+  filter(year==2022)
+
+# Crear el diseño de muestreo estratificado y anidado
+design_2022 <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_filtered_2022)
+
+options(survey.lonely.psu="adjust")
+```
+
+```{r}
+rm(data_filtered_2010,data_filtered_2012,data_filtered_2016,data_filtered_2017,data_filtered_2022,data_nueva)
+```
+
+Variable: age_mother
+```{r}
+#AGE TOTAL
+age_mother_total = svymean(~ifelse(is.na(age_mother), "NA", age_mother), design_total)
+
+age_mother_total_1 = age_mother_total*100
+age_mother_total_2 = confint(age_mother_total)
+
+age_mother_total_2 = age_mother_total_2*100
+
+age_mother_total = data.frame(age_mother_total_1,age_mother_total_2)
+rm(age_mother_total_1,age_mother_total_2)
+
+#AGE 2010 
+age_mother_2010 <- svymean(~ifelse(is.na(age_mother), "NA", age_mother), design_2010)
+
+age_mother_2010_1 = age_mother_2010*100
+age_mother_2010_2 = confint(age_mother_2010)
+
+age_mother_2010_2 = age_mother_2010_2*100
+
+age_mother_2010 = data.frame(age_mother_2010_1,age_mother_2010_2)
+rm(age_mother_2010_1,age_mother_2010_2)
+
+#AGE 2012 
+age_mother_2012 <- svymean(~ifelse(is.na(age_mother), "NA", age_mother), design_2012)
+
+age_mother_2012_1 = age_mother_2012*100
+age_mother_2012_2 = confint(age_mother_2012)
+
+age_mother_2012_2 = age_mother_2012_2*100
+
+age_mother_2012 = data.frame(age_mother_2012_1,age_mother_2012_2)
+rm(age_mother_2012_1,age_mother_2012_2)
+
+#AGE 2016 
+age_mother_2016 <- svymean(~ifelse(is.na(age_mother), "NA", age_mother), design_2016)
+
+age_mother_2016_1 = age_mother_2016*100
+age_mother_2016_2 = confint(age_mother_2016)
+
+age_mother_2016_2 = age_mother_2016_2*100
+
+age_mother_2016 = data.frame(age_mother_2016_1,age_mother_2016_2)
+rm(age_mother_2016_1,age_mother_2016_2)
+
+#AGE 2017 
+age_mother_2017 <- svymean(~ifelse(is.na(age_mother), "NA", age_mother), design_2017)
+
+age_mother_2017_1 = age_mother_2017*100
+age_mother_2017_2 = confint(age_mother_2017)
+
+age_mother_2017_2 = age_mother_2017_2*100
+
+age_mother_2017 = data.frame(age_mother_2017_1,age_mother_2017_2)
+rm(age_mother_2017_1,age_mother_2017_2)
+
+#AGE 2022
+age_mother_2022 <- svymean(~ifelse(is.na(age_mother), "NA", age_mother), design_2022)
+
+age_mother_2022_1 = age_mother_2022*100
+age_mother_2022_2 = confint(age_mother_2022)
+
+age_mother_2022_2 = age_mother_2022_2*100
+
+age_mother_2022 = data.frame(age_mother_2022_1,age_mother_2022_2)
+rm(age_mother_2022_1,age_mother_2022_2)
+```
+
+```{r}
+rm(age_mother_total,age_mother_2010,age_mother_2012,age_mother_2016,age_mother_2017,age_mother_2022)
+```
+
+variable: education_level (education_level_reco)
+```{r}
+#EDUC TOTAL
+educ_total = svymean(~ifelse(is.na(education_level_reco),"NA", education_level_reco), design_total)
+
+educ_total_1 = educ_total*100
+educ_total_2 = confint(educ_total)
+
+educ_total_2 = educ_total_2*100
+
+educ_total = data.frame(educ_total_1,educ_total_2)
+rm(educ_total_1,educ_total_2)
+
+#EDUC 2010 
+educ_2010 = svymean(~ifelse(is.na(education_level_reco),"NA", education_level_reco), design_2010)
+
+educ_2010_1 = educ_2010*100
+educ_2010_2 = confint(educ_2010)
+
+educ_2010_2 = educ_2010_2*100
+
+educ_2010 = data.frame(educ_2010_1,educ_2010_2)
+rm(educ_2010_1,educ_2010_2)
+
+#EDUC 2012
+educ_2012 = svymean(~ifelse(is.na(education_level_reco),"NA", education_level_reco), design_2012)
+
+educ_2012_1 = educ_2012*100
+educ_2012_2 = confint(educ_2012)
+
+educ_2012_2 = educ_2012_2*100
+
+educ_2012 = data.frame(educ_2012_1,educ_2012_2)
+rm(educ_2012_1,educ_2012_2)
+
+#EDUC 2016
+educ_2016 = svymean(~ifelse(is.na(education_level_reco),"NA", education_level_reco), design_2016)
+
+educ_2016_1 = educ_2016*100
+educ_2016_2 = confint(educ_2016)
+
+educ_2016_2 = educ_2016_2*100
+
+educ_2016 = data.frame(educ_2016_1,educ_2016_2)
+rm(educ_2016_1,educ_2016_2)
+
+#EDUC 2016
+educ_2017 = svymean(~ifelse(is.na(education_level_reco),"NA", education_level_reco), design_2017)
+
+educ_2017_1 = educ_2017*100
+educ_2017_2 = confint(educ_2017)
+
+educ_2017_2 = educ_2017_2*100
+
+educ_2017 = data.frame(educ_2017_1,educ_2017_2)
+rm(educ_2017_1,educ_2017_2)
+
+#EDUC 2022 
+educ_2022 = svymean(~ifelse(is.na(education_level_reco),"NA", education_level_reco), design_2022)
+
+educ_2022_1 = educ_2022*100
+educ_2022_2 = confint(educ_2022)
+
+educ_2022_2 = educ_2022_2*100
+
+educ_2022 = data.frame(educ_2022_1,educ_2022_2)
+rm(educ_2022_1,educ_2022_2)
+```
+
+```{r}
+rm(educ_total,educ_2010,educ_2012,educ_2016,educ_2017,educ_2022)
+```
+
+#variable: marital_status
+```{r}
+#STATUS TOTAL
+status_total = svymean(~ifelse(is.na(marital_status), "NA", marital_status), design_total)
+
+status_total_1 = status_total*100
+status_total_2 = confint(status_total)
+
+status_total_2 = status_total_2*100
+
+status_total = data.frame(status_total_1,status_total_2)
+rm(status_total_1,status_total_2)
+
+#STATUS 2010 
+status_2010 =  svymean(~ifelse(is.na(marital_status), "NA", marital_status), design_2010)
+
+status_2010_1 = status_2010*100
+status_2010_2 = confint(status_2010)
+
+status_2010_2 = status_2010_2*100
+
+status_2010 = data.frame(status_2010_1,status_2010_2)
+rm(status_2010_1,status_2010_2)
+
+#STATUS 2012 
+#status_2012 =  svymean(~ifelse(is.na(marital_status), "NA", marital_status), design_2012)
+
+#status_2012_1 = status_2012*100
+#status_2012_2 = confint(status_2012)
+
+#status_2012_2 = status_2012_2*100
+
+#status_2012 = data.frame(status_2012_1,status_2012_2)
+#rm(status_2012_1,status_2012_2)
+
+#STATUS 2016
+status_2016 =  svymean(~ifelse(is.na(marital_status), "NA", marital_status), design_2016)
+
+status_2016_1 = status_2016*100
+status_2016_2 = confint(status_2016)
+
+status_2016_2 = status_2016_2*100
+
+status_2016 = data.frame(status_2016_1,status_2016_2)
+rm(status_2016_1,status_2016_2)
+
+#STATUS 2017
+status_2017 =  svymean(~ifelse(is.na(marital_status), "NA", marital_status), design_2017)
+
+status_2017_1 = status_2017*100
+status_2017_2 = confint(status_2017)
+
+status_2017_2 = status_2017_2*100
+
+status_2017 = data.frame(status_2017_1,status_2017_2)
+rm(status_2017_1,status_2017_2)
+
+#STATUS 2022 
+status_2022 =  svymean(~ifelse(is.na(marital_status), "NA", marital_status), design_2022)
+
+status_2022_1 = status_2022*100
+status_2022_2 = confint(status_2022)
+
+status_2022_2 = status_2022_2*100
+
+status_2022 = data.frame(status_2022_1,status_2022_2)
+rm(status_2022_1,status_2022_2)
+```
+
+```{r}
+rm(status_total,status_2010,status_2012,status_2016,status_2017,status_2022)
+```
+
+variable: ethnicity
+```{r}
+#ETHNICITY TOTAL
+et_total = svymean(~ifelse(is.na(ethnicity),"NA",ethnicity), design_total)
+
+et_total_1 = et_total*100
+et_total_2 = confint(et_total)
+
+et_total_2 = et_total_2*100
+
+et_total = data.frame(et_total_1,et_total_2)
+rm(et_total_1,et_total_2)
+  
+#ETHNICITY 2010 
+et_2010 = svymean(~ifelse(is.na(ethnicity),"NA",ethnicity), design_2010)
+
+et_2010_1 = et_2010*100
+et_2010_2 = confint(et_2010)
+
+et_2010_2 = et_2010_2*100
+
+et_2010 = data.frame(et_2010_1,et_2010_2)
+rm(et_2010_1,et_2010_2)
+
+#ETHNICITY 2012
+et_2012 = svymean(~ifelse(is.na(ethnicity),"NA",ethnicity), design_2012)
+
+et_2012_1 = et_2012*100
+et_2012_2 = confint(et_2012)
+
+et_2012_2 = et_2012_2*100
+
+et_2012 = data.frame(et_2012_1,et_2012_2)
+rm(et_2012_1,et_2012_2)
+
+#ETHNICITY 2016
+et_2016 = svymean(~ifelse(is.na(ethnicity),"NA",ethnicity), design_2016)
+
+et_2016_1 = et_2016*100
+et_2016_2 = confint(et_2016)
+
+et_2016_2 = et_2016_2*100
+
+et_2016 = data.frame(et_2016_1,et_2016_2)
+rm(et_2016_1,et_2016_2)
+
+#ETHNICITY 2017
+et_2017 = svymean(~ifelse(is.na(ethnicity),"NA",ethnicity), design_2017)
+
+et_2017_1 = et_2017*100
+et_2017_2 = confint(et_2017)
+
+et_2017_2 = et_2017_2*100
+
+et_2017 = data.frame(et_2017_1,et_2017_2)
+rm(et_2017_1,et_2017_2)
+
+#ETHNICITY 2022
+et_2022 = svymean(~ifelse(is.na(ethnicity),"NA",ethnicity), design_2022)
+
+et_2022_1 = et_2022*100
+et_2022_2 = confint(et_2022)
+
+et_2022_2 = et_2022_2*100
+
+et_2022 = data.frame(et_2022_1,et_2022_2)
+rm(et_2022_1,et_2022_2)
+```
+
+```{r}
+rm(et_total,et_2010,et_2012,et_2016,et_2017,et_2022)
+```
+
+variable: know_syphilis
+```{r}
+#KNOW SYPHILIS TOTAL
+syphilis_total = svymean(~ifelse(is.na(know_syphilis), "NA", know_syphilis), design_total)
+
+syphilis_total_1 = syphilis_total*100
+syphilis_total_2 = confint(syphilis_total)
+
+syphilis_total_2 = syphilis_total_2*100
+
+syphilis_total = data.frame(syphilis_total_1,syphilis_total_2)
+rm(syphilis_total_1,syphilis_total_2)
+  
+#KNOW SYPHILIS 2010 
+syphilis_2010 = svymean(~ifelse(is.na(know_syphilis), "NA", know_syphilis), design_2010)
+
+syphilis_2010_1 = syphilis_2010*100
+syphilis_2010_2 = confint(syphilis_2010)
+
+syphilis_2010_2 = syphilis_2010_2*100
+
+syphilis_2010 = data.frame(syphilis_2010_1,syphilis_2010_2)
+rm(syphilis_2010_1,syphilis_2010_2)
+
+#KNOW SYPHILIS 2012 
+syphilis_2012 = svymean(~ifelse(is.na(know_syphilis), "NA", know_syphilis), design_2012)
+
+syphilis_2012_1 = syphilis_2012*100
+syphilis_2012_2 = confint(syphilis_2012)
+
+syphilis_2012_2 = syphilis_2012_2*100
+
+syphilis_2012 = data.frame(syphilis_2012_1,syphilis_2012_2)
+rm(syphilis_2012_1,syphilis_2012_2)
+
+#KNOW SYPHILIS 2016
+syphilis_2016 = svymean(~ifelse(is.na(know_syphilis), "NA", know_syphilis), design_2016)
+
+syphilis_2016_1 = syphilis_2016*100
+syphilis_2016_2 = confint(syphilis_2016)
+
+syphilis_2016_2 = syphilis_2016_2*100 
+
+syphilis_2016 = data.frame(syphilis_2016_1,syphilis_2016_2)
+rm(syphilis_2016_1,syphilis_2016_2)
+
+#KNOW SYPHILIS 2017
+syphilis_2017 = svymean(~ifelse(is.na(know_syphilis), "NA", know_syphilis), design_2017)
+
+syphilis_2017_1 = syphilis_2017*100
+syphilis_2017_2 = confint(syphilis_2017)
+
+syphilis_2017_2 = syphilis_2017_2*100 
+
+syphilis_2017 = data.frame(syphilis_2017_1,syphilis_2017_2)
+rm(syphilis_2017_1,syphilis_2017_2)
+
+#KNOW SYPHILIS 2022
+syphilis_2022 = svymean(~ifelse(is.na(know_syphilis), "NA", know_syphilis), design_2022)
+
+syphilis_2022_1 = syphilis_2022*100
+syphilis_2022_2 = confint(syphilis_2022)
+
+syphilis_2022_2 = syphilis_2022_2*100 
+
+syphilis_2022 = data.frame(syphilis_2022_1,syphilis_2022_2)
+rm(syphilis_2022_1,syphilis_2022_2)
+```
+
+```{r}
+rm(syphilis_total,syphilis_2010,syphilis_2012,syphilis_2016,syphilis_2017,syphilis_2022)
+```
+
+variable: know_sti_symptoms
+```{r}
+#KNOW SYPHILIS TOTAL
+sti1_total = svymean(~ifelse(is.na(know_sti_symptoms), "NA", know_sti_symptoms), design_total)
+
+sti1_total_1 = sti1_total*100
+sti1_total_2 = confint(sti1_total)
+
+sti1_total_2 = sti1_total_2*100
+
+sti1_total = data.frame(sti1_total_1,sti1_total_2)
+rm(sti1_total_1,sti1_total_2)
+
+#KNOW SYPHILIS 2010 
+sti1_2010 = svymean(~ifelse(is.na(know_sti_symptoms), "NA", know_sti_symptoms), design_2010)
+
+sti1_2010_1 = sti1_2010*100
+sti1_2010_2 = confint(sti1_2010)
+
+sti1_2010_2 = sti1_2010_2*100
+
+sti1_2010 = data.frame(sti1_2010_1,sti1_2010_2)
+rm(sti1_2010_1,sti1_2010_2)
+
+#KNOW SYPHILIS 2012
+sti1_2012 = svymean(~ifelse(is.na(know_sti_symptoms), "NA", know_sti_symptoms), design_2012)
+
+sti1_2012_1 = sti1_2012*100
+sti1_2012_2 = confint(sti1_2012)
+
+sti1_2012_2 = sti1_2012_2*100
+
+sti1_2012 = data.frame(sti1_2012_1,sti1_2012_2)
+rm(sti1_2012_1,sti1_2012_2)
+
+#KNOW SYPHILIS 2016
+sti1_2016 = svymean(~ifelse(is.na(know_sti_symptoms), "NA", know_sti_symptoms), design_2016)
+
+sti1_2016_1 = sti1_2016*100
+sti1_2016_2 = confint(sti1_2016)
+
+sti1_2016_2 = sti1_2016_2*100
+
+sti1_2016 = data.frame(sti1_2016_1,sti1_2016_2)
+rm(sti1_2016_1,sti1_2016_2)
+
+#KNOW SYPHILIS 2017
+sti1_2017 = svymean(~ifelse(is.na(know_sti_symptoms), "NA", know_sti_symptoms), design_2017)
+
+sti1_2017_1 = sti1_2017*100
+sti1_2017_2 = confint(sti1_2017)
+
+sti1_2017_2 = sti1_2017_2*100
+
+sti1_2017 = data.frame(sti1_2017_1,sti1_2017_2)
+rm(sti1_2017_1,sti1_2017_2)
+
+#KNOW SYPHILIS 2022
+sti1_2022 = svymean(~ifelse(is.na(know_sti_symptoms), "NA", know_sti_symptoms), design_2022)
+
+sti1_2022_1 = sti1_2022*100
+sti1_2022_2 = confint(sti1_2022)
+
+sti1_2022_2 = sti1_2022_2*100
+
+sti1_2022 = data.frame(sti1_2022_1,sti1_2022_2)
+rm(sti1_2022_1,sti1_2022_2)
+```
+
+```{r}
+rm(sti1_total,sti1_2010,sti1_2012,sti1_2016,sti1_2017,sti1_2022)
+```
+
+Variable: have_sti_symptoms
+```{r}
+#HAVE STI SYMPTOMS TOTAL
+sti2_total = svymean(~ifelse(is.na(have_sti_symptoms), "NA", have_sti_symptoms), design_total)
+
+sti2_total_1 = sti2_total*100
+sti2_total_2 = confint(sti2_total)
+
+sti2_total_2 = sti2_total_2*100
+
+sti2_total = data.frame(sti2_total_1,sti2_total_2)
+rm(sti2_total_1,sti2_total_2)
+
+#HAVE STI SYMPTOMS 2010 
+sti2_2010 = svymean(~ifelse(is.na(have_sti_symptoms), "NA", have_sti_symptoms), design_2010)
+
+sti2_2010_1 = sti2_2010*100
+sti2_2010_2 = confint(sti2_2010)
+
+sti2_2010_2 = sti2_2010_2*100
+
+sti2_2010 = data.frame(sti2_2010_1,sti2_2010_2)
+rm(sti2_2010_1,sti2_2010_2)
+
+#HAVE STI SYMPTOMS 2012
+sti2_2012 = svymean(~ifelse(is.na(have_sti_symptoms), "NA", have_sti_symptoms), design_2012)
+
+sti2_2012_1 = sti2_2012*100
+sti2_2012_2 = confint(sti2_2012)
+
+sti2_2012_2 = sti2_2012_2*100
+
+sti2_2012 = data.frame(sti2_2012_1,sti2_2012_2)
+rm(sti2_2012_1,sti2_2012_2)
+
+#HAVE STI SYMPTOMS 2016
+sti2_2016 = svymean(~ifelse(is.na(have_sti_symptoms), "NA", have_sti_symptoms), design_2016)
+
+sti2_2016_1 = sti2_2016*100
+sti2_2016_2 = confint(sti2_2016)
+
+sti2_2016_2 = sti2_2016_2*100
+
+sti2_2016 = data.frame(sti2_2016_1,sti2_2016_2)
+rm(sti2_2016_1,sti2_2016_2)
+
+#HAVE STI SYMPTOMS 2017
+sti2_2017 = svymean(~ifelse(is.na(have_sti_symptoms), "NA", have_sti_symptoms), design_2017)
+
+sti2_2017_1 = sti2_2017*100
+sti2_2017_2 = confint(sti2_2017)
+
+sti2_2017_2 = sti2_2017_2*100
+
+sti2_2017 = data.frame(sti2_2017_1,sti2_2017_2)
+rm(sti2_2017_1,sti2_2017_2)
+
+#HAVE STI SYMPTOMS 2022
+sti2_2022 = svymean(~ifelse(is.na(have_sti_symptoms), "NA", have_sti_symptoms), design_2022)
+
+sti2_2022_1 = sti2_2022*100
+sti2_2022_2 = confint(sti2_2022)
+
+sti2_2022_2 = sti2_2022_2*100
+
+sti2_2022 = data.frame(sti2_2022_1,sti2_2022_2)
+rm(sti2_2022_1,sti2_2022_2)
+```
+
+```{r}
+rm(sti2_total,sti2_2010,sti2_2012,sti2_2016,sti2_2017,sti2_2022)
+```
+
+Variable: intended_pregnancy
+```{r}
+#INTENDED PREGNANCY TOTAL
+preg_total = svymean(~ifelse(is.na(intended_pregnancy), "NA", intended_pregnancy), design_total)
+
+preg_total_1 = preg_total*100
+preg_total_2 = confint(preg_total)
+
+preg_total_2 = preg_total_2*100
+
+preg_total = data.frame(preg_total_1,preg_total_2)
+rm(preg_total_1,preg_total_2)
+
+#INTENDED PREGNANCY 2010 
+preg_2010 = svymean(~ifelse(is.na(intended_pregnancy), "NA", intended_pregnancy), design_2010)
+
+preg_2010_1 = preg_2010*100
+preg_2010_2 = confint(preg_2010)
+
+preg_2010_2 = preg_2010_2*100
+
+preg_2010 = data.frame(preg_2010_1,preg_2010_2)
+rm(preg_2010_1,preg_2010_2)
+
+#INTENDED PREGNANCY 2012 
+preg_2012 = svymean(~ifelse(is.na(intended_pregnancy), "NA", intended_pregnancy), design_2012)
+
+preg_2012_1 = preg_2012*100
+preg_2012_2 = confint(preg_2012)
+
+preg_2012_2 = preg_2012_2*100
+
+preg_2012 = data.frame(preg_2012_1,preg_2012_2)
+rm(preg_2012_1,preg_2012_2)
+
+#INTENDED PREGNANCY 2016
+preg_2016 = svymean(~ifelse(is.na(intended_pregnancy), "NA", intended_pregnancy), design_2016)
+
+preg_2016_1 = preg_2016*100
+preg_2016_2 = confint(preg_2016)
+
+preg_2016_2 = preg_2016_2*100
+
+preg_2016 = data.frame(preg_2016_1,preg_2016_2)
+rm(preg_2016_1,preg_2016_2)
+
+#INTENDED PREGNANCY 2017
+preg_2017 = svymean(~ifelse(is.na(intended_pregnancy), "NA", intended_pregnancy), design_2017)
+
+preg_2017_1 = preg_2017*100
+preg_2017_2 = confint(preg_2017)
+
+preg_2017_2 = preg_2017_2*100
+
+preg_2017 = data.frame(preg_2017_1,preg_2017_2)
+rm(preg_2017_1,preg_2017_2)
+
+#INTENDED PREGNANCY 2022 
+preg_2022 = svymean(~ifelse(is.na(intended_pregnancy), "NA", intended_pregnancy), design_2022)
+
+preg_2022_1 = preg_2022*100
+preg_2022_2 = confint(preg_2022)
+
+preg_2022_2 = preg_2022_2*100
+
+preg_2022 = data.frame(preg_2022_1,preg_2022_2)
+rm(preg_2022_1,preg_2022_2)
+```
+
+```{r}
+rm(preg_total,preg_2010,preg_2012,preg_2016,preg_2017,preg_2022)
+```
+
+Variable: emotional_violence
+```{r}
+#EMOCIONAL VIOLENCE TOTAL
+emocional_total = svymean(~ifelse(is.na(emotional_violence), "NA", emotional_violence), design_total)
+
+emocional_total_1 = emocional_total*100
+emocional_total_2 = confint(emocional_total)
+
+emocional_total_2 = emocional_total_2*100
+
+emocional_total = data.frame(emocional_total_1,emocional_total_2)
+rm(emocional_total_1,emocional_total_2)
+
+#EMOCIONAL VIOLENCE 2010 
+emocional_2010 = svymean(~ifelse(is.na(emotional_violence), "NA", emotional_violence), design_2010)
+
+emocional_2010_1 = emocional_2010*100
+emocional_2010_2 = confint(emocional_2010)
+
+emocional_2010_2 = emocional_2010_2*100
+
+emocional_2010 = data.frame(emocional_2010_1,emocional_2010_2)
+rm(emocional_2010_1,emocional_2010_2)
+
+#EMOCIONAL VIOLENCE 2012 
+emocional_2012 = svymean(~ifelse(is.na(emotional_violence), "NA", emotional_violence), design_2012)
+
+emocional_2012_1 = emocional_2012*100
+emocional_2012_2 = confint(emocional_2012)
+
+emocional_2012_2 = emocional_2012_2*100
+
+emocional_2012 = data.frame(emocional_2012_1,emocional_2012_2)
+rm(emocional_2012_1,emocional_2012_2)
+
+#EMOCIONAL VIOLENCE 2016
+emocional_2016 = svymean(~ifelse(is.na(emotional_violence), "NA", emotional_violence), design_2016)
+
+emocional_2016_1 = emocional_2016*100
+emocional_2016_2 = confint(emocional_2016)
+
+emocional_2016_2 = emocional_2016_2*100
+
+emocional_2016 = data.frame(emocional_2016_1,emocional_2016_2)
+rm(emocional_2016_1,emocional_2016_2)
+
+#EMOCIONAL VIOLENCE 2017
+emocional_2017 = svymean(~ifelse(is.na(emotional_violence), "NA", emotional_violence), design_2017)
+
+emocional_2017_1 = emocional_2017*100
+emocional_2017_2 = confint(emocional_2017)
+
+emocional_2017_2 = emocional_2017_2*100
+
+emocional_2017 = data.frame(emocional_2017_1,emocional_2017_2)
+rm(emocional_2017_1,emocional_2017_2)
+
+#EMOCIONAL VIOLENCE 2022 
+emocional_2022 = svymean(~ifelse(is.na(emotional_violence), "NA", emotional_violence), design_2022)
+
+emocional_2022_1 = emocional_2022*100
+emocional_2022_2 = confint(emocional_2022)
+
+emocional_2022_2 = emocional_2022_2*100
+
+emocional_2022 = data.frame(emocional_2022_1,emocional_2022_2)
+rm(emocional_2022_1,emocional_2022_2)
+```
+
+```{r}
+rm(emocional_total,emocional_2010,emocional_2012,emocional_2016,emocional_2017,emocional_2022)
+```
+
+Variable: minor_physical_violence and severe_physical_violence (violence_physical)
+```{r}
+#PHYSICAL VIOLENCE TOTAL
+physical_total = svymean(~ifelse(is.na(violence_physical), "NA", violence_physical), design_total)
+
+physical_total_1 = physical_total*100
+physical_total_2 = confint(physical_total)
+
+physical_total_2 = physical_total_2*100
+
+physical_total = data.frame(physical_total_1,physical_total_2)
+rm(physical_total_1,physical_total_2)
+
+#PHYSICAL VIOLENCE 2010 
+physical_2010 = svymean(~ifelse(is.na(violence_physical), "NA", violence_physical), design_2010)
+
+physical_2010_1 = physical_2010*100
+physical_2010_2 = confint(physical_2010)
+
+physical_2010_2 = physical_2010_2*100
+
+physical_2010 = data.frame(physical_2010_1,physical_2010_2)
+rm(physical_2010_1,physical_2010_2)
+
+#PHYSICAL VIOLENCE 2012 
+physical_2012 = svymean(~ifelse(is.na(violence_physical), "NA", violence_physical), design_2012)
+
+physical_2012_1 = physical_2012*100
+physical_2012_2 = confint(physical_2012)
+
+physical_2012_2 = physical_2012_2*100
+
+physical_2012 = data.frame(physical_2012_1,physical_2012_2)
+rm(physical_2012_1,physical_2012_2)
+
+#PHYSICAL VIOLENCE 2016
+physical_2016 = svymean(~ifelse(is.na(violence_physical), "NA", violence_physical), design_2016)
+
+physical_2016_1 = physical_2016*100
+physical_2016_2 = confint(physical_2016)
+
+physical_2016_2 = physical_2016_2*100
+
+physical_2016 = data.frame(physical_2016_1,physical_2016_2)
+rm(physical_2016_1,physical_2016_2)
+
+#PHYSICAL VIOLENCE 2017
+physical_2017 = svymean(~ifelse(is.na(violence_physical), "NA", violence_physical), design_2017)
+
+physical_2017_1 = physical_2017*100
+physical_2017_2 = confint(physical_2017)
+
+physical_2017_2 = physical_2017_2*100
+
+physical_2017 = data.frame(physical_2017_1,physical_2017_2)
+rm(physical_2017_1,physical_2017_2)
+
+#PHYSICAL VIOLENCE 2022 
+physical_2022 = svymean(~ifelse(is.na(violence_physical), "NA", violence_physical), design_2022)
+
+physical_2022_1 = physical_2022*100
+physical_2022_2 = confint(physical_2022)
+
+physical_2022_2 = physical_2022_2*100
+
+physical_2022 = data.frame(physical_2022_1,physical_2022_2)
+rm(physical_2022_1,physical_2022_2)
+```
+
+```{r}
+rm(physical_total,physical_2010,physical_2012,physical_2016,physical_2017,physical_2022)
+```
+
+Variable: sexual_physical_violence 
+```{r}
+#SEXUAL VIOLENCE TOTAL
+sexual_total = svymean(~ifelse(is.na(sexual_physical_violence), "NA", sexual_physical_violence), design_total)
+
+sexual_total_1 = sexual_total*100
+sexual_total_2 = confint(sexual_total)
+
+sexual_total_2 = sexual_total_2*100
+
+sexual_total = data.frame(sexual_total_1,sexual_total_2)
+rm(sexual_total_1,sexual_total_2)
+
+#SEXUAL VIOLENCE 2010 
+sexual_2010 = svymean(~ifelse(is.na(sexual_physical_violence), "NA", sexual_physical_violence), design_2010)
+
+sexual_2010_1 = sexual_2010*100
+sexual_2010_2 = confint(sexual_2010)
+
+sexual_2010_2 = sexual_2010_2*100
+
+sexual_2010 = data.frame(sexual_2010_1,sexual_2010_2)
+rm(sexual_2010_1,sexual_2010_2)
+
+#SEXUAL VIOLENCE 2012 
+sexual_2012 = svymean(~ifelse(is.na(sexual_physical_violence), "NA", sexual_physical_violence), design_2012)
+
+sexual_2012_1 = sexual_2012*100
+sexual_2012_2 = confint(sexual_2012)
+
+sexual_2012_2 = sexual_2012_2*100
+
+sexual_2012 = data.frame(sexual_2012_1,sexual_2012_2)
+rm(sexual_2012_1,sexual_2012_2)
+
+#SEXUAL VIOLENCE 2016
+sexual_2016 = svymean(~ifelse(is.na(sexual_physical_violence), "NA", sexual_physical_violence), design_2016)
+
+sexual_2016_1 = sexual_2016*100
+sexual_2016_2 = confint(sexual_2016)
+
+sexual_2016_2 = sexual_2016_2*100
+
+sexual_2016 = data.frame(sexual_2016_1,sexual_2016_2)
+rm(sexual_2016_1,sexual_2016_2)
+
+#SEXUAL VIOLENCE 2017
+sexual_2017 = svymean(~ifelse(is.na(sexual_physical_violence), "NA", sexual_physical_violence), design_2017)
+
+sexual_2017_1 = sexual_2017*100
+sexual_2017_2 = confint(sexual_2017)
+
+sexual_2017_2 = sexual_2017_2*100
+
+sexual_2017 = data.frame(sexual_2017_1,sexual_2017_2)
+rm(sexual_2017_1,sexual_2017_2)
+
+#SEXUAL VIOLENCE 2022 
+sexual_2022 = svymean(~ifelse(is.na(sexual_physical_violence), "NA", sexual_physical_violence), design_2022)
+
+sexual_2022_1 = sexual_2022*100
+sexual_2022_2 = confint(sexual_2022)
+
+sexual_2022_2 = sexual_2022_2*100
+
+sexual_2022 = data.frame(sexual_2022_1,sexual_2022_2)
+rm(sexual_2022_1,sexual_2022_2)
+```
+
+```{r}
+rm(sexual_total,sexual_2010,sexual_2012,sexual_2016,sexual_2017,sexual_2022)
+```
+
+Variable: physical_violence_pregnancy
+```{r}
+#DURING PREGNANCY VIOLENCE TOTAL
+preg_violence_total = svymean(~ifelse(is.na(physical_violence_pregnancy), "NA", physical_violence_pregnancy), design_total)
+
+preg_violence_total_1 = preg_violence_total*100
+preg_violence_total_2 = confint(preg_violence_total)
+
+preg_violence_total_2 = preg_violence_total_2*100
+
+preg_violence_total = data.frame(preg_violence_total_1,preg_violence_total_2)
+rm(preg_violence_total_1,preg_violence_total_2)
+
+#DURING PREGNANCY VIOLENCE 2010 
+preg_violence_2010 =  svymean(~ifelse(is.na(physical_violence_pregnancy), "NA", physical_violence_pregnancy), design_2010)
+
+preg_violence_2010_1 = preg_violence_2010*100
+preg_violence_2010_2 = confint(preg_violence_2010)
+
+preg_violence_2010_2 = preg_violence_2010_2*100
+
+preg_violence_2010 = data.frame(preg_violence_2010_1,preg_violence_2010_2)
+rm(preg_violence_2010_1,preg_violence_2010_2)
+
+#DURING PREGNANCY VIOLENCE 2012 
+preg_violence_2012 =  svymean(~ifelse(is.na(physical_violence_pregnancy), "NA", physical_violence_pregnancy), design_2012)
+
+preg_violence_2012_1 = preg_violence_2012*100
+preg_violence_2012_2 = confint(preg_violence_2012)
+
+preg_violence_2012_2 = preg_violence_2012_2*100
+
+preg_violence_2012 = data.frame(preg_violence_2012_1,preg_violence_2012_2)
+rm(preg_violence_2012_1,preg_violence_2012_2)
+
+#DURING PREGNANCY VIOLENCE 2016
+preg_violence_2016 =  svymean(~ifelse(is.na(physical_violence_pregnancy), "NA", physical_violence_pregnancy), design_2016)
+
+preg_violence_2016_1 = preg_violence_2016*100
+preg_violence_2016_2 = confint(preg_violence_2016)
+
+preg_violence_2016_2 = preg_violence_2016_2*100 
+
+preg_violence_2016 = data.frame(preg_violence_2016_1,preg_violence_2016_2)
+rm(preg_violence_2016_1,preg_violence_2016_2)
+
+#DURING PREGNANCY VIOLENCE 2017 
+preg_violence_2017 =  svymean(~ifelse(is.na(physical_violence_pregnancy), "NA", physical_violence_pregnancy), design_2017)
+
+preg_violence_2017_1 = preg_violence_2017*100
+preg_violence_2017_2 = confint(preg_violence_2017)
+
+preg_violence_2017_2 = preg_violence_2017_2*100
+
+preg_violence_2017 = data.frame(preg_violence_2017_1,preg_violence_2017_2)
+rm(preg_violence_2017_1,preg_violence_2017_2)
+
+#DURING PREGNANCY VIOLENCE 2022 
+preg_violence_2022 =  svymean(~ifelse(is.na(physical_violence_pregnancy), "NA", physical_violence_pregnancy), design_2022)
+
+preg_violence_2022_1 = preg_violence_2022*100
+preg_violence_2022_2 = confint(preg_violence_2022)
+
+preg_violence_2022_2 = preg_violence_2022_2*100
+
+preg_violence_2022 = data.frame(preg_violence_2022_1,preg_violence_2022_2)
+rm(preg_violence_2022_1,preg_violence_2022_2)
+```
+
+```{r}
+rm(preg_violence_total,preg_violence_2010,preg_violence_2012,preg_violence_2016,preg_violence_2017,preg_violence_2022)
+```
+
+Variable: total_children_born (children_born)
+```{r}
+#CHILDREN TOTAL
+child_total = svymean(~ifelse(is.na(children_born), "NA", children_born), design_total)
+
+child_total_1 = child_total*100
+child_total_2 = confint(child_total)
+
+child_total_2 = child_total_2*100
+
+child_total = data.frame(child_total_1,child_total_2)
+rm(child_total_1,child_total_2)
+
+#CHILDREN 2010 
+child_2010 = svymean(~ifelse(is.na(children_born), "NA", children_born), design_2010)
+
+child_2010_1 = child_2010*100
+child_2010_2 = confint(child_2010)
+
+child_2010_2 = child_2010_2*100
+
+child_2010 = data.frame(child_2010_1,child_2010_2)
+rm(child_2010_1,child_2010_2)
+
+#CHILDREN 2012 
+child_2012 = svymean(~ifelse(is.na(children_born), "NA", children_born), design_2012)
+
+child_2012_1 = child_2012*100
+child_2012_2 = confint(child_2012)
+
+child_2012_2 = child_2012_2*100
+
+child_2012 = data.frame(child_2012_1,child_2012_2)
+rm(child_2012_1,child_2012_2)
+
+#CHILDREN 2016 
+child_2016 = svymean(~ifelse(is.na(children_born), "NA", children_born), design_2016)
+
+child_2016_1 = child_2016*100
+child_2016_2 = confint(child_2016)
+
+child_2016_2 = child_2016_2*100
+
+child_2016 = data.frame(child_2016_1,child_2016_2)
+rm(child_2016_1,child_2016_2)
+
+#CHILDREN 2017 
+child_2017 = svymean(~ifelse(is.na(children_born), "NA", children_born), design_2017)
+
+child_2017_1 = child_2017*100
+child_2017_2 = confint(child_2017)
+
+child_2017_2 = child_2017_2*100
+
+child_2017 = data.frame(child_2017_1,child_2017_2)
+rm(child_2017_1,child_2017_2)
+
+#CHILDREN 2022 
+child_2022 = svymean(~ifelse(is.na(children_born), "NA", children_born), design_2022)
+
+child_2022_1 = child_2022*100
+child_2022_2 = confint(child_2022)
+
+child_2022_2 = child_2022_2*100
+
+child_2022 = data.frame(child_2022_1,child_2022_2)
+rm(child_2022_1,child_2022_2)
+```
+
+```{r}
+rm(child_total,child_2010,child_2012,child_2016,child_2017,child_2022)
+```
+
+Variable: abortion_stillbirth 
+```{r}
+#ABORTION TOTAL
+abo_total = svymean(~ifelse(is.na(abortion_stillbirth), "NA", abortion_stillbirth), design_total)
+
+abo_total_1 = abo_total*100
+abo_total_2 = confint(abo_total)
+
+abo_total_2 = abo_total_2*100
+
+abo_total = data.frame(abo_total_1,abo_total_2)
+rm(abo_total_1,abo_total_2)
+
+#ABORTION 2010 
+abo_2010 = svymean(~ifelse(is.na(abortion_stillbirth), "NA", abortion_stillbirth), design_2010)
+
+abo_2010_1 = abo_2010*100
+abo_2010_2 = confint(abo_2010)
+
+abo_2010_2 = abo_2010_2*100
+
+abo_2010 = data.frame(abo_2010_1,abo_2010_2)
+rm(abo_2010_1,abo_2010_2)
+
+#ABORTION 2012 
+abo_2012 = svymean(~ifelse(is.na(abortion_stillbirth), "NA", abortion_stillbirth), design_2012)
+
+abo_2012_1 = abo_2012*100
+abo_2012_2 = confint(abo_2012)
+
+abo_2012_2 = abo_2012_2*100
+
+abo_2012 = data.frame(abo_2012_1,abo_2012_2)
+rm(abo_2012_1,abo_2012_2)
+
+#ABORTION 2016 
+abo_2016 = svymean(~ifelse(is.na(abortion_stillbirth), "NA", abortion_stillbirth), design_2016)
+
+abo_2016_1 = abo_2016*100
+abo_2016_2 = confint(abo_2016)
+
+abo_2016_2 = abo_2016_2*100
+
+abo_2016 = data.frame(abo_2016_1,abo_2016_2)
+rm(abo_2016_1,abo_2016_2)
+
+#ABORTION 2017 
+abo_2017 = svymean(~ifelse(is.na(abortion_stillbirth), "NA", abortion_stillbirth), design_2017)
+
+abo_2017_1 = abo_2017*100
+abo_2017_2 = confint(abo_2017)
+
+abo_2017_2 = abo_2017_2*100
+
+abo_2017 = data.frame(abo_2017_1,abo_2017_2)
+rm(abo_2017_1,abo_2017_2)
+
+#ABORTION 2022 
+abo_2022 = svymean(~ifelse(is.na(abortion_stillbirth), "NA", abortion_stillbirth), design_2022)
+
+abo_2022_1 = abo_2022*100
+abo_2022_2 = confint(abo_2022)
+
+abo_2022_2 = abo_2022_2*100
+
+abo_2022 = data.frame(abo_2022_1,abo_2022_2)
+rm(abo_2022_1,abo_2022_2)
+```
+
+```{r}
+rm(abo_total,abo_2010,abo_2012,abo_2016,abo_2017,abo_2022)
+```
+
+Variable: syphilis_screening
+```{r}
+#SYPHILIS SCREENING TOTAL
+syphilis2_total = svymean(~ifelse(is.na(syphilis_screening), "NA", syphilis_screening), design_total)
+
+syphilis2_total_1 = syphilis2_total*100
+syphilis2_total_2 = confint(syphilis2_total)
+
+syphilis2_total_2 = syphilis2_total_2*100
+
+syphilis2_total = data.frame(syphilis2_total_1,syphilis2_total_2)
+rm(syphilis2_total_1,syphilis2_total_2)
+
+#SYPHILIS SCREENING 2010 
+syphilis2_2010 = svymean(~ifelse(is.na(syphilis_screening), "NA", syphilis_screening), design_2010)
+
+syphilis2_2010_1 = syphilis2_2010*100
+syphilis2_2010_2 = confint(syphilis2_2010)
+
+syphilis2_2010_2 = syphilis2_2010_2*100
+
+syphilis2_2010 = data.frame(syphilis2_2010_1,syphilis2_2010_2)
+rm(syphilis2_2010_1,syphilis2_2010_2)
+
+#SYPHILIS SCREENING 2012
+syphilis2_2012 = svymean(~ifelse(is.na(syphilis_screening), "NA", syphilis_screening), design_2012)
+
+syphilis2_2012_1 = syphilis2_2012*100
+syphilis2_2012_2 = confint(syphilis2_2012)
+
+syphilis2_2012_2 = syphilis2_2012_2*100
+
+syphilis2_2012 = data.frame(syphilis2_2012_1,syphilis2_2012_2)
+rm(syphilis2_2012_1,syphilis2_2012_2)
+
+#SYPHILIS SCREENING 2016 
+syphilis2_2016 = svymean(~ifelse(is.na(syphilis_screening), "NA", syphilis_screening), design_2016)
+
+syphilis2_2016_1 = syphilis2_2016*100
+syphilis2_2016_2 = confint(syphilis2_2016)
+
+syphilis2_2016_2 = syphilis2_2016_2*100
+
+syphilis2_2016 = data.frame(syphilis2_2016_1,syphilis2_2016_2)
+rm(syphilis2_2016_1,syphilis2_2016_2)
+
+#SYPHILIS SCREENING 2017 
+syphilis2_2017 = svymean(~ifelse(is.na(syphilis_screening), "NA", syphilis_screening), design_2017)
+
+syphilis2_2017_1 = syphilis2_2017*100
+syphilis2_2017_2 = confint(syphilis2_2017)
+
+syphilis2_2017_2 = syphilis2_2017_2*100
+
+syphilis2_2017 = data.frame(syphilis2_2017_1,syphilis2_2017_2)
+rm(syphilis2_2017_1,syphilis2_2017_2)
+
+#SYPHILIS SCREENING 2022 
+syphilis2_2022 = svymean(~ifelse(is.na(syphilis_screening), "NA", syphilis_screening), design_2022)
+
+syphilis2_2022_1 = syphilis2_2022*100
+syphilis2_2022_2 = confint(syphilis2_2022)
+
+syphilis2_2022_2 = syphilis2_2022_2*100
+
+syphilis2_2022 = data.frame(syphilis2_2022_1,syphilis2_2022_2)
+rm(syphilis2_2022_1,syphilis2_2022_2)
+```
+
+```{r}
+rm(syphilis2_total,syphilis2_2010,syphilis2_2012,syphilis2_2016,syphilis2_2017,syphilis2_2022)
+```
+
+#Extra 
+
+Variable: know_other_sti
+```{r}
+#OTHER STI TOTAL
+other_sti_total = svymean(~ifelse(is.na(know_other_sti), "NA", know_other_sti), design_total)
+
+other_sti_total_1 = other_sti_total*100
+other_sti_total_2 = confint(other_sti_total)
+
+other_sti_total_2 = other_sti_total_2*100
+
+other_sti_total = data.frame(other_sti_total_1,other_sti_total_2)
+rm(other_sti_total_1,other_sti_total_2)
+
+#OTHER STI 2010 
+other_sti_2010 = svymean(~ifelse(is.na(know_other_sti), "NA", know_other_sti), design_2010)
+
+other_sti_2010_1 = other_sti_2010*100
+other_sti_2010_2 = confint(other_sti_2010)
+
+other_sti_2010_2 = other_sti_2010_2*100
+
+other_sti_2010 = data.frame(other_sti_2010_1,other_sti_2010_2)
+rm(other_sti_2010_1,other_sti_2010_2)
+
+#OTHER STI 2012 
+other_sti_2012 = svymean(~ifelse(is.na(know_other_sti), "NA", know_other_sti), design_2012)
+
+other_sti_2012_1 = other_sti_2012*100
+other_sti_2012_2 = confint(other_sti_2012)
+
+other_sti_2012_2 = other_sti_2012_2*100
+
+other_sti_2012 = data.frame(other_sti_2012_1,other_sti_2012_2)
+rm(other_sti_2012_1,other_sti_2012_2)
+
+#OTHER STI 2016 
+other_sti_2016 = svymean(~ifelse(is.na(know_other_sti), "NA", know_other_sti), design_2016)
+
+other_sti_2016_1 = other_sti_2016*100
+other_sti_2016_2 = confint(other_sti_2016)
+
+other_sti_2016_2 = other_sti_2016_2*100
+
+other_sti_2016 = data.frame(other_sti_2016_1,other_sti_2016_2)
+rm(other_sti_2016_1,other_sti_2016_2)
+
+#OTHER STI 2017 
+other_sti_2017 = svymean(~ifelse(is.na(know_other_sti), "NA", know_other_sti), design_2017)
+
+other_sti_2017_1 = other_sti_2017*100
+other_sti_2017_2 = confint(other_sti_2017)
+
+other_sti_2017_2 = other_sti_2017_2*100
+
+other_sti_2017 = data.frame(other_sti_2017_1,other_sti_2017_2)
+rm(other_sti_2017_1,other_sti_2017_2)
+
+#OTHER STI 2022 
+other_sti_2022 = svymean(~ifelse(is.na(know_other_sti), "NA", know_other_sti), design_2022)
+
+other_sti_2022_1 = other_sti_2022*100
+other_sti_2022_2 = confint(other_sti_2022)
+
+other_sti_2022_2 = other_sti_2022_2*100
+
+other_sti_2022 = data.frame(other_sti_2022_1,other_sti_2022_2)
+rm(other_sti_2022_1,other_sti_2022_2)
+```
+
+```{r}
+rm(other_sti_total,other_sti_2010,other_sti_2012,other_sti_2016,other_sti_2017,other_sti_2022)
+```
+
+Variable: age_first_sexual_intercourse
+```{r}
+#AGE FIRST SEXUAL INTERCOURSE TOTAL
+age_inter_total = svymean(~age_first_sexual_intercourse, design_total, na.rm=TRUE)
+
+age_inter_total_1 = age_inter_total
+age_inter_total_2 = confint(age_inter_total)
+
+age_inter_total = data.frame(age_inter_total_1,age_inter_total_2)
+rm(age_inter_total_1,age_inter_total_2)
+
+#AGE FIRST SEXUAL INTERCOURSE 2010
+age_inter_2010 = svymean(~age_first_sexual_intercourse, design_2010, na.rm=TRUE)
+
+age_inter_2010_1 = age_inter_2010
+age_inter_2010_2 = confint(age_inter_2010)
+
+age_inter_2010 = data.frame(age_inter_2010_1,age_inter_2010_2)
+rm(age_inter_2010_1,age_inter_2010_2)
+
+#AGE FIRST SEXUAL INTERCOURSE 2012
+age_inter_2012 = svymean(~age_first_sexual_intercourse, design_2012, na.rm=TRUE)
+
+age_inter_2012_1 = age_inter_2012
+age_inter_2012_2 = confint(age_inter_2012)
+
+age_inter_2012 = data.frame(age_inter_2012_1,age_inter_2012_2)
+rm(age_inter_2012_1,age_inter_2012_2)
+
+#AGE FIRST SEXUAL INTERCOURSE 2016
+age_inter_2016 = svymean(~age_first_sexual_intercourse, design_2016, na.rm=TRUE)
+
+age_inter_2016_1 = age_inter_2016
+age_inter_2016_2 = confint(age_inter_2016)
+
+age_inter_2016 = data.frame(age_inter_2016_1,age_inter_2016_2)
+rm(age_inter_2016_1,age_inter_2016_2)
+
+#AGE FIRST SEXUAL INTERCOURSE 2017
+age_inter_2017 = svymean(~age_first_sexual_intercourse, design_2017, na.rm=TRUE)
+
+age_inter_2017_1 = age_inter_2017
+age_inter_2017_2 = confint(age_inter_2017)
+
+age_inter_2017 = data.frame(age_inter_2017_1,age_inter_2017_2)
+rm(age_inter_2017_1,age_inter_2017_2)
+
+#AGE FIRST SEXUAL INTERCOURSE 2022
+age_inter_2022 = svymean(~age_first_sexual_intercourse, design_2022, na.rm=TRUE)
+
+age_inter_2022_1 = age_inter_2022
+age_inter_2022_2 = confint(age_inter_2022)
+
+age_inter_2022 = data.frame(age_inter_2022_1,age_inter_2022_2)
+rm(age_inter_2022_1,age_inter_2022_2)
+```
+
+```{r}
+rm(age_inter_total,age_inter_2010,age_inter_2012,age_inter_2016,age_inter_2017,age_inter_2022)
+```
+
+Variable: contraceptive_method_currently
+```{r}
+#CONTRACEPTIVE METHOD TOTAL
+contraceptive_total = svymean(~ifelse(is.na(contraceptive_method_currently), "NA", contraceptive_method_currently), design_total)
+
+contraceptive_total_1 = contraceptive_total*100
+contraceptive_total_2 = confint(contraceptive_total)
+
+contraceptive_total_2 = contraceptive_total_2*100
+
+contraceptive_total = data.frame(contraceptive_total_1,contraceptive_total_2)
+rm(contraceptive_total_1,contraceptive_total_2)
+
+#CONTRACEPTIVE METHOD 2010 
+contraceptive_2010 = svymean(~ifelse(is.na(contraceptive_method_currently), "NA", contraceptive_method_currently), design_2010)
+
+contraceptive_2010_1 = contraceptive_2010*100
+contraceptive_2010_2 = confint(contraceptive_2010)
+
+contraceptive_2010_2 = contraceptive_2010_2*100
+
+contraceptive_2010 = data.frame(contraceptive_2010_1,contraceptive_2010_2)
+rm(contraceptive_2010_1,contraceptive_2010_2)
+
+#CONTRACEPTIVE METHOD 2012 
+contraceptive_2012 = svymean(~ifelse(is.na(contraceptive_method_currently), "NA", contraceptive_method_currently), design_2012)
+
+contraceptive_2012_1 = contraceptive_2012*100
+contraceptive_2012_2 = confint(contraceptive_2012)
+
+contraceptive_2012_2 = contraceptive_2012_2*100
+
+contraceptive_2012 = data.frame(contraceptive_2012_1,contraceptive_2012_2)
+rm(contraceptive_2012_1,contraceptive_2012_2)
+
+#CONTRACEPTIVE METHOD 2016 
+contraceptive_2016 = svymean(~ifelse(is.na(contraceptive_method_currently), "NA", contraceptive_method_currently), design_2016)
+
+contraceptive_2016_1 = contraceptive_2016*100
+contraceptive_2016_2 = confint(contraceptive_2016)
+
+contraceptive_2016_2 = contraceptive_2016_2*100
+
+contraceptive_2016 = data.frame(contraceptive_2016_1,contraceptive_2016_2)
+rm(contraceptive_2016_1,contraceptive_2016_2)
+
+#CONTRACEPTIVE METHOD 2017 
+contraceptive_2017 = svymean(~ifelse(is.na(contraceptive_method_currently), "NA", contraceptive_method_currently), design_2017)
+
+contraceptive_2017_1 = contraceptive_2017*100
+contraceptive_2017_2 = confint(contraceptive_2017)
+
+contraceptive_2017_2 = contraceptive_2017_2*100
+
+contraceptive_2017 = data.frame(contraceptive_2017_1,contraceptive_2017_2)
+rm(contraceptive_2017_1,contraceptive_2017_2)
+
+#CONTRACEPTIVE METHOD 2022 
+contraceptive_2022 = svymean(~ifelse(is.na(contraceptive_method_currently), "NA", contraceptive_method_currently), design_2022)
+
+contraceptive_2022_1 = contraceptive_2022*100
+contraceptive_2022_2 = confint(contraceptive_2022)
+
+contraceptive_2022_2 = contraceptive_2022_2*100
+
+contraceptive_2022 = data.frame(contraceptive_2022_1,contraceptive_2022_2)
+rm(contraceptive_2022_1,contraceptive_2022_2)
+```
+
+```{r}
+rm(contraceptive_total,contraceptive_2010,contraceptive_2012,contraceptive_2016,contraceptive_2017,contraceptive_2022)
+```
+
+Variable: sexual_partner_2
+```{r}
+#SEXUAL PARTNER TOTAL
+sexual_par_total = svymean(~ifelse(is.na(sexual_partner_2), "NA", sexual_partner_2), design_total)
+
+sexual_par_total_1 = sexual_par_total*100
+sexual_par_total_2 = confint(sexual_par_total)
+
+sexual_par_total_2 = sexual_par_total_2*100
+
+sexual_par_total = data.frame(sexual_par_total_1,sexual_par_total_2)
+rm(sexual_par_total_1,sexual_par_total_2)
+
+#SEXUAL PARTNER 2010 
+sexual_par_2010 = svymean(~ifelse(is.na(sexual_partner_2), "NA", sexual_partner_2), design_2010)
+
+sexual_par_2010_1 = sexual_par_2010*100
+sexual_par_2010_2 = confint(sexual_par_2010)
+
+sexual_par_2010_2 = sexual_par_2010_2*100
+
+sexual_par_2010 = data.frame(sexual_par_2010_1,sexual_par_2010_2)
+rm(sexual_par_2010_1,sexual_par_2010_2)
+
+#SEXUAL PARTNER 2012 
+sexual_par_2012 = svymean(~ifelse(is.na(sexual_partner_2), "NA", sexual_partner_2), design_2012)
+
+sexual_par_2012_1 = sexual_par_2012*100
+sexual_par_2012_2 = confint(sexual_par_2012)
+
+sexual_par_2012_2 = sexual_par_2012_2*100
+
+sexual_par_2012 = data.frame(sexual_par_2012_1,sexual_par_2012_2)
+rm(sexual_par_2012_1,sexual_par_2012_2)
+
+#SEXUAL PARTNER 2016 
+sexual_par_2016 = svymean(~ifelse(is.na(sexual_partner_2), "NA", sexual_partner_2), design_2016)
+
+sexual_par_2016_1 = sexual_par_2016*100
+sexual_par_2016_2 = confint(sexual_par_2016)
+
+sexual_par_2016_2 = sexual_par_2016_2*100
+
+sexual_par_2016 = data.frame(sexual_par_2016_1,sexual_par_2016_2)
+rm(sexual_par_2016_1,sexual_par_2016_2)
+
+#SEXUAL PARTNER 2017 
+sexual_par_2017 = svymean(~ifelse(is.na(sexual_partner_2), "NA", sexual_partner_2), design_2017)
+
+sexual_par_2017_1 = sexual_par_2017*100
+sexual_par_2017_2 = confint(sexual_par_2017)
+
+sexual_par_2017_2 = sexual_par_2017_2*100
+
+sexual_par_2017 = data.frame(sexual_par_2017_1,sexual_par_2017_2)
+rm(sexual_par_2017_1,sexual_par_2017_2)
+
+#SEXUAL PARTNER 2022 
+sexual_par_2022 = svymean(~ifelse(is.na(sexual_partner_2), "NA", sexual_partner_2), design_2022)
+
+sexual_par_2022_1 = sexual_par_2022*100
+sexual_par_2022_2 = confint(sexual_par_2022)
+
+sexual_par_2022_2 = sexual_par_2022_2*100
+
+sexual_par_2022 = data.frame(sexual_par_2022_1,sexual_par_2022_2)
+rm(sexual_par_2022_1,sexual_par_2022_2)
+```
+
+```{r}
+rm(sexual_par_total,sexual_par_2010,sexual_par_2012,sexual_par_2016,sexual_par_2017,sexual_par_2022)
+```
+
+Variable: condon_use_last_partner
+```{r}
+#CONDON USE LAST PARTNER TOTAL
+condon_use_total = svymean(~ifelse(is.na(condon_use_last_partner), "NA", condon_use_last_partner), design_total)
+
+condon_use_total_1 = condon_use_total*100
+condon_use_total_2 = confint(condon_use_total)
+
+condon_use_total_2 = condon_use_total_2*100
+
+condon_use_total = data.frame(condon_use_total_1,condon_use_total_2)
+rm(condon_use_total_1,condon_use_total_2)
+
+#CONDON USE LAST PARTNER 2010 
+condon_use_2010 = svymean(~ifelse(is.na(condon_use_last_partner), "NA", condon_use_last_partner), design_2010)
+
+condon_use_2010_1 = condon_use_2010*100
+condon_use_2010_2 = confint(condon_use_2010)
+
+condon_use_2010_2 = condon_use_2010_2*100
+
+condon_use_2010 = data.frame(condon_use_2010_1,condon_use_2010_2)
+rm(condon_use_2010_1,condon_use_2010_2)
+
+#CONDON USE LAST PARTNER 2012 
+condon_use_2012 = svymean(~ifelse(is.na(condon_use_last_partner), "NA", condon_use_last_partner), design_2012)
+
+condon_use_2012_1 = condon_use_2012*100
+condon_use_2012_2 = confint(condon_use_2012)
+
+condon_use_2012_2 = condon_use_2012_2*100
+
+condon_use_2012 = data.frame(condon_use_2012_1,condon_use_2012_2)
+rm(condon_use_2012_1,condon_use_2012_2)
+
+#CONDON USE LAST PARTNER 2016 
+condon_use_2016 = svymean(~ifelse(is.na(condon_use_last_partner), "NA", condon_use_last_partner), design_2016)
+
+condon_use_2016_1 = condon_use_2016*100
+condon_use_2016_2 = confint(condon_use_2016)
+
+condon_use_2016_2 = condon_use_2016_2*100
+
+condon_use_2016 = data.frame(condon_use_2016_1,condon_use_2016_2)
+rm(condon_use_2016_1,condon_use_2016_2)
+
+#CONDON USE LAST PARTNER 2017 
+condon_use_2017 = svymean(~ifelse(is.na(condon_use_last_partner), "NA", condon_use_last_partner), design_2017)
+
+condon_use_2017_1 = condon_use_2017*100
+condon_use_2017_2 = confint(condon_use_2017)
+
+condon_use_2017_2 = condon_use_2017_2*100
+
+condon_use_2017 = data.frame(condon_use_2017_1,condon_use_2017_2)
+rm(condon_use_2017_1,condon_use_2017_2)
+
+#CONDON USE LAST PARTNER 2022 
+condon_use_2022 = svymean(~ifelse(is.na(condon_use_last_partner), "NA", condon_use_last_partner), design_2022)
+
+condon_use_2022_1 = condon_use_2022*100
+condon_use_2022_2 = confint(condon_use_2022)
+
+condon_use_2022_2 = condon_use_2022_2*100
+
+condon_use_2022 = data.frame(condon_use_2022_1,condon_use_2022_2)
+rm(condon_use_2022_1,condon_use_2022_2)
+```
+
+```{r}
+rm(condon_use_total,condon_use_2010,condon_use_2012,condon_use_2016,condon_use_2017,condon_use_2022)
+```
+
+Variable: alcohol_prior_sexual_intercourse
+```{r}
+#ALCOHOL PRIOR SEXUAL INTERCOURSE TOTAL
+alcohol_total = svymean(~ifelse(is.na(alcohol_prior_sexual_intercourse), "NA", alcohol_prior_sexual_intercourse), design_total)
+
+alcohol_total_1 = alcohol_total*100
+alcohol_total_2 = confint(alcohol_total)
+
+alcohol_total_2 = alcohol_total_2*100
+
+alcohol_total = data.frame(alcohol_total_1,alcohol_total_2)
+rm(alcohol_total_1,alcohol_total_2)
+
+#ALCOHOL PRIOR SEXUAL INTERCOURSE 2010 
+alcohol_2010 = svymean(~ifelse(is.na(alcohol_prior_sexual_intercourse), "NA", alcohol_prior_sexual_intercourse), design_2010)
+
+alcohol_2010_1 = alcohol_2010*100
+alcohol_2010_2 = confint(alcohol_2010)
+
+alcohol_2010_2 = alcohol_2010_2*100
+
+alcohol_2010 = data.frame(alcohol_2010_1,alcohol_2010_2)
+rm(alcohol_2010_1,alcohol_2010_2)
+
+#ALCOHOL PRIOR SEXUAL INTERCOURSE 2012 
+alcohol_2012 = svymean(~ifelse(is.na(alcohol_prior_sexual_intercourse), "NA", alcohol_prior_sexual_intercourse), design_2012)
+
+alcohol_2012_1 = alcohol_2012*100
+alcohol_2012_2 = confint(alcohol_2012)
+
+alcohol_2012_2 = alcohol_2012_2*100
+
+alcohol_2012 = data.frame(alcohol_2012_1,alcohol_2012_2)
+rm(alcohol_2012_1,alcohol_2012_2)
+
+#ALCOHOL PRIOR SEXUAL INTERCOURSE 2016 
+alcohol_2016 = svymean(~ifelse(is.na(alcohol_prior_sexual_intercourse), "NA", alcohol_prior_sexual_intercourse), design_2016)
+
+alcohol_2016_1 = alcohol_2016*100
+alcohol_2016_2 = confint(alcohol_2016)
+
+alcohol_2016_2 = alcohol_2016_2*100
+
+alcohol_2016 = data.frame(alcohol_2016_1,alcohol_2016_2)
+rm(alcohol_2016_1,alcohol_2016_2)
+
+#ALCOHOL PRIOR SEXUAL INTERCOURSE 2017 
+alcohol_2017 = svymean(~ifelse(is.na(alcohol_prior_sexual_intercourse), "NA", alcohol_prior_sexual_intercourse), design_2017)
+
+alcohol_2017_1 = alcohol_2017*100
+alcohol_2017_2 = confint(alcohol_2017)
+
+alcohol_2017_2 = alcohol_2017_2*100
+
+alcohol_2017 = data.frame(alcohol_2017_1,alcohol_2017_2)
+rm(alcohol_2017_1,alcohol_2017_2)
+
+#ALCOHOL PRIOR SEXUAL INTERCOURSE 2022 
+alcohol_2022 = svymean(~ifelse(is.na(alcohol_prior_sexual_intercourse), "NA", alcohol_prior_sexual_intercourse), design_2022)
+
+alcohol_2022_1 = alcohol_2022*100
+alcohol_2022_2 = confint(alcohol_2022)
+
+alcohol_2022_2 = alcohol_2022_2*100
+
+alcohol_2022 = data.frame(alcohol_2022_1,alcohol_2022_2)
+rm(alcohol_2022_1,alcohol_2022_2)
+```
+
+```{r}
+rm(alcohol_total,alcohol_2010,alcohol_2012,alcohol_2016,alcohol_2017,alcohol_2022)
+```
+
+Variable: diagnosted_sti_12months
+```{r}
+#DIAGNOSTED STI TOTAL
+sti2_total = svymean(~ifelse(is.na(diagnosted_sti_12months), "NA", diagnosted_sti_12months), design_total)
+
+sti2_total_1 = sti2_total*100
+sti2_total_2 = confint(sti2_total)
+
+sti2_total_2 = sti2_total_2*100
+
+sti2_total = data.frame(sti2_total_1,sti2_total_2)
+rm(sti2_total_1,sti2_total_2)
+
+#DIAGNOSTED STI 2010 
+sti2_2010 = svymean(~ifelse(is.na(diagnosted_sti_12months), "NA", diagnosted_sti_12months), design_2010)
+
+sti2_2010_1 = sti2_2010*100
+sti2_2010_2 = confint(sti2_2010)
+
+sti2_2010_2 = sti2_2010_2*100
+
+sti2_2010 = data.frame(sti2_2010_1,sti2_2010_2)
+rm(sti2_2010_1,sti2_2010_2)
+
+#DIAGNOSTED STI 2012 
+sti2_2012 = svymean(~ifelse(is.na(diagnosted_sti_12months), "NA", diagnosted_sti_12months), design_2012)
+
+sti2_2012_1 = sti2_2012*100
+sti2_2012_2 = confint(sti2_2012)
+
+sti2_2012_2 = sti2_2012_2*100
+
+sti2_2012 = data.frame(sti2_2012_1,sti2_2012_2)
+rm(sti2_2012_1,sti2_2012_2)
+
+#DIAGNOSTED STI 2016 
+sti2_2016 = svymean(~ifelse(is.na(diagnosted_sti_12months), "NA", diagnosted_sti_12months), design_2016)
+
+sti2_2016_1 = sti2_2016*100
+sti2_2016_2 = confint(sti2_2016)
+
+sti2_2016_2 = sti2_2016_2*100
+
+sti2_2016 = data.frame(sti2_2016_1,sti2_2016_2)
+rm(sti2_2016_1,sti2_2016_2)
+
+#DIAGNOSTED STI 2017 
+sti2_2017 = svymean(~ifelse(is.na(diagnosted_sti_12months), "NA", diagnosted_sti_12months), design_2017)
+
+sti2_2017_1 = sti2_2017*100
+sti2_2017_2 = confint(sti2_2017)
+
+sti2_2017_2 = sti2_2017_2*100
+
+sti2_2017 = data.frame(sti2_2017_1,sti2_2017_2)
+rm(sti2_2017_1,sti2_2017_2)
+
+#DIAGNOSTED STI 2022 
+sti2_2022 = svymean(~ifelse(is.na(diagnosted_sti_12months), "NA", diagnosted_sti_12months), design_2022)
+
+sti2_2022_1 = sti2_2022*100
+sti2_2022_2 = confint(sti2_2022)
+
+sti2_2022_2 = sti2_2022_2*100
+
+sti2_2022 = data.frame(sti2_2022_1,sti2_2022_2)
+rm(sti2_2022_1,sti2_2022_2)
+```
+
+```{r}
+rm(sti2_total,sti2_2010,sti2_2012,sti2_2016,sti2_2017,sti2_2022)
+```
+
+Variable: can_get_condoms 
+```{r}
+#CAN GET CONDOMS TOTAL
+get_condon_total = svymean(~ifelse(is.na(can_get_condoms), "NA", can_get_condoms), design_total)
+
+get_condon_total_1 = get_condon_total*100
+get_condon_total_2 = confint(get_condon_total)
+
+get_condon_total_2 = get_condon_total_2*100
+
+get_condon_total = data.frame(get_condon_total_1,get_condon_total_2)
+rm(get_condon_total_1,get_condon_total_2)
+
+#CAN GET CONDOMS 2010 
+get_condon_2010 = svymean(~ifelse(is.na(can_get_condoms), "NA", can_get_condoms), design_2010)
+
+get_condon_2010_1 = get_condon_2010*100
+get_condon_2010_2 = confint(get_condon_2010)
+
+get_condon_2010_2 = get_condon_2010_2*100
+
+get_condon_2010 = data.frame(get_condon_2010_1,get_condon_2010_2)
+rm(get_condon_2010_1,get_condon_2010_2)
+
+#CAN GET CONDOMS 2012
+get_condon_2012 = svymean(~ifelse(is.na(can_get_condoms), "NA", can_get_condoms), design_2012)
+
+get_condon_2012_1 = get_condon_2012*100
+get_condon_2012_2 = confint(get_condon_2012)
+
+get_condon_2012_2 = get_condon_2012_2*100
+
+get_condon_2012 = data.frame(get_condon_2012_1,get_condon_2012_2)
+rm(get_condon_2012_1,get_condon_2012_2)
+
+#CAN GET CONDOMS 2016 
+get_condon_2016 = svymean(~ifelse(is.na(can_get_condoms), "NA", can_get_condoms), design_2016)
+
+get_condon_2016_1 = get_condon_2016*100
+get_condon_2016_2 = confint(get_condon_2016)
+
+get_condon_2016_2 = get_condon_2016_2*100
+
+get_condon_2016 = data.frame(get_condon_2016_1,get_condon_2016_2)
+rm(get_condon_2016_1,get_condon_2016_2)
+
+#CAN GET CONDOMS 2017 
+get_condon_2017 = svymean(~ifelse(is.na(can_get_condoms), "NA", can_get_condoms), design_2017)
+
+get_condon_2017_1 = get_condon_2017*100
+get_condon_2017_2 = confint(get_condon_2017)
+
+get_condon_2017_2 = get_condon_2017_2*100
+
+get_condon_2017 = data.frame(get_condon_2017_1,get_condon_2017_2)
+rm(get_condon_2017_1,get_condon_2017_2)
+
+#CAN GET CONDOMS 2022 
+get_condon_2022 = svymean(~ifelse(is.na(can_get_condoms), "NA", can_get_condoms), design_2022)
+
+get_condon_2022_1 = get_condon_2022*100
+get_condon_2022_2 = confint(get_condon_2022)
+
+get_condon_2022_2 = get_condon_2022_2*100
+
+get_condon_2022 = data.frame(get_condon_2022_1,get_condon_2022_2)
+rm(get_condon_2022_1,get_condon_2022_2)
+```
+
+```{r}
+rm(get_condon_total,get_condon_2010,get_condon_2012,get_condon_2016,get_condon_2017,get_condon_2022)
+```
+
+Variable: hiv_screening
+```{r}
+#HIV SCREENING TOTAL
+hiv_screening_total = svymean(~ifelse(is.na(hiv_screening), "NA", hiv_screening), design_total)
+
+hiv_screening_total_1 = hiv_screening_total*100
+hiv_screening_total_2 = confint(hiv_screening_total)
+
+hiv_screening_total_2 = hiv_screening_total_2*100
+
+hiv_screening_total = data.frame(hiv_screening_total_1,hiv_screening_total_2)
+rm(hiv_screening_total_1,hiv_screening_total_2)
+
+#HIV SCREENING 2010 
+hiv_screening_2010 = svymean(~ifelse(is.na(hiv_screening), "NA", hiv_screening), design_2010)
+
+hiv_screening_2010_1 = hiv_screening_2010*100
+hiv_screening_2010_2 = confint(hiv_screening_2010)
+
+hiv_screening_2010_2 = hiv_screening_2010_2*100
+
+hiv_screening_2010 = data.frame(hiv_screening_2010_1,hiv_screening_2010_2)
+rm(hiv_screening_2010_1,hiv_screening_2010_2)
+
+#HIV SCREENING 2012 
+hiv_screening_2012 = svymean(~ifelse(is.na(hiv_screening), "NA", hiv_screening), design_2012)
+
+hiv_screening_2012_1 = hiv_screening_2012*100
+hiv_screening_2012_2 = confint(hiv_screening_2012)
+
+hiv_screening_2012_2 = hiv_screening_2012_2*100
+
+hiv_screening_2012 = data.frame(hiv_screening_2012_1,hiv_screening_2012_2)
+rm(hiv_screening_2012_1,hiv_screening_2012_2)
+
+#HIV SCREENING 2016 
+hiv_screening_2016 = svymean(~ifelse(is.na(hiv_screening), "NA", hiv_screening), design_2016)
+
+hiv_screening_2016_1 = hiv_screening_2016*100
+hiv_screening_2016_2 = confint(hiv_screening_2016)
+
+hiv_screening_2016_2 = hiv_screening_2016_2*100
+
+hiv_screening_2016 = data.frame(hiv_screening_2016_1,hiv_screening_2016_2)
+rm(hiv_screening_2016_1,hiv_screening_2016_2)
+
+#HIV SCREENING 2017 
+hiv_screening_2017 = svymean(~ifelse(is.na(hiv_screening), "NA", hiv_screening), design_2017)
+
+hiv_screening_2017_1 = hiv_screening_2017*100
+hiv_screening_2017_2 = confint(hiv_screening_2017)
+
+hiv_screening_2017_2 = hiv_screening_2017_2*100
+
+hiv_screening_2017 = data.frame(hiv_screening_2017_1,hiv_screening_2017_2)
+rm(hiv_screening_2017_1,hiv_screening_2017_2)
+
+#HIV SCREENING 2022 
+hiv_screening_2022 = svymean(~ifelse(is.na(hiv_screening), "NA", hiv_screening), design_2022)
+
+hiv_screening_2022_1 = hiv_screening_2022*100
+hiv_screening_2022_2 = confint(hiv_screening_2022)
+
+hiv_screening_2022_2 = hiv_screening_2022_2*100
+
+hiv_screening_2022 = data.frame(hiv_screening_2022_1,hiv_screening_2022_2)
+rm(hiv_screening_2022_1,hiv_screening_2022_2)
+```
+
+```{r}
+rm(hiv_screening_total,hiv_screening_2010,hiv_screening_2012,hiv_screening_2016,hiv_screening_2017,hiv_screening_2022)
+```

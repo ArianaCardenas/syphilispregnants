@@ -1,0 +1,251 @@
+---
+title: "Goals_syphilis"
+author: "Jazmín Qquellon"
+date: "2024-02-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(gtsummary)
+library(survey)
+library(RColorBrewer)
+library(sf)
+library(tmap)
+library(ggsci)
+#install.packages("ggupset")
+library(ggupset)
+library(patchwork)
+```
+
+
+```{r}
+#Goal 1: Rate of Congenital syphilis < 0.5 per 1000 individuals
+
+##Correr el rmd de congenital syphilis hasta línea 177
+pre_congenital_2022 <- data_congenital_dep %>% 
+  filter(year==2022) %>% 
+  group_by(NOMBDEP) %>% 
+  summarise(congenital_prop = mean(rate, na.rm = TRUE)) 
+
+congenital_2022 <- data_congenital_dep %>% 
+  filter(year==2022) %>% 
+  select(geometry) %>% 
+  left_join(pre_congenital_2022, by = "NOMBDEP") 
+```
+
+```{r}
+#Goal 2: Decreade in maternal syphilis by 30% between 2018 - 2022
+
+##Correr el rmd de Syphilis_materna
+
+maternal_2018<- data_maternal_dep %>% 
+  filter(year==2018) %>% 
+  group_by(NOMBDEP) %>% 
+  summarise(maternal_prop_18 = mean(rate, na.rm = TRUE))
+
+maternal_2022<- data_maternal_dep %>% 
+  filter(year==2022) %>% 
+  group_by(NOMBDEP) %>% 
+  summarise(maternal_prop_22 = mean(rate, na.rm = TRUE))
+
+combined_data_maternal <- maternal_2018 %>% 
+  left_join(maternal_2022, by = c("NOMBDEP"))
+
+combined_data_maternal <-  combined_data_maternal %>% 
+  mutate(rest= maternal_prop_18 - maternal_prop_22) %>% 
+  mutate(rest_porcent = (100 - ((maternal_prop_22/maternal_prop_18)*100)))
+
+```
+
+```{r}
+#Goal 3: Screening of syphilis - 2022
+
+#Correr el rmd de Syphilis_screening_final
+freq_screening_2022 <- data_grafico_2022 %>%
+  select(NOMBDEP, syphilis_screening)
+```
+
+```{r}
+#Combinamos los 3 goals
+
+combined_data_2022 <- congenital_2022 %>%
+  left_join(freq_screening_2022, by = c("NOMBDEP")) %>% 
+  left_join(combined_data_maternal, by = "NOMBDEP") 
+
+```
+
+```{r, fig.width = 8, fig.height = 5}
+#Figura de columnas -combinaciones
+
+GOALS_2022 <- combined_data_2022 %>% 
+    mutate(
+    goal3 = ifelse(syphilis_screening>=0.95, 1,0),
+    goal2 = ifelse(congenital_prop<0.5,1,0),
+    goal1 = ifelse(rest_porcent >=30,1,0),
+    goals = ifelse(syphilis_screening>=0.95 & congenital_prop<0.50 & rest_porcent>=30, list(c ("Maternal", "Congenital", "Screening")),
+                   ifelse(syphilis_screening<0.95 & congenital_prop>=0.50 & rest_porcent<30, list(c(NA)),
+                          ifelse(syphilis_screening>=0.95 & congenital_prop>=0.50 & rest_porcent<30, list(c("Screening")),
+                                 ifelse(syphilis_screening<0.95 & congenital_prop<0.50 & rest_porcent<30, list(c("Congenital")),
+                                        ifelse(syphilis_screening<0.95 & congenital_prop>=0.50 & rest_porcent>=30, list(c("Maternal")),
+                                               ifelse(syphilis_screening>=0.95 & congenital_prop<0.50 & rest_porcent<30, list(c("Congenital", "Screening")),
+                                                      ifelse(syphilis_screening>=0.95 & congenital_prop>=0.50 & rest_porcent>=30, list(c("Maternal", "Screening")),
+                                                             ifelse(syphilis_screening<0.95 & congenital_prop<0.50 & rest_porcent>=30, list(c("Maternal", "Congenital")), NA)
+               ))))))))
+
+figure_2a <-
+  ggplot(GOALS_2022) +
+  aes(x = goals)+
+  geom_bar(fill = "#67A9B6")+
+  geom_text(stat='count', aes(label=after_stat(count)), 
+            vjust=-0.01, size = 4, fontface = "bold") +
+  theme_minimal()+
+  theme(
+    panel.grid = element_blank()
+  )+
+  labs(x = "Goals", y = "")+
+  scale_x_upset(n_intersections= 8) +
+  scale_y_continuous(breaks = NULL)
+print(figure_2a)
+
+#ggsave("Figure_2a.png",plot = figure_2a, width = 8, height = 4, dpi = 300)
+```
+```{r}
+if(!require("remotes")) install.packages("remotes")
+remotes::install_github("healthinnovation/innovar@v.0.1.2")
+library(innovar)
+
+hcl.colors("teal", n = 5)
+```
+```{r}
+#Figuras de mapas
+
+#Goal 3 - Syphilis screening
+
+GOALS_2022 <- GOALS_2022 %>% 
+  mutate(goal_screening = ifelse(syphilis_screening >= 0.95, "100",
+                                ifelse(syphilis_screening >=0.90 & syphilis_screening<0.95, "90",
+                                       ifelse(syphilis_screening >=0.85 & syphilis_screening<0.90, "80",
+                                              ifelse(syphilis_screening >=0.80 & syphilis_screening <0.85, "70",
+                                                     ifelse(syphilis_screening >=0.75 & syphilis_screening <0.80, "60",
+                                                            ifelse(syphilis_screening >=0.70 & syphilis_screening <0.75, "50",
+                                                                   ifelse(syphilis_screening >=0.65 & syphilis_screening <0.70, "40",
+                                                                          ifelse(syphilis_screening >=0.60  & syphilis_screening <0.65, "30",
+                                                                                 ifelse(syphilis_screening >=0.55 & syphilis_screening <0.60, "20",
+                                                                                        ifelse(syphilis_screening>=0.50 & syphilis_screening<0.55, "10",
+                                                                                               ifelse(syphilis_screening <0.50, "0", NA))))))))))))
+
+
+GOALS_2022$goal_screening <- as.numeric(as.character(GOALS_2022$goal_screening))
+
+figure_2b3 <- ggplot() +
+  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = goal_screening), col = "black") +
+  scale_fill_gradient(
+    high = "#2A5676", 
+    low = "#D2EEEA",   
+    limits = c(0,100), 
+    breaks = seq(0,100, by = 20),
+    labels = c("0%", "20%", "40%", "60%", "80%",  "100%")
+  )+
+  labs(fill= "Goal", title = "Goal 3 - Screening") +
+  theme_void()+
+  theme(legend.position = "right",
+        plot.title = element_text( hjust = 0.5),
+        )
+print(figure_2b3)
+#ggsave("Figure_2b1.png",plot = figure_2b1, width = 8, height = 4, dpi = 300)
+
+```
+```{r}
+##Goal 1 - Congenital Syphilis
+
+GOALS_2022 <- GOALS_2022 %>% 
+  mutate(goal_congenital = ifelse(congenital_prop <= 0.50, "100",
+                                ifelse(congenital_prop<= 0.55 & congenital_prop>0.50, "90",
+                                       ifelse(congenital_prop<= 0.60 & congenital_prop>0.55, "80",
+                                              ifelse(congenital_prop<= 0.65 & congenital_prop >0.60, "70",
+                                                     ifelse(congenital_prop<= 0.70 & congenital_prop >0.65, "60",
+                                                            ifelse(congenital_prop<= 0.75 & congenital_prop >0.70, "50",
+                                                                   ifelse(congenital_prop<= 0.80 & congenital_prop >0.75, "40",
+                                                                          ifelse(congenital_prop<= 0.85  & congenital_prop >0.80, "30",
+                                                                                 ifelse(congenital_prop<= 0.90 & congenital_prop >0.85, "20",
+                                                                                        ifelse(congenital_prop<= 0.95 & congenital_prop>0.90, "10",
+                                                                                               ifelse(congenital_prop>0.95, "0", NA))))))))))))
+
+
+GOALS_2022$goal_congenital <- as.numeric(as.character(GOALS_2022$goal_congenital))
+
+figure_2b1 <- ggplot() +
+  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = goal_congenital), col = "black") +
+  scale_fill_gradient(
+    high = "#2A5676", 
+    low = "#D2EEEA", 
+    limits = c(0,100), 
+    breaks = seq(0,100, by = 20),
+    labels = c("0%", "20%", "40%", "60%", "80%",  "100%")
+  )+
+  labs(fill= "Goal", title = "Goal 1 - Congenital") +
+  theme_void() +
+  theme(legend.position = "void",
+        plot.title = element_text( hjust = 0.5))
+
+print(figure_2b1)
+
+#ggsave("Figure_2b2.png",plot = figure_2b2, width = 8, height = 4, dpi = 300)
+
+```
+
+
+```{r}
+#Goal 2
+
+GOALS_2022 <- GOALS_2022 %>% 
+  mutate(goal_maternal = ifelse(rest_porcent >= 30, "100",
+                                ifelse(rest_porcent >=26.7 & rest_porcent<30, "90",
+                                       ifelse(rest_porcent >=23.4 & rest_porcent<26.7, "80",
+                                              ifelse(rest_porcent >=20.1 & rest_porcent <23.4, "70",
+                                                     ifelse(rest_porcent >=16.8 & rest_porcent <20.1, "60",
+                                                            ifelse(rest_porcent >=13.5 & rest_porcent <16.8, "50",
+                                                                   ifelse(rest_porcent >=10.2 & rest_porcent <13.5, "40",
+                                                                          ifelse(rest_porcent >=6.9  & rest_porcent <10.2, "30",
+                                                                                 ifelse(rest_porcent >=3.6 & rest_porcent <6.9, "20",
+                                                                                        ifelse(rest_porcent>=0.3 & rest_porcent<3.6, "10",
+                                                                                               ifelse(rest_porcent <0.3, "0", NA))))))))))))
+
+
+GOALS_2022$goal_maternal <- as.numeric(as.character(GOALS_2022$goal_maternal))
+
+figure_2b2 <- ggplot() +
+  geom_sf(data = GOALS_2022, aes(geometry = geometry, fill = goal_maternal), col = "black") +
+  scale_fill_gradient(
+    high = "#2A5676", 
+    low = "#D2EEEA",   
+    limits = c(0,100), 
+    breaks = seq(0,100, by = 20),
+    labels = c("0%", "20%", "40%", "60%", "80%",  "100%")
+  )+ theme_void() +
+  labs(fill= "Goal", title = "Goal 2 - Maternal") +
+  theme(legend.position = "void",
+        plot.title = element_text( hjust = 0.5))
+
+print(figure_2b2)
+
+#ggsave("Figure_2b3.png",plot = figure_2b3, width = 8, height = 4, dpi = 300)
+
+```
+
+
+```{r}
+Figure_2b = (figure_2b1 | figure_2b2 | figure_2b3) +
+  plot_layout(guides = "keep")
+
+Figure_2b
+```
+```{r fig.height=8, fig.width=8}
+Figure2 = figure_2a / Figure_2b +
+  plot_annotation(tag_levels = "a") +
+  plot_layout(heights = unit(c(6, 10), c('null', 'cm')))
+
+print(Figure2)
+#ggsave("Goals_2022.png", plot = Figure2)
+```
