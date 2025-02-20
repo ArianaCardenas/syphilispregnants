@@ -647,8 +647,8 @@ enaho = enaho %>%
                     language>=3 | language>=6 & language<=7 | language>=10 & language<=15 ~ "no spanish",
                     is.na(language) ~ NA
     ),
-    education_level = case_when(education_level<=5 | education_level==12 ~ "less than secondary",
-                    education_level>=6 & education_level<=11 ~ "secondary or more",
+    education_level = case_when(education_level<=4 | education_level==12 ~ "less than secondary",
+                    education_level>=5 & education_level<=11 ~ "secondary (i/c) or more",
                     is.na(education_level) ~ NA
     ),
     visit_preg = case_when(visit_preg == 1 ~ "yes",
