@@ -156,11 +156,11 @@ legend <- bi_legend(pal = custom_pal2,
                     size = 8)
 
 # combine map with legend
-finalPlot <- ggdraw() +
+finalPlot_poverty_ms <- ggdraw() +
   draw_plot(map, 0, 0, 1, 1) +
   draw_plot(legend, .75, .6, .2, .2)
 
-finalPlot
+finalPlot_poverty_ms
 ```
 
 ```{r, echo=FALSE, fig.height=6, fig.width=8}
@@ -344,11 +344,11 @@ legend <- bi_legend(pal = custom_pal2,
                     size = 8)
 
 # combine map with legend
-finalPlot <- ggdraw() +
+finalPlot_education_ms <- ggdraw() +
   draw_plot(map, 0, 0, 1, 1) +
   draw_plot(legend, .75, .6, .2, .2)
 
-finalPlot
+finalPlot_education_ms
 ```
 
 ```{r, echo=FALSE, fig.height=8, fig.width=10}
@@ -471,4 +471,185 @@ mapeducation <- map | map15 | map18 |map22 | (legend/plot_spacer())
 mapeducation
 ```
 
+Prenatal Care
 
+Prenatal care
+
+```{r}
+## Congenital syphilis and prenatal care
+precare = 
+  data_enaho %>%
+  left_join(data_maternal_dep, by = c("year","NOMBDEP")) %>%
+  select(control_iron,year,NOMBDEP,conglome,estrato,facpob07,rate_mat) %>%
+  filter(!is.na(control_iron))%>%
+  mutate(
+    NOMBDEP = as.factor(NOMBDEP),
+    year = as.factor(year),
+    control_iron = as.factor(control_iron)
+  ) 
+
+
+# Crear el diseño de muestreo estratificado
+design <- svydesign(~ conglome, strata = ~ estrato, weights = ~ facpob07, data = precare, nest = TRUE)
+
+options(survey.lonely.psu="adjust")
+
+syphilis_precare<- svyby(~control_iron,~NOMBDEP+year,svymean,design=design,deff=TRUE,na.rm=TRUE)
+
+syphilis_precare = as.data.frame(syphilis_precare) 
+syphilis_precare <- syphilis_precare %>%
+  mutate(year = as.character(year))  %>%
+  left_join(data_maternal_dep, by = c("NOMBDEP", "year")) %>%
+  left_join(departamentos, by = "NOMBDEP")
+
+custom_pal2 <- c(
+  "1-1" = "#d3d3d3", # low x, low y
+  "2-1" = "#C7C98A", # high x, low y
+  "1-2" = "#6FB798", # low x, high y
+  "2-2" = "#3B99B1" # high x, high y
+)
+```
+
+# Bivariate graphic of the rate of congenital syphilis and prenatal care
+in the departments of Peru
+
+```{r, echo=FALSE, fig.height=6, fig.width=8}
+
+datamap <- bi_class(syphilis_precare, x = rate_mat, y = control_ironno, style = "quantile", dim = 2)
+
+map <- ggplot() +
+  geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
+          color = "black", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = custom_pal2, dim = 2) +
+  labs(
+    title = "Total"
+  ) +
+  bi_theme() +
+  theme(plot.title = element_text(size = rel(0.65))) 
+  
+
+legend <- bi_legend(pal = custom_pal2,
+                    dim = 2,
+                    xlab = "Rate",
+                    ylab = "No prenatal care",
+                    size = 8)
+
+# combine map with legend
+finalPlot_precare <- ggdraw() +
+  draw_plot(map, 0, 0, 1, 1) +
+  draw_plot(legend, .75, .6, .2, .2)
+
+finalPlot_precare
+```
+
+```{r, echo=FALSE, fig.height=6, fig.width=8}
+#2015
+
+syphilis_precare15 = syphilis_precare %>%
+  filter(
+    year == "2015"
+  )
+datamap <- bi_class(syphilis_precare15, x = rate_mat, y = control_ironno, style = "quantile", dim = 2)
+
+map15 <- ggplot() +
+  geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
+          color = "black", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = custom_pal2, dim = 2) +
+  labs(
+    title = "2015"
+  ) +
+  bi_theme() +
+  theme(plot.title = element_text(size = rel(0.65))) 
+  
+
+legend <- bi_legend(pal = custom_pal2,
+                    dim = 2,
+                    xlab = "Rate",
+                    ylab = "No prenatal care",
+                    size = 8)
+
+# combine map with legend
+finalPlot15 <- ggdraw() +
+  draw_plot(map15, 0, 0, 1, 1) +
+  draw_plot(legend, .75, .6, .2, .2)
+
+finalPlot15
+```
+
+```{r, echo=FALSE, fig.height=6, fig.width=8}
+#2018
+
+syphilis_precare18 = syphilis_precare %>%
+  filter(
+    year == "2018"
+  )
+datamap <- bi_class(syphilis_precare18, x = rate_mat, y = control_ironno, style = "quantile", dim = 2)
+
+map18 <- ggplot() +
+  geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
+          color = "black", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = custom_pal2, dim = 2) +
+  labs(
+    title = "2018"
+  ) +
+  bi_theme() +
+  theme(plot.title = element_text(size = rel(0.65))) 
+  
+
+legend <- bi_legend(pal = custom_pal2,
+                    dim = 2,
+                    xlab = "Rate",
+                    ylab = "No prenatal care",
+                    size = 8)
+
+# combine map with legend
+finalPlot18 <- ggdraw() +
+  draw_plot(map18, 0, 0, 1, 1) +
+  draw_plot(legend, .75, .6, .2, .2)
+
+finalPlot18
+```
+
+```{r, echo=FALSE, fig.height=6, fig.width=8}
+#2022
+
+syphilis_precare22 = syphilis_precare %>%
+  filter(
+    year == "2022"
+  )
+datamap <- bi_class(syphilis_precare22, x = rate_mat, y = control_ironno, style = "quantile", dim = 2)
+
+map15 <- ggplot() +
+  geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
+          color = "black", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = custom_pal2, dim = 2) +
+  labs(
+    title = "2022"
+      #"Rate of congenital syphilis in extremely poor pregnants in 2015"
+  ) +
+  bi_theme() +
+  theme(plot.title = element_text(size = rel(0.65))) 
+  
+
+legend <- bi_legend(pal = custom_pal2,
+                    dim = 2,
+                    xlab = "Rate",
+                    ylab = "No prenatal care",
+                    size = 8)
+
+
+# combine map with legend
+finalPlot22 <- ggdraw() +
+  draw_plot(map22, 0, 0, 1, 1) +
+  draw_plot(legend, .75, .6, .2, .2)
+
+finalPlot22
+```
+
+```{r, echo = FALSE,fig.height = 5, fig.width = 10}
+
+mapprecare <- map | map15 | map18 |map22 | (legend/plot_spacer())
+ #+ plot_layout(widths = c(1, 1, 1, 1, 1))
+
+mapprecare
+```
