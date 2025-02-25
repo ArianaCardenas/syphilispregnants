@@ -625,7 +625,7 @@ rm(data2015,data2016,data2017,data2018,data2019,data2020,data2021,data2022)
 
 Configuración de variables
 ```{r}
-enaho = rename(enaho,"year"="ano", "sex"="p207","age"="p208a","civil_status"="p209","visit_preg"="p414_15","language"="p300a","education_level"= "p301a","poverty"="pobreza")
+enaho = rename(enaho,"year"="ano", "sex"="p207","age"="p208a","civil_status"="p209","prenatal_visit"="p414_15","language"="p300a","education_level"= "p301a","poverty"="pobreza")
 
 enaho = enaho %>%
   mutate(
@@ -651,9 +651,9 @@ enaho = enaho %>%
                     education_level>=5 & education_level<=11 ~ "secondary (i/c) or more",
                     is.na(education_level) ~ NA
     ),
-    visit_preg = case_when(visit_preg == 1 ~ "yes",
-                           visit_preg == 2 ~ "no",
-                           is.na(visit_preg) ~ NA
+    prenatal_visit = case_when(prenatal_visit == 1 ~ "yes",
+                           prenatal_visit == 2 ~ "no",
+                           is.na(prenatal_visit) ~ NA
     ),
     who_assisted_you = case_when(p4041 == 1 | p4043 == 1 | p4044 == 1 ~ "doctor/nurse/obstetrician",
                                  p4042 == 1 | p4045 == 1 | p4046 == 1 | p4047 == 1 ~ "other",
@@ -684,6 +684,9 @@ slice(1)
 ```{r}
  enaho2 = enaho %>%
   filter(sex=="woman") %>%
+  filter(!is.na(control_iron))%>%
+  filter(control_iron != "not_correspond")%>%
+  filter(age >= 15 & age <= 50)%>%
   #distinct(ubigeo, .keep_all = TRUE) %>% (enaho3)
   group_by(caseid) %>% 
   slice(1) %>% 
