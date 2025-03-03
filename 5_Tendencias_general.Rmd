@@ -290,3 +290,4 @@ tendenciaslong
 ggsave("Trends_2015-2022.png", plot = tendenciaslong)
 
 ```
+

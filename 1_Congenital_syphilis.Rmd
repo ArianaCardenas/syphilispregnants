@@ -244,12 +244,13 @@ Joining Dumbell plots:
 ```{r fig.height=13.5, fig.width=8.5}
 # Run "Mapas I.Rmd" to obtain Screening Syphilis Dumbell Plot
 # Run "Mapas Syphilis INS.Rmd" to obtain Maternal Syphilis Dumbell Plot
-library(patchwork)
 
-combineddumbell = syphcongenita/syphmaterna/d15_d22_screening +
-  plot_annotation(tag_levels = "a")
+library(gridExtra)
+library(ggplot2)
 
-combineddumbell
-ggsave("Dumbells_final.png", plot=combineddumbell)
+# Guardar la imagen con los gráficos combinados en una sola columna
+g <- grid.arrange(syphcongenita, syphmaterna, d15_d22_screening, ncol = 1)
+
+ggsave("Dumbells_final.png", plot = g, width = 8, height = 14, dpi = 300)
 ```
 
