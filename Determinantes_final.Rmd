@@ -31,9 +31,7 @@ knitr::opts_chunk$set(
 
 ```{r}
 data_enaho <- read_csv("Data_enaho/enaho2.csv")
-
 data_ubigeo <- read_csv("Data_final/data_ubigeo_innovalab.csv")
-
 departamentos <- read_sf("Límites - mapas/DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp")
 #data_syphilis <- read_csv("Data_final/data_syphilis.csv")
 
@@ -128,7 +126,11 @@ data_congenital_prov <- congenital_long_prov %>%
   mutate_if(is.numeric, round, 2) %>%
   filter(rate_con < 100.0)
 
-rm(congenital_long,congenital_long_dep,congenital_long_nac,newborn_nac,newborn_dep,data_ins_long,newborn_nac,newborn_dep)
+rm(congenital_long,congenital_long_dep,congenital_long_nac,newborn_nac,newborn_dep,data_ins_long,newborn_nac,newborn_dep, congenital_long_prov, departamentos, maternal_long, newborn_distrito, newborn_prov)
+```
+
+```{r}
+selected_colors <- wes_palette("Zissou1", n = 5)[c(1, 3, 5)]
 ```
 
 # Poverty National
@@ -137,9 +139,8 @@ poverty =
   data_enaho %>%
   left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
-  select(poverty,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  select(poverty,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con,age) %>%
   filter(!is.na(poverty))%>%
-  filter(year > "2014") %>%
   mutate(
     NOMBPROV = as.factor(NOMBPROV),
     year = as.factor(year),
@@ -157,7 +158,7 @@ options(survey.lonely.psu="remove")
 
 ## TERCILES
 
-Poverty objective 2 (terciles)
+Poverty maternal (terciles)
 ```{r}
 poverty_mr = 
   poverty %>%
@@ -175,8 +176,8 @@ quantile(poverty_mr$povertypoor, probs = c(1/3, 2/3))*100
 poverty_mr = poverty_mr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <16.48 ~ "First tercile",
-                            poverty >=16.48 & poverty <29.38 ~ "Second tercile",
+    poverty_cod = case_when(poverty <16.17 ~ "First tercile",
+                            poverty >=16.17 & poverty <37.67 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -190,19 +191,13 @@ summary(poverty_mr$rate_mat_mean)
 
 poverty_mr %>% 
      DT::datatable()
-```
 
-```{r}
-selected_colors <- wes_palette("Zissou1", n = 5)[c(1, 3, 5)]
-```
-
-```{r}
-National_obj2 =
+National_pov_mat =
   ggplot(data = poverty_mr,aes(x = year, y = rate_mat_mean, group = poverty_cod, color = poverty_cod))+
   geom_line(size = 1.2)+
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,18) +
+  ylim(0,9) +
   theme_bw() +
   theme(
     axis.title = element_text(face ="bold", size = 11),
@@ -218,17 +213,19 @@ National_obj2 =
     panel.grid = element_blank()
   )
 
-National_obj2 <- National_obj2 +
-  ggtitle("Maternal - National") +
+National_pov_mat<- National_pov_mat +
+  ggtitle("Poverty - Maternal") +
   theme(
     plot.title = element_text(size = 10), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(poverty_mr) 
 ```
 
-Poverty objective 3 (terciles)
+Poverty congenital (terciles)
 ```{r}
 poverty_cr = 
   poverty %>%
@@ -246,8 +243,8 @@ quantile(poverty_cr$povertypoor, probs = c(1/3, 2/3))*100
 poverty_cr = poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <14.00 ~ "First tercile",
-                            poverty >=14.00 & poverty <25.56 ~ "Second tercile",
+    poverty_cod = case_when(poverty <15.51 ~ "First tercile",
+                            poverty >=15.51 & poverty <32.08 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -262,16 +259,14 @@ summary(poverty_cr$rate_con_mean)
 
 poverty_cr %>% 
      DT::datatable()
-```
 
-```{r}
-National_obj3 =
+National_pov_con =
   ggplot(data = poverty_cr,aes(x = year, y = rate_con_mean, group = poverty_cod))+
   geom_line(size = 1.2, aes(col = poverty_cod))+
   geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,8) +
+  ylim(0,5) +
   theme_bw() +
   theme(
     axis.title = element_text(face ="bold", size = 11),
@@ -287,15 +282,18 @@ National_obj3 =
     panel.grid = element_blank()
   )
 
-National_obj3  <- National_obj3  +
-  ggtitle("Congenital - National") +
+National_pov_con  <- National_pov_con  +
+  ggtitle("Poverty - Congenital") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(poverty_cr, poverty)
 ```
+
 
 # Poverty Costa
 ```{r}
@@ -305,7 +303,6 @@ poverty =
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   select(poverty,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
   filter(!is.na(poverty))%>%
-  filter(year > "2014") %>%
   filter(region_natural== "COSTA") %>%
   mutate(
     NOMBPROV = as.factor(NOMBPROV),
@@ -324,7 +321,7 @@ options(survey.lonely.psu="remove")
 
 ## TERCILES
 
-Poverty Costa objective 2 (terciles)
+Poverty Costa maternal (terciles)
 ```{r}
 poverty_mr = 
   poverty %>%
@@ -342,8 +339,8 @@ quantile(poverty_mr$povertypoor, probs = c(1/3, 2/3))*100
 poverty_mr = poverty_mr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <10.12 ~ "First tercile",
-                            poverty >=10.12 & poverty <21.30 ~ "Second tercile",
+    poverty_cod = case_when(poverty <10.56 ~ "First tercile",
+                            poverty >=10.56 & poverty <24.25 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -357,10 +354,8 @@ summary(poverty_mr$rate_mat_mean)
 
 poverty_mr %>% 
      DT::datatable()
-```
 
-```{r}
-Costa_obj2 =
+Costa_pov_mat =
   ggplot(data = poverty_mr,aes(x = year, y = rate_mat_mean, group = poverty_cod))+
   geom_line(size = 1.2, aes(col = poverty_cod))+
   xlab("Years") +
@@ -381,7 +376,7 @@ Costa_obj2 =
     panel.grid = element_blank()
   )
 
-Costa_obj2 <- Costa_obj2 +
+Costa_pov_mat <- Costa_pov_mat +
   ggtitle("Maternal - Coast") +
   theme(
     plot.title = element_text(size = 10), 
@@ -389,9 +384,12 @@ Costa_obj2 <- Costa_obj2 +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(poverty_mr)
 ```
 
-Poverty Costa objective 3 (terciles)
+
+Poverty Costa congenital (terciles)
 ```{r}
 poverty_cr = 
   poverty %>%
@@ -409,8 +407,8 @@ quantile(poverty_cr$povertypoor, probs = c(1/3, 2/3))*100
 poverty_cr = poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <9.85 ~ "First tercile",
-                            poverty >=9.85 & poverty <18.13 ~ "Second tercile",
+    poverty_cod = case_when(poverty <11.08 ~ "First tercile",
+                            poverty >=11.08 & poverty <22.66 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -425,10 +423,8 @@ summary(poverty_cr$rate_con_mean)
 
 poverty_cr %>% 
      DT::datatable()
-```
 
-```{r}
-Costa_obj3 =
+Costa_pov_con =
   ggplot(data = poverty_cr,aes(x = year, y = rate_con_mean, group = poverty_cod))+
   geom_line(size = 1.2, aes(col = poverty_cod))+
   geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
@@ -450,7 +446,7 @@ Costa_obj3 =
     panel.grid = element_blank()
   )
 
-Costa_obj3  <- Costa_obj3  +
+Costa_pov_con  <- Costa_pov_con  +
   ggtitle("Congenital - Coast") +
   theme(
     plot.title = element_text(size = 10),  
@@ -458,6 +454,8 @@ Costa_obj3  <- Costa_obj3  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(poverty_cr, poverty)
 ```
 
 # Poverty Sierra
@@ -468,7 +466,6 @@ poverty =
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   select(poverty,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
   filter(!is.na(poverty))%>%
-  filter(year > "2014") %>%
   filter(region_natural== "SIERRA") %>%
   mutate(
     NOMBPROV = as.factor(NOMBPROV),
@@ -487,7 +484,7 @@ options(survey.lonely.psu="remove")
 
 ## TERCILES
 
-Poverty Sierra objective 2 (terciles)
+Poverty Sierra maternal (terciles)
 ```{r}
 poverty_mr = 
   poverty %>%
@@ -505,8 +502,8 @@ quantile(poverty_mr$povertypoor, probs = c(1/3, 2/3))*100
 poverty_mr = poverty_mr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <23.27 ~ "First tercile",
-                            poverty >=23.27 & poverty <35.67 ~ "Second tercile",
+    poverty_cod = case_when(poverty <23.32 ~ "First tercile",
+                            poverty >=23.32 & poverty <45.50 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -520,15 +517,13 @@ summary(poverty_mr$rate_mat_mean)
 
 poverty_mr %>% 
      DT::datatable()
-```
 
-```{r}
-Sierra_obj2 =
+Sierra_pov_mat =
   ggplot(data = poverty_mr,aes(x = year, y = rate_mat_mean, group = poverty_cod))+
   geom_line(size = 1.2, aes(col = poverty_cod))+
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,18) +
+  ylim(0,22) +
   theme_bw() +
   theme(
     axis.title =  element_blank(),
@@ -544,7 +539,7 @@ Sierra_obj2 =
     panel.grid = element_blank()
   )
 
-Sierra_obj2 <- Sierra_obj2 +
+Sierra_pov_mat <- Sierra_pov_mat +
   ggtitle("Maternal - Highlands") +
   theme(
     plot.title = element_text(size = 10), 
@@ -552,9 +547,11 @@ Sierra_obj2 <- Sierra_obj2 +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1))+
   scale_color_manual(values = selected_colors)
+
+rm(poverty_mr)
 ```
 
-Poverty Sierra objective 3 (terciles)
+Poverty Sierra congenital (terciles)
 ```{r}
 poverty_cr = 
   poverty %>%
@@ -572,8 +569,8 @@ quantile(poverty_cr$povertypoor, probs = c(1/3, 2/3))*100
 poverty_cr = poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <20.49 ~ "First tercile",
-                            poverty >=20.49 & poverty <33.89 ~ "Second tercile",
+    poverty_cod = case_when(poverty <22.02 ~ "First tercile",
+                            poverty >=22.02 & poverty <40.32 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -588,10 +585,8 @@ summary(poverty_cr$rate_con_mean)
 
 poverty_cr %>% 
      DT::datatable()
-```
 
-```{r}
-Sierra_obj3 =
+Sierra_pov_con =
   ggplot(data = poverty_cr,aes(x = year, y = rate_con_mean, group = poverty_cod))+
   geom_line(size = 1.2, aes(col = poverty_cod))+
   geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
@@ -613,7 +608,7 @@ Sierra_obj3 =
     panel.grid = element_blank()
   )
 
-Sierra_obj3  <- Sierra_obj3  +
+Sierra_pov_con  <- Sierra_pov_con  +
   ggtitle("Congenital - Highlands") +
   theme(
     plot.title = element_text(size = 10),  
@@ -621,7 +616,10 @@ Sierra_obj3  <- Sierra_obj3  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(poverty_cr, poverty)
 ```
+
 
 # Poverty Selva
 ```{r}
@@ -631,7 +629,6 @@ poverty =
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   select(poverty,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
   filter(!is.na(poverty))%>%
-  filter(year > "2014") %>%
   filter(region_natural== "SELVA") %>%
   mutate(
     NOMBPROV = as.factor(NOMBPROV),
@@ -650,7 +647,7 @@ options(survey.lonely.psu="remove")
 
 ## TERCILES
 
-Poverty Selva objective 2 (terciles)
+Poverty Selva maternal (terciles)
 ```{r}
 poverty_mr = 
   poverty %>%
@@ -668,8 +665,8 @@ quantile(poverty_mr$povertypoor, probs = c(1/3, 2/3))*100
 poverty_mr = poverty_mr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <16.82 ~ "First tercile",
-                            poverty >=16.82 & poverty <27.78 ~ "Second tercile",
+    poverty_cod = case_when(poverty <18.50 ~ "First tercile",
+                            poverty >=18.50 & poverty <35.86 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -683,15 +680,13 @@ summary(poverty_mr$rate_mat_mean)
 
 poverty_mr %>% 
      DT::datatable()
-```
 
-```{r}
-Selva_obj2 =
+Selva_pov_mat =
   ggplot(data = poverty_mr,aes(x = year, y = rate_mat_mean, group = poverty_cod))+
   geom_line(size = 1.2, aes(col = poverty_cod))+
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,18) +
+  ylim(0,23) +
   theme_bw() +
   theme(
     axis.title =  element_blank(),
@@ -707,7 +702,7 @@ Selva_obj2 =
     panel.grid = element_blank()
   )
 
-Selva_obj2 <- Selva_obj2 +
+Selva_pov_mat <- Selva_pov_mat +
   ggtitle("Maternal - Jungle") +
   theme(
     plot.title = element_text(size = 10), 
@@ -715,9 +710,11 @@ Selva_obj2 <- Selva_obj2 +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1))+
   scale_color_manual(values = selected_colors)
+
+rm(poverty_mr)
 ```
 
-Poverty Selva objective 3 (terciles)
+Poverty Selva congenital (terciles)
 ```{r}
 poverty_cr = 
   poverty %>%
@@ -735,8 +732,8 @@ quantile(poverty_cr$povertypoor, probs = c(1/3, 2/3))*100
 poverty_cr = poverty_cr %>%  
   mutate(
     poverty = povertypoor*100,
-    poverty_cod = case_when(poverty <16.86 ~ "First tercile",
-                            poverty >=16.86 & poverty <26.36 ~ "Second tercile",
+    poverty_cod = case_when(poverty <18.34 ~ "First tercile",
+                            poverty >=18.34 & poverty <32.19 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(poverty_cod))%>%
   group_by(year,poverty_cod)%>%
@@ -751,10 +748,8 @@ summary(poverty_cr$rate_con_mean)
 
 poverty_cr %>% 
      DT::datatable()
-```
 
-```{r}
-Selva_obj3 =
+Selva_pov_con =
   ggplot(data = poverty_cr,aes(x = year, y = rate_con_mean, group = poverty_cod))+
   geom_line(size = 1.2, aes(col = poverty_cod))+
   geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
@@ -776,7 +771,7 @@ Selva_obj3 =
     panel.grid = element_blank()
   )
 
-Selva_obj3  <- Selva_obj3  +
+Selva_pov_con <- Selva_pov_con  +
   ggtitle("Congenital - Jungle") +
   theme(
     plot.title = element_text(size = 10),  
@@ -784,12 +779,14 @@ Selva_obj3  <- Selva_obj3  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(poverty_cr, poverty)
 ```
 
 ## Gráfico general
 ```{r, fig.height=6, fig.width=12}
-combined_plot <- National_obj3 + Costa_obj3 + Sierra_obj3 + Selva_obj3 + National_obj2 + Costa_obj2 + Sierra_obj2 +  Selva_obj2 + 
-  plot_layout(ncol = 4, guides = 'collect') &  
+combined_plot <- Costa_pov_con + Sierra_pov_con + Selva_pov_con + Costa_pov_mat + Sierra_pov_mat +  Selva_pov_mat + 
+  plot_layout(ncol = 3, guides = 'collect') &  
   theme(legend.position = 'bottom')
 
 Poverty_graph  <- combined_plot + 
@@ -801,10 +798,12 @@ Poverty_graph  <- combined_plot +
   )
 
 Poverty_graph
-ggsave("Poverty.png", plot = Poverty_graph)
+ggsave("Poverty_reg.png", plot = Poverty_graph)
+
+rm(Costa_pov_con, Sierra_pov_con, Selva_pov_con, Costa_pov_mat, Sierra_pov_mat, Selva_pov_mat)
 ```
 
-# Education National
+# Lower Education National
 ```{r}
 education = 
   data_enaho %>%
@@ -812,7 +811,6 @@ education =
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   select(education_level,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
   filter(!is.na(education_level))%>%
-  filter(year > "2014") %>%
   mutate(
     NOMBPROV = as.factor(NOMBPROV),
     year = as.factor(year),
@@ -830,7 +828,7 @@ options(survey.lonely.psu="remove")
 
 ## TERCILES
 
-Poverty objective 2 (terciles)
+Lower Education maternal (terciles)
 ```{r}
 education_mr = 
   education %>%
@@ -848,8 +846,8 @@ quantile(education_mr$`educationless than secondary`, probs = c(1/3, 2/3))*100
 education_mr = education_mr %>%  
   mutate(
     education = `educationless than secondary`*100,
-    education_cod = case_when(education <61.03 ~ "First tercile",
-                             education >=61.03 & education <76.80 ~ "Second tercile",
+    education_cod = case_when(education <18.45 ~ "First tercile",
+                             education >=18.45 & education <40.55 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(education_cod))%>%
   group_by(year,education_cod)%>%
@@ -863,15 +861,13 @@ summary(education_mr$rate_mat_mean)
 
 education_mr %>% 
      DT::datatable()
-```
 
-```{r}
-National_obj2 =
+National_edu_mat =
   ggplot(data = education_mr,aes(x = year, y = rate_mat_mean, group = education_cod))+
   geom_line(size = 1.2, aes(col = education_cod))+
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,14) +
+  ylim(0,9) +
   theme_bw() +
   theme(
     axis.title = element_text(face ="bold", size = 11),
@@ -887,17 +883,19 @@ National_obj2 =
     panel.grid = element_blank()
   )
 
-National_obj2 <- National_obj2 +
-  ggtitle("Maternal - National") +
+National_edu_mat <- National_edu_mat +
+  ggtitle("Lower Education - Maternal") +
   theme(
     plot.title = element_text(size = 10), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1))+
   scale_color_manual(values = selected_colors)
+
+rm(education_mr)
 ```
 
-Poverty objective 3 (terciles)
+Lower education congenital (terciles)
 ```{r}
 education_cr = 
   education %>%
@@ -915,8 +913,8 @@ quantile(education_cr$`educationless than secondary`, probs = c(1/3, 2/3))*100
 education_cr = education_cr %>%  
   mutate(
     education = `educationless than secondary`*100,
-    education_cod = case_when(education <58.79 ~ "First tercile",
-                             education >=58.79 & education <74.09 ~ "Second tercile",
+    education_cod = case_when(education <17.96 ~ "First tercile",
+                             education >=17.96 & education <36.95 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(education_cod))%>%
   group_by(year,education_cod)%>%
@@ -931,16 +929,14 @@ summary(education_cr$rate_con_mean)
 
 education_cr %>% 
      DT::datatable()
-```
 
-```{r}
-National_obj3 =
+National_edu_con =
   ggplot(data = education_cr,aes(x = year, y = rate_con_mean, group = education_cod))+
   geom_line(size = 1.2, aes(col = education_cod))+
   geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,6) +
+  ylim(0,5) +
   theme_bw() +
   theme(
     axis.title = element_text(face ="bold", size = 11),
@@ -956,17 +952,19 @@ National_obj3 =
     panel.grid = element_blank()
   )
 
-National_obj3  <- National_obj3  +
-  ggtitle("Congenital - National") +
+National_edu_con  <- National_edu_con  +
+  ggtitle("Lower Education - Congenital") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(education_cr, education)
 ```
 
-# Education Costa
+# Lower Education Costa
 ```{r}
 education = 
   data_enaho %>%
@@ -974,7 +972,6 @@ education =
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   select(education_level,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
   filter(!is.na(education_level))%>%
-  filter(year > "2014") %>%
   filter(region_natural== "COSTA") %>%
   mutate(
     NOMBPROV = as.factor(NOMBPROV),
@@ -993,7 +990,7 @@ options(survey.lonely.psu="remove")
 
 ## TERCILES
 
-Costa Poverty objective 2 (terciles)
+Costa Poverty maternal (terciles)
 ```{r}
 education_mr = 
   education %>%
@@ -1011,8 +1008,8 @@ quantile(education_mr$`educationless than secondary`, probs = c(1/3, 2/3))*100
 education_mr = education_mr %>%  
   mutate(
     education = `educationless than secondary`*100,
-    education_cod = case_when(education <49.43 ~ "First tercile",
-                             education >=49.43& education <66.00 ~ "Second tercile",
+    education_cod = case_when(education <12.04 ~ "First tercile",
+                             education >=12.04& education <25.63 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(education_cod))%>%
   group_by(year,education_cod)%>%
@@ -1026,15 +1023,13 @@ summary(education_mr$rate_mat_mean)
 
 education_mr %>% 
      DT::datatable()
-```
 
-```{r}
-Costa_obj2 =
+Costa_edu_mat =
   ggplot(data = education_mr,aes(x = year, y = rate_mat_mean, group = education_cod))+
   geom_line(size = 1.2, aes(col = education_cod))+
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,14) +
+  ylim(0,12) +
   theme_bw() +
   theme(
     axis.title =  element_blank(),
@@ -1050,7 +1045,7 @@ Costa_obj2 =
     panel.grid = element_blank()
   )
 
-Costa_obj2  <- Costa_obj2  +
+Costa_edu_mat  <- Costa_edu_mat  +
   ggtitle("Maternal - Coast") +
   theme(
     plot.title = element_text(size = 10),  
@@ -1058,9 +1053,12 @@ Costa_obj2  <- Costa_obj2  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(education_mr)
 ```
 
-Costa Poverty objective 3 (terciles)
+
+Costa Poverty congenital (terciles)
 ```{r}
 education_cr = 
   education %>%
@@ -1078,8 +1076,8 @@ quantile(education_cr$`educationless than secondary`, probs = c(1/3, 2/3))*100
 education_cr = education_cr %>%  
   mutate(
     education = `educationless than secondary`*100,
-    education_cod = case_when(education <46.55 ~ "First tercile",
-                             education >=46.55 & education <61.60 ~ "Second tercile",
+    education_cod = case_when(education <11.92 ~ "First tercile",
+                             education >=11.92 & education <22.37 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(education_cod))%>%
   group_by(year,education_cod)%>%
@@ -1094,16 +1092,14 @@ summary(education_cr$rate_con_mean)
 
 education_cr %>% 
      DT::datatable()
-```
 
-```{r}
-Costa_obj3 =
+Costa_edu_con =
   ggplot(data = education_cr,aes(x = year, y = rate_con_mean, group = education_cod))+
   geom_line(size = 1.2, aes(col = education_cod))+
   geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,6) +
+  ylim(0,7) +
   theme_bw() +
   theme(
     axis.title =  element_blank(),
@@ -1119,7 +1115,7 @@ Costa_obj3 =
     panel.grid = element_blank()
   )
 
-Costa_obj3  <- Costa_obj3  +
+Costa_edu_con  <- Costa_edu_con  +
   ggtitle("Congenital - Coast") +
   theme(
     plot.title = element_text(size = 10),  
@@ -1127,9 +1123,12 @@ Costa_obj3  <- Costa_obj3  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(education_cr, education)
 ```
 
-# Education Sierra
+
+# Lower Education Sierra
 ```{r}
 education = 
   data_enaho %>%
@@ -1137,7 +1136,6 @@ education =
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   select(education_level,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
   filter(!is.na(education_level))%>%
-  filter(year > "2014") %>%
   filter(region_natural== "SIERRA") %>%
   mutate(
     NOMBPROV = as.factor(NOMBPROV),
@@ -1174,8 +1172,8 @@ quantile(education_mr$`educationless than secondary`, probs = c(1/3, 2/3))*100
 education_mr = education_mr %>%  
   mutate(
     education = `educationless than secondary`*100,
-    education_cod = case_when(education <68.40 ~ "First tercile",
-                             education >=68.40 & education <81.58 ~ "Second tercile",
+    education_cod = case_when(education <23.39 ~ "First tercile",
+                             education >=23.39 & education <46.88 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(education_cod))%>%
   group_by(year,education_cod)%>%
@@ -1189,15 +1187,13 @@ summary(education_mr$rate_mat_mean)
 
 education_mr %>% 
      DT::datatable()
-```
 
-```{r}
-Sierra_obj2 =
+Sierra_edu_mat =
   ggplot(data = education_mr,aes(x = year, y = rate_mat_mean, group = education_cod))+
   geom_line(size = 1.2, aes(col = education_cod))+
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,14) +
+  ylim(0,12) +
   theme_bw() +
   theme(
     axis.title =  element_blank(),
@@ -1213,7 +1209,7 @@ Sierra_obj2 =
     panel.grid = element_blank()
   )
 
-Sierra_obj2  <- Sierra_obj2  +
+Sierra_edu_mat  <- Sierra_edu_mat  +
   ggtitle("Maternal - Highlands") +
   theme(
     plot.title = element_text(size = 10),  
@@ -1221,7 +1217,10 @@ Sierra_obj2  <- Sierra_obj2  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(education_mr)
 ```
+
 
 Sierra Poverty objective 3 (terciles)
 ```{r}
@@ -1241,8 +1240,8 @@ quantile(education_cr$`educationless than secondary`, probs = c(1/3, 2/3))*100
 education_cr = education_cr %>%  
   mutate(
     education = `educationless than secondary`*100,
-    education_cod = case_when(education <65.33 ~ "First tercile",
-                             education >=65.33 & education <78.81 ~ "Second tercile",
+    education_cod = case_when(education <26.04 ~ "First tercile",
+                             education >=26.04 & education <46.55 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(education_cod))%>%
   group_by(year,education_cod)%>%
@@ -1257,16 +1256,14 @@ summary(education_cr$rate_con_mean)
 
 education_cr %>% 
      DT::datatable()
-```
 
-```{r}
-Sierra_obj3 =
+Sierra_edu_con =
   ggplot(data = education_cr,aes(x = year, y = rate_con_mean, group = education_cod))+
   geom_line(size = 1.2, aes(col = education_cod))+
   geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,6) +
+  ylim(0,7) +
   theme_bw() +
   theme(
     axis.title =  element_blank(),
@@ -1282,7 +1279,7 @@ Sierra_obj3 =
     panel.grid = element_blank()
   )
 
-Sierra_obj3  <- Sierra_obj3  +
+Sierra_edu_con  <- Sierra_edu_con  +
   ggtitle("Congenital - Highlands") +
   theme(
     plot.title = element_text(size = 10),  
@@ -1290,7 +1287,10 @@ Sierra_obj3  <- Sierra_obj3  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(education_cr, education)
 ```
+
 
 # Education Selva
 ```{r}
@@ -1300,7 +1300,6 @@ education =
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   select(education_level,year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
   filter(!is.na(education_level))%>%
-  filter(year > "2014") %>%
   filter(region_natural== "SELVA") %>%
   mutate(
     NOMBPROV = as.factor(NOMBPROV),
@@ -1319,7 +1318,7 @@ options(survey.lonely.psu="remove")
 
 ## TERCILES
 
-Education objective 2 (terciles)
+Education maternal (terciles)
 ```{r}
 education_mr = 
   education %>%
@@ -1337,8 +1336,8 @@ quantile(education_mr$`educationless than secondary`, probs = c(1/3, 2/3))*100
 education_mr = education_mr %>%  
   mutate(
     education = `educationless than secondary`*100,
-    education_cod = case_when(education <68.02 ~ "First tercile",
-                             education >=68.02 & education <78.44 ~ "Second tercile",
+    education_cod = case_when(education <25.67 ~ "First tercile",
+                             education >=25.67 & education <48.89 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(education_cod))%>%
   group_by(year,education_cod)%>%
@@ -1352,15 +1351,13 @@ summary(education_mr$rate_mat_mean)
 
 education_mr %>% 
      DT::datatable()
-```
 
-```{r}
-Selva_obj2 =
-  ggplot(data = education_cr,aes(x = year, y = rate_con_mean, group = education_cod))+
+Selva_edu_mat =
+  ggplot(data = education_mr,aes(x = year, y = rate_mat_mean, group = education_cod))+
   geom_line(size = 1.2, aes(col = education_cod))+
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,14) +
+  ylim(0,12) +
   theme_bw() +
   theme(
     axis.title =  element_blank(),
@@ -1376,7 +1373,7 @@ Selva_obj2 =
     panel.grid = element_blank()
   )
 
-Selva_obj2  <- Selva_obj2  +
+Selva_edu_mat  <- Selva_edu_mat  +
   ggtitle("Maternal - Jungle") +
   theme(
     plot.title = element_text(size = 10),  
@@ -1384,7 +1381,10 @@ Selva_obj2  <- Selva_obj2  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(education_mr)
 ```
+
 
 Education objective 3 (terciles)
 ```{r}
@@ -1404,8 +1404,8 @@ quantile(education_cr$`educationless than secondary`, probs = c(1/3, 2/3))*100
 education_cr = education_cr %>%  
   mutate(
     education = `educationless than secondary`*100,
-    education_cod = case_when(education <66.20 ~ "First tercile",
-                             education >=66.20 & education <76.07 ~ "Second tercile",
+    education_cod = case_when(education <26.52 ~ "First tercile",
+                             education >=26.52 & education <45.89 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(education_cod))%>%
   group_by(year,education_cod)%>%
@@ -1420,16 +1420,14 @@ summary(education_cr$rate_con_mean)
 
 education_cr %>% 
      DT::datatable()
-```
 
-```{r}
-Selva_obj3 =
+Selva_edu_con =
   ggplot(data = education_cr,aes(x = year, y = rate_con_mean, group = education_cod))+
   geom_line(size = 1.2, aes(col = education_cod))+
   geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,6) +
+  ylim(0,7) +
   theme_bw() +
   theme(
     axis.title =  element_blank(),
@@ -1445,7 +1443,7 @@ Selva_obj3 =
     panel.grid = element_blank()
   )
 
-Selva_obj3  <- Selva_obj3  +
+Selva_edu_con  <- Selva_edu_con  +
   ggtitle("Congenital - Jungle") +
   theme(
     plot.title = element_text(size = 10),  
@@ -1453,12 +1451,15 @@ Selva_obj3  <- Selva_obj3  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(education_cr, education)
 ```
+
 
 ## Gráfico general
 ```{r, fig.height=6, fig.width=12}
-combined_plot <- National_obj3 + Costa_obj3 + Sierra_obj3 + Selva_obj3 + National_obj2 + Costa_obj2 + Sierra_obj2 +  Selva_obj2 +
-  plot_layout(ncol = 4, guides = 'collect') &  
+combined_plot <- Costa_edu_con + Sierra_edu_con + Selva_edu_con + Costa_edu_mat + Sierra_edu_mat + Selva_edu_mat +
+  plot_layout(ncol = 3, guides = 'collect') &  
   theme(legend.position = 'bottom')
 
 Education_graph  <- combined_plot + 
@@ -1470,30 +1471,24 @@ Education_graph  <- combined_plot +
   )
 
 Education_graph
-ggsave("Lower_education.png", plot = Education_graph)
+ggsave("Lower_education_reg.png", plot = Education_graph)
+
+rm(Costa_edu_con, Sierra_edu_con, Selva_edu_con, Costa_edu_mat, Sierra_edu_mat, Selva_edu_mat)
 ```
 
-# Prenatal visit 
-```{r}
-table(data_enaho$control_iron,data_enaho$year,data_enaho$visit_preg)
-table(data_enaho$control_iron,data_enaho$year)
-table(data_enaho$control_iron,data_enaho$visit_preg)
-```
+# National Prenatal visit 
 
 ```{r}
 no_pre = 
   data_enaho %>%
   left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
-  select(visit_preg, control_iron, year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
-  filter(!is.na(visit_preg))%>%
-  filter(!is.na(control_iron))%>%
-  filter(control_iron != "not_correspond")%>%
-  filter(year > "2014") %>%
+  select(prenatal_visit, control_iron, year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(prenatal_visit))%>%
   mutate(
     NOMBPROV = as.factor(NOMBPROV),
     year = as.factor(year),
-    no_pre = as.factor(visit_preg)
+    no_pre = as.factor(prenatal_visit)
   ) %>%
   group_by(year) %>%
   nest() %>%
@@ -1507,7 +1502,7 @@ options(survey.lonely.psu="remove")
 
 ## TERCILES
 
-Prenatal visit objective 2 (terciles)
+Prenatal visit maternal (terciles)
 ```{r}
 no_pre_mr = 
   no_pre %>%
@@ -1526,7 +1521,7 @@ no_pre_mr = no_pre_mr %>%
   mutate(
     no_pre = no_preno*100,
     no_pre_cod = case_when(no_pre <55.28 ~ "First tercile",
-                            no_pre >=55.28 & no_pre <81.38 ~ "Second tercile",
+                            no_pre >=55.28 & no_pre <78.43 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -1540,19 +1535,13 @@ summary(no_pre_mr$rate_mat_mean)
 
 no_pre_mr %>% 
      DT::datatable()
-```
 
-```{r}
-selected_colors <- wes_palette("Zissou1", n = 5)[c(1, 3, 5)]
-```
-
-```{r}
-National_obj2 =
+National_pre_mat =
   ggplot(data = no_pre_mr,aes(x = year, y = rate_mat_mean, group = no_pre_cod, color = no_pre_cod))+
   geom_line(size = 1.2)+
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,18) +
+  ylim(0,9) +
   theme_bw() +
   theme(
     axis.title = element_text(face ="bold", size = 11),
@@ -1568,15 +1557,19 @@ National_obj2 =
     panel.grid = element_blank()
   )
 
-National_obj2 <- National_obj2 +
-  ggtitle("Maternal - National") +
+National_pre_mat <- National_pre_mat +
+  ggtitle("No prenatal visit - Maternal") +
   theme(
     plot.title = element_text(size = 10), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(no_pre_mr)
 ```
+
+
 
 Prenatal visit 3 (terciles)
 ```{r}
@@ -1596,8 +1589,8 @@ quantile(no_pre_cr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_cr = no_pre_cr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_pre <57.53 ~ "First tercile",
-                            no_pre >=57.53 & no_pre <79.55 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <58.34 ~ "First tercile",
+                            no_pre >=58.34 & no_pre <78.21 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -1612,16 +1605,14 @@ summary(no_pre_cr$rate_con_mean)
 
 no_pre_cr %>% 
      DT::datatable()
-```
 
-```{r}
-National_obj3 =
+National_pre_con =
   ggplot(data = no_pre_cr,aes(x = year, y = rate_con_mean, group = no_pre_cod))+
   geom_line(size = 1.2, aes(col = no_pre_cod))+
   geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,8) +
+  ylim(0,5) +
   theme_bw() +
   theme(
     axis.title = element_text(face ="bold", size = 11),
@@ -1637,14 +1628,16 @@ National_obj3 =
     panel.grid = element_blank()
   )
 
-National_obj3  <- National_obj3  +
-  ggtitle("Congenital - National") +
+National_pre_con  <- National_pre_con  +
+  ggtitle("No prenatal visit - Congenital") +
   theme(
     plot.title = element_text(size = 10),  
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(no_pre_cr, no_pre)
 ```
 
 # Prenatal visit Costa
@@ -1653,16 +1646,13 @@ no_pre=
   data_enaho %>%
   left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
-  select(visit_preg, control_iron, year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
-  filter(!is.na(visit_preg))%>%
-  filter(!is.na(control_iron))%>%
-  filter(control_iron != "not_correspond")%>%
-  filter(year > "2014") %>%
+  select(prenatal_visit, control_iron, year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(prenatal_visit))%>%
   filter(region_natural== "COSTA") %>%
   mutate(
     NOMBPROV = as.factor(NOMBPROV),
     year = as.factor(year),
-    no_pre = as.factor(visit_preg)
+    no_pre = as.factor(prenatal_visit)
   ) %>%
   group_by(year) %>%
   nest() %>%
@@ -1694,8 +1684,8 @@ quantile(no_pre_mr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_mr = no_pre_mr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_pre <65.74 ~ "First tercile",
-                             no_pre >=65.74 & no_pre <85.34 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <67.42 ~ "First tercile",
+                             no_pre >=67.42 & no_pre <84.74 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -1709,15 +1699,13 @@ summary(no_pre_mr$rate_mat_mean)
 
 no_pre_mr %>% 
      DT::datatable()
-```
 
-```{r}
-Costa_obj2 =
-  ggplot(data = no_pre_cr,aes(x = year, y = rate_con_mean, group = no_pre_cod))+
+Costa_pre_mat =
+  ggplot(data = no_pre_mr,aes(x = year, y = rate_mat_mean, group = no_pre_cod))+
   geom_line(size = 1.2, aes(col = no_pre_cod))+
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,14) +
+  ylim(0,15) +
   theme_bw() +
   theme(
     axis.title =  element_blank(),
@@ -1733,7 +1721,7 @@ Costa_obj2 =
     panel.grid = element_blank()
   )
 
-Costa_obj2  <- Costa_obj2  +
+Costa_pre_mat  <- Costa_pre_mat  +
   ggtitle("Maternal - Coast") +
   theme(
     plot.title = element_text(size = 10),  
@@ -1741,9 +1729,11 @@ Costa_obj2  <- Costa_obj2  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(no_pre_mr)
 ```
 
-Prenatal visit objective 3 (terciles)
+Prenatal visit congenital (terciles)
 ```{r}
 no_pre_cr = 
   no_pre %>%
@@ -1761,8 +1751,8 @@ quantile(no_pre_cr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_cr = no_pre_cr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_pre <68.02 ~ "First tercile",
-                             no_pre >=68.02 & no_pre <83.57 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <68.92 ~ "First tercile",
+                             no_pre >=68.92 & no_pre <83.38 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -1777,16 +1767,14 @@ summary(no_pre_cr$rate_con_mean)
 
 no_pre_cr %>% 
      DT::datatable()
-```
 
-```{r}
-Costa_obj3 =
+Costa_pre_con =
   ggplot(data = no_pre_cr,aes(x = year, y = rate_con_mean, group = no_pre_cod))+
   geom_line(size = 1.2, aes(col = no_pre_cod))+
   geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,6) +
+  ylim(0,12) +
   theme_bw() +
   theme(
     axis.title =  element_blank(),
@@ -1802,7 +1790,7 @@ Costa_obj3 =
     panel.grid = element_blank()
   )
 
-Costa_obj3  <- Costa_obj3  +
+Costa_pre_con  <- Costa_pre_con  +
   ggtitle("Congenital - Coast") +
   theme(
     plot.title = element_text(size = 10),  
@@ -1810,7 +1798,11 @@ Costa_obj3  <- Costa_obj3  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(no_pre_cr, no_pre)
 ```
+
+
 
 # Prenatal visit Sierra
 ```{r}
@@ -1818,16 +1810,13 @@ no_pre=
   data_enaho %>%
   left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
-  select(visit_preg, control_iron, year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
-  filter(!is.na(visit_preg))%>%
-  filter(!is.na(control_iron))%>%
-  filter(control_iron != "not_correspond")%>%
-  filter(year > "2014") %>%
+  select(prenatal_visit, control_iron, year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(prenatal_visit))%>%
   filter(region_natural== "SIERRA") %>%
   mutate(
     NOMBPROV = as.factor(NOMBPROV),
     year = as.factor(year),
-    no_pre = as.factor(visit_preg)
+    no_pre = as.factor(prenatal_visit)
   ) %>%
   group_by(year) %>%
   nest() %>%
@@ -1860,8 +1849,8 @@ quantile(no_pre_mr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_mr = no_pre_mr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_pre <49.89 ~ "First tercile",
-                             no_pre >=49.89 & no_pre <79.45 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <54.06 ~ "First tercile",
+                             no_pre >=54.06 & no_pre <75.00 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -1875,15 +1864,13 @@ summary(no_pre_mr$rate_mat_mean)
 
 no_pre_mr %>% 
      DT::datatable()
-```
 
-```{r}
-Sierra_obj2 =
+Sierra_pre_mat =
   ggplot(data = no_pre_mr,aes(x = year, y = rate_mat_mean, group = no_pre_cod))+
   geom_line(size = 1.2, aes(col = no_pre_cod))+
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,14) +
+  ylim(0,15) +
   theme_bw() +
   theme(
     axis.title =  element_blank(),
@@ -1899,7 +1886,7 @@ Sierra_obj2 =
     panel.grid = element_blank()
   )
 
-Sierra_obj2  <- Sierra_obj2  +
+Sierra_pre_mat  <- Sierra_pre_mat  +
   ggtitle("Maternal - Highlands") +
   theme(
     plot.title = element_text(size = 10),  
@@ -1907,7 +1894,10 @@ Sierra_obj2  <- Sierra_obj2  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(no_pre_mr)
 ```
+
 
 Sierra Prenatal visit objective 3 (terciles)
 ```{r}
@@ -1927,8 +1917,8 @@ quantile(no_pre_cr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_cr = no_pre_cr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_pre <55.64 ~ "First tercile",
-                             no_pre >=55.64 & no_pre <74.85 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <58.42 ~ "First tercile",
+                             no_pre >=58.42 & no_pre <74.57 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -1943,16 +1933,14 @@ summary(no_pre_cr$rate_con_mean)
 
 no_pre_cr %>% 
      DT::datatable()
-```
 
-```{r}
-Sierra_obj3 =
+Sierra_pre_con =
   ggplot(data = no_pre_cr,aes(x = year, y = rate_con_mean, group = no_pre_cod))+
   geom_line(size = 1.2, aes(col = no_pre_cod))+
   geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,6) +
+  ylim(0,12) +
   theme_bw() +
   theme(
     axis.title =  element_blank(),
@@ -1968,7 +1956,7 @@ Sierra_obj3 =
     panel.grid = element_blank()
   )
 
-Sierra_obj3  <- Sierra_obj3  +
+Sierra_pre_con <- Sierra_pre_con  +
   ggtitle("Congenital - Highlands") +
   theme(
     plot.title = element_text(size = 10),  
@@ -1976,24 +1964,24 @@ Sierra_obj3  <- Sierra_obj3  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(no_pre_cr, no_pre)
 ```
 
-# Prenatal visit Selva
+
+# Selva Prenatal visit maternal
 ```{r}
 no_pre= 
   data_enaho %>%
   left_join(data_maternal_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
   left_join(data_congenital_prov, by = c("year","NOMBDEP","NOMBPROV")) %>%
-  select(visit_preg, control_iron, year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
-  filter(!is.na(visit_preg))%>%
-  filter(!is.na(control_iron))%>%
-  filter(control_iron != "not_correspond")%>%
-  filter(year > "2014") %>%
+  select(prenatal_visit, control_iron, year, region_natural, NOMBDEP,NOMBPROV,conglome,estrato,facpob07,rate_mat,rate_con) %>%
+  filter(!is.na(prenatal_visit))%>%
   filter(region_natural== "SELVA") %>%
   mutate(
     NOMBPROV = as.factor(NOMBPROV),
     year = as.factor(year),
-    no_pre = as.factor(visit_preg)
+    no_pre = as.factor(prenatal_visit)
   ) %>%
   group_by(year) %>%
   nest() %>%
@@ -2008,7 +1996,7 @@ options(survey.lonely.psu="remove")
 
 ## TERCILES
 
-Selva Prenatal visit objective 2 (terciles)
+Selva Prenatal visit maternal (terciles)
 ```{r}
 no_pre_mr = 
   no_pre %>%
@@ -2026,8 +2014,8 @@ quantile(no_pre_mr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_mr = no_pre_mr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_pre <45.02 ~ "First tercile",
-                             no_pre >=45.02 & no_pre <66.07 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <46.00 ~ "First tercile",
+                             no_pre >=46.00 & no_pre <65.96 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -2041,15 +2029,13 @@ summary(no_pre_mr$rate_mat_mean)
 
 no_pre_mr %>% 
      DT::datatable()
-```
 
-```{r}
-Selva_obj2 =
+Selva_pre_mat =
   ggplot(data = no_pre_mr,aes(x = year, y = rate_mat_mean, group = no_pre_cod))+
   geom_line(size = 1.2, aes(col = no_pre_cod))+
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,14) +
+  ylim(0,15) +
   theme_bw() +
   theme(
     axis.title =  element_blank(),
@@ -2065,7 +2051,7 @@ Selva_obj2 =
     panel.grid = element_blank()
   )
 
-Selva_obj2  <- Selva_obj2  +
+Selva_pre_mat  <- Selva_pre_mat  +
   ggtitle("Maternal - Jungle") +
   theme(
     plot.title = element_text(size = 10),  
@@ -2073,9 +2059,11 @@ Selva_obj2  <- Selva_obj2  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(no_pre_mr)
 ```
 
-Selva Prenatal visit objective 3 (terciles)
+Selva Prenatal visit congenital (terciles)
 ```{r}
 no_pre_cr = 
   no_pre %>%
@@ -2093,8 +2081,8 @@ quantile(no_pre_cr$no_preno, probs = c(1/3, 2/3))*100
 no_pre_cr = no_pre_cr %>%  
   mutate(
     no_pre = no_preno*100,
-    no_pre_cod = case_when(no_pre <48.88 ~ "First tercile",
-                             no_pre >=48.88 & no_pre <67.46 ~ "Second tercile",
+    no_pre_cod = case_when(no_pre <47.57 ~ "First tercile",
+                             no_pre >=47.57 & no_pre <64.43 ~ "Second tercile",
                             TRUE ~ "Third tercile")) %>%
   filter(!is.na(no_pre_cod))%>%
   group_by(year,no_pre_cod)%>%
@@ -2109,16 +2097,14 @@ summary(no_pre_cr$rate_con_mean)
 
 no_pre_cr %>% 
      DT::datatable()
-```
 
-```{r}
-Selva_obj3 =
+Selva_pre_con =
   ggplot(data = no_pre_cr,aes(x = year, y = rate_con_mean, group = no_pre_cod))+
   geom_line(size = 1.2, aes(col = no_pre_cod))+
   geom_line(aes(y=objective),color = "black", linetype = "dashed", size=1.2) +
   xlab("Years") +
   ylab("Rate") +
-  ylim(0,6) +
+  ylim(0,12) +
   theme_bw() +
   theme(
     axis.title =  element_blank(),
@@ -2134,7 +2120,7 @@ Selva_obj3 =
     panel.grid = element_blank()
   )
 
-Selva_obj3  <- Selva_obj3  +
+Selva_pre_con  <- Selva_pre_con +
   ggtitle("Congenital - Jungle") +
   theme(
     plot.title = element_text(size = 10),  
@@ -2142,12 +2128,14 @@ Selva_obj3  <- Selva_obj3  +
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
   scale_color_manual(values = selected_colors)
+
+rm(no_pre_cr, no_pre)
 ```
 
 ## Gráfico general
 ```{r, fig.height=6, fig.width=12}
-combined_plot <- National_obj3 + Costa_obj3 + Sierra_obj3 + Selva_obj3 + National_obj2 + Costa_obj2 + Sierra_obj2 +  Selva_obj2 +
-  plot_layout(ncol = 4, guides = 'collect') &  
+combined_plot <- Costa_pre_con + Sierra_pre_con + Selva_pre_con + Costa_pre_mat + Sierra_pre_mat +  Selva_pre_mat +
+  plot_layout(ncol = 3, guides = 'collect') &  
   theme(legend.position = 'bottom')
 
 Prenatal_graph  <- combined_plot + 
@@ -2159,5 +2147,25 @@ Prenatal_graph  <- combined_plot +
   )
 
 Prenatal_graph
-ggsave("No_prenatal_visit.png", plot = Prenatal_graph)
+ggsave("No_prenatal_visit_reg.png", plot = Prenatal_graph)
+
+rm(Costa_pre_con, Sierra_pre_con, Selva_pre_con, Costa_pre_mat, Sierra_pre_mat, Selva_pre_mat)
+```
+
+## Gráfico general
+```{r, fig.height=6, fig.width=12}
+combined_plot <- National_pov_con + National_edu_con + National_pre_con + National_pov_mat + National_edu_mat + National_pre_mat +
+  plot_layout(ncol = 3, guides = 'collect') &  
+  theme(legend.position = 'bottom')
+
+National_graph  <- combined_plot + 
+  plot_annotation(
+    title = "National Graph", 
+    theme = theme(
+      plot.title = element_text(size = 14, hjust = 0.5, face = "bold")
+    )
+  )
+
+National_graph
+ggsave("National.png", plot = National_graph)
 ```
