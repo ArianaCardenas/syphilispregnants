@@ -105,10 +105,12 @@ syphi_tamizaje<-
   ggsci::scale_color_aaas(alpha = 0.8)+
   theme_bw()+
   theme(
-    axis.title = element_text(face ="bold", size = 11),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title = element_text(face ="bold", size = 15),
+    axis.text.x = element_text(size = 11.5),
+    axis.text.y = element_text(size = 11.5),
+    plot.title = element_text(size = 17),
+    legend.text = element_text(size = 15, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
     legend.position = "void",
     legend.title = element_blank(),
     axis.line = element_line(colour = "black", linewidth = 1),
@@ -197,10 +199,12 @@ congenital_line <- data_congenital %>%
   ggsci::scale_color_jama(alpha = 0.8)+
   theme_bw()+
   theme(
-    axis.title = element_text(face ="bold", size = 11),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title = element_text(face ="bold", size = 15),
+    axis.text.x = element_text(size = 11.5),
+    axis.text.y = element_text(size = 11.5),
+    plot.title = element_text(size = 17),
+    legend.text = element_text(size = 15, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
     legend.position = "top",
     legend.title = element_blank(),
     axis.line = element_line(colour = "black", linewidth = 1),
@@ -258,10 +262,12 @@ maternal_line <- data_maternal %>%
   ggsci::scale_color_jama(alpha = 0.8)+
   theme_bw()+
   theme(
-    axis.title = element_text(face ="bold", size = 11),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title = element_text(face ="bold", size = 15),
+    axis.text.x = element_text(size = 11.5),
+    axis.text.y = element_text(size = 11.5),
+    plot.title = element_text(size = 17),
+    legend.text = element_text(size = 15, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
     legend.position = "top",
     legend.title = element_blank(),
     axis.line = element_line(colour = "black", linewidth = 1),
@@ -275,19 +281,13 @@ print(maternal_line)
 ```
 
 ```{r fig.height=4, fig.width=12}
-#Combinando dos curvas
-tendencias <- congenital_line | maternal_line | syphi_tamizaje +
-  plot_annotation(tag_levels = "a")
 
-tendencias
-```
-```{r fig.height=12, fig.width=5}
-#Combinando dos curvas
-tendenciaslong <- congenital_line / maternal_line / syphi_tamizaje +
-  plot_annotation(tag_levels = "a")
+library(gridExtra)
+library(ggplot2)
 
-tendenciaslong
-ggsave("Trends_2015-2022.png", plot = tendenciaslong)
+# Guardar la imagen con los gráficos combinados en una sola columna
+g <- grid.arrange(congenital_line, maternal_line, syphi_tamizaje, ncol = 1)
 
+ggsave("Trends_2015-2022.png", plot = g, width = 7, height = 14, dpi = 300)
 ```
 

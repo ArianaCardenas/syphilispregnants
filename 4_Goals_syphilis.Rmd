@@ -247,5 +247,19 @@ Figure2 = figure_2a / Figure_2b +
   plot_layout(heights = unit(c(6, 10), c('null', 'cm')))
 
 print(Figure2)
-#ggsave("Goals_2022.png", plot = Figure2)
+
 ```
+
+
+#Nueva opción para guardar figuras*
+```{r}
+figure_2a <- figure_2a + theme(plot.margin = margin(10, 50, 20, 50)) 
+figure_2b<-cowplot::plot_grid(figure_2b1,figure_2b2, figure_2b3, ncol = 3, rel_widths = c(1, 1, 1),  
+  align = "hv", axis = "tb")
+
+figure2<-cowplot::plot_grid(figure_2a, figure_2b, ncol = 1, labels = c("a","b"), rel_heights = c(8,8))
+
+print(figure2)
+ggsave("Goals_2022.png", plot = figure2, width = 8, height = 8, dpi = 300)
+```
+

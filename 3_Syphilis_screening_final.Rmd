@@ -269,38 +269,6 @@ Grafico dumbbell general: syphilis_screening
 dtotal = data_grafico_year %>%
   filter(year==2015|year==2018|year==2022) 
 
-d15_d22_screening <- 
-  ggplot(dtotal, aes(x = syphilis_screening, y = reorder(NOMBDEP,desc(ZONA)))) +
-  geom_line() +
-  geom_point(aes(color = year), size = 3) +
-  geom_vline(xintercept = 0.95,color = "black", linetype = "dashed", size=1.2) +
-  scale_color_manual(values = c("#3B99B1", "#EACB2B", "#F5191C")) +
-  labs(title = "Syphilis Screening") +
-  xlab("Prop%")+
-  ylab("Deparments") +
-  theme_bw() +
-  theme(
-    axis.title = element_text(face ="bold", size = 11),
-    legend.text = element_text(size = 12, face = "bold"),
-    axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "right",
-    legend.title = element_blank(),
-    axis.line = element_line(colour = "black", linewidth = 1),
-    panel.background = element_blank(),
-    strip.background = element_blank(),
-    strip.text = element_text(face = "bold"),
-    panel.grid = element_blank()
-  ) 
-
-#ggsave("Graph_dumbell_3a.png", plot = d15_d22_screening, width = 8, height = 4, dpi = 300)
-print(d15_d22_screening)
-```
-
-```{r}
-dtotal = data_grafico_year %>%
-  filter(year==2015|year==2018|year==2022) 
-
 dtotal <- dtotal %>%
   group_by(NOMBDEP) %>%
   mutate(screening_2022 = max(syphilis_screening[year == 2022], na.rm = TRUE)) %>%
@@ -312,16 +280,19 @@ d15_d22_screening <-
   geom_line() +
   geom_point(aes(color = year), size = 3) +
   geom_vline(xintercept = 0.95,color = "black", linetype = "dashed", size=1.2) +
-  scale_color_manual(values = c("#3B99B1", "#EACB2B", "#F5191C")) +
-  labs(title = "Syphilis Screening") +
+  scale_color_manual(values = c("#EACB2B", "#3B99B1" , "#F5191C")) +
+  labs(title = "Syphilis screening") +
   xlab("Prop%")+
   ylab("Deparments") +
   theme_bw() +
   theme(
-    axis.title = element_text(face ="bold", size = 11),
-    legend.text = element_text(size = 12, face = "bold"),
+    axis.title = element_text(face ="bold", size = 15),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
+    plot.title = element_text(size = 17),
+    legend.text = element_text(size = 14, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
+    axis.text.x = element_text(size = 12),
     legend.position = "right",
     legend.title = element_blank(),
     axis.line = element_line(colour = "black", linewidth = 1),
