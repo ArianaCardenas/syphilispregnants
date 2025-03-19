@@ -130,7 +130,7 @@ rm(congenital_long,congenital_long_dep,congenital_long_nac,newborn_nac,newborn_d
 ```
 
 ```{r}
-selected_colors <- wes_palette("Zissou1", n = 5)[c(1, 3, 5)]
+selected_colors <- wes_palette("Zissou1", n = 5)[c(3, 1, 5)]
 ```
 
 # Poverty National
@@ -200,13 +200,14 @@ National_pov_mat =
   ylim(0,9) +
   theme_bw() +
   theme(
-    axis.title = element_text(face ="bold", size = 11),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title = element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -216,7 +217,7 @@ National_pov_mat =
 National_pov_mat<- National_pov_mat +
   ggtitle("Poverty - Maternal") +
   theme(
-    plot.title = element_text(size = 10), 
+    plot.title = element_text(size = 14),
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -269,13 +270,14 @@ National_pov_con =
   ylim(0,5) +
   theme_bw() +
   theme(
-    axis.title = element_text(face ="bold", size = 11),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title = element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text( size = 12),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -285,7 +287,7 @@ National_pov_con =
 National_pov_con  <- National_pov_con  +
   ggtitle("Poverty - Congenital") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14),
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -363,13 +365,14 @@ Costa_pov_mat =
   ylim(0,18) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title = element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -379,7 +382,7 @@ Costa_pov_mat =
 Costa_pov_mat <- Costa_pov_mat +
   ggtitle("Maternal - Coast") +
   theme(
-    plot.title = element_text(size = 10), 
+    plot.title = element_text(size = 14), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -433,13 +436,14 @@ Costa_pov_con =
   ylim(0,8) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title = element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -449,7 +453,7 @@ Costa_pov_con =
 Costa_pov_con  <- Costa_pov_con  +
   ggtitle("Congenital - Coast") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14),  
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -527,12 +531,13 @@ Sierra_pov_mat =
   theme_bw() +
   theme(
     axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -542,7 +547,7 @@ Sierra_pov_mat =
 Sierra_pov_mat <- Sierra_pov_mat +
   ggtitle("Maternal - Highlands") +
   theme(
-    plot.title = element_text(size = 10), 
+    plot.title = element_text(size = 14), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1))+
@@ -595,13 +600,14 @@ Sierra_pov_con =
   ylim(0,8) +
   theme_bw() +
   theme(
-   axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title =  element_blank(),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -611,7 +617,7 @@ Sierra_pov_con =
 Sierra_pov_con  <- Sierra_pov_con  +
   ggtitle("Congenital - Highlands") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -690,12 +696,13 @@ Selva_pov_mat =
   theme_bw() +
   theme(
     axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -705,7 +712,7 @@ Selva_pov_mat =
 Selva_pov_mat <- Selva_pov_mat +
   ggtitle("Maternal - Jungle") +
   theme(
-    plot.title = element_text(size = 10), 
+    plot.title = element_text(size = 14), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1))+
@@ -759,12 +766,13 @@ Selva_pov_con =
   theme_bw() +
   theme(
     axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -774,7 +782,7 @@ Selva_pov_con =
 Selva_pov_con <- Selva_pov_con  +
   ggtitle("Congenital - Jungle") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -786,19 +794,19 @@ rm(poverty_cr, poverty)
 ## Gráfico general
 ```{r, fig.height=6, fig.width=12}
 combined_plot <- Costa_pov_con + Sierra_pov_con + Selva_pov_con + Costa_pov_mat + Sierra_pov_mat +  Selva_pov_mat + 
-  plot_layout(ncol = 3, guides = 'collect') &  
-  theme(legend.position = 'bottom')
+  plot_layout(ncol = 3, guides = 'collect') &
+  theme(legend.position = 'none')
 
 Poverty_graph  <- combined_plot + 
   plot_annotation(
     title = "Poverty", 
     theme = theme(
-      plot.title = element_text(size = 14, hjust = 0.5, face = "bold")
+      plot.title = element_text(size = 17, hjust = 0.1, face = "bold")
     )
   )
 
 Poverty_graph
-ggsave("Poverty_reg.png", plot = Poverty_graph)
+#ggsave("Poverty_reg.png", plot = Poverty_graph)
 
 rm(Costa_pov_con, Sierra_pov_con, Selva_pov_con, Costa_pov_mat, Sierra_pov_mat, Selva_pov_mat)
 ```
@@ -870,13 +878,14 @@ National_edu_mat =
   ylim(0,9) +
   theme_bw() +
   theme(
-    axis.title = element_text(face ="bold", size = 11),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title =  element_blank(),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -886,7 +895,7 @@ National_edu_mat =
 National_edu_mat <- National_edu_mat +
   ggtitle("Lower Education - Maternal") +
   theme(
-    plot.title = element_text(size = 10), 
+    plot.title = element_text(size = 14), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1))+
@@ -939,13 +948,14 @@ National_edu_con =
   ylim(0,5) +
   theme_bw() +
   theme(
-    axis.title = element_text(face ="bold", size = 11),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title =  element_blank(),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -955,7 +965,7 @@ National_edu_con =
 National_edu_con  <- National_edu_con  +
   ggtitle("Lower Education - Congenital") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14),  
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -1032,13 +1042,14 @@ Costa_edu_mat =
   ylim(0,12) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title = element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -1048,7 +1059,7 @@ Costa_edu_mat =
 Costa_edu_mat  <- Costa_edu_mat  +
   ggtitle("Maternal - Coast") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14),  
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -1102,13 +1113,14 @@ Costa_edu_con =
   ylim(0,7) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title = element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -1118,7 +1130,7 @@ Costa_edu_con =
 Costa_edu_con  <- Costa_edu_con  +
   ggtitle("Congenital - Coast") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -1197,12 +1209,13 @@ Sierra_edu_mat =
   theme_bw() +
   theme(
     axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -1212,7 +1225,7 @@ Sierra_edu_mat =
 Sierra_edu_mat  <- Sierra_edu_mat  +
   ggtitle("Maternal - Highlands") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14),  
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -1267,12 +1280,13 @@ Sierra_edu_con =
   theme_bw() +
   theme(
     axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -1282,7 +1296,7 @@ Sierra_edu_con =
 Sierra_edu_con  <- Sierra_edu_con  +
   ggtitle("Congenital - Highlands") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -1361,12 +1375,13 @@ Selva_edu_mat =
   theme_bw() +
   theme(
     axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -1376,7 +1391,7 @@ Selva_edu_mat =
 Selva_edu_mat  <- Selva_edu_mat  +
   ggtitle("Maternal - Jungle") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14),  
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -1431,12 +1446,13 @@ Selva_edu_con =
   theme_bw() +
   theme(
     axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -1446,7 +1462,7 @@ Selva_edu_con =
 Selva_edu_con  <- Selva_edu_con  +
   ggtitle("Congenital - Jungle") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -1460,18 +1476,18 @@ rm(education_cr, education)
 ```{r, fig.height=6, fig.width=12}
 combined_plot <- Costa_edu_con + Sierra_edu_con + Selva_edu_con + Costa_edu_mat + Sierra_edu_mat + Selva_edu_mat +
   plot_layout(ncol = 3, guides = 'collect') &  
-  theme(legend.position = 'bottom')
+  theme(legend.position = 'none')
 
 Education_graph  <- combined_plot + 
   plot_annotation(
     title = "Lower education", 
     theme = theme(
-      plot.title = element_text(size = 14, hjust = 0.5, face = "bold")
+      plot.title = element_text(size = 17, hjust = 0.1, face = "bold")
     )
   )
 
 Education_graph
-ggsave("Lower_education_reg.png", plot = Education_graph)
+#ggsave("Lower_education_reg.png", plot = Education_graph)
 
 rm(Costa_edu_con, Sierra_edu_con, Selva_edu_con, Costa_edu_mat, Sierra_edu_mat, Selva_edu_mat)
 ```
@@ -1544,13 +1560,14 @@ National_pre_mat =
   ylim(0,9) +
   theme_bw() +
   theme(
-    axis.title = element_text(face ="bold", size = 11),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title =  element_blank(),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -1560,7 +1577,7 @@ National_pre_mat =
 National_pre_mat <- National_pre_mat +
   ggtitle("No prenatal visit - Maternal") +
   theme(
-    plot.title = element_text(size = 10), 
+    plot.title = element_text(size = 14), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -1615,13 +1632,14 @@ National_pre_con =
   ylim(0,5) +
   theme_bw() +
   theme(
-    axis.title = element_text(face ="bold", size = 11),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title =  element_blank(),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -1631,7 +1649,7 @@ National_pre_con =
 National_pre_con  <- National_pre_con  +
   ggtitle("No prenatal visit - Congenital") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14),  
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -1708,13 +1726,14 @@ Costa_pre_mat =
   ylim(0,15) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title = element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -1724,7 +1743,7 @@ Costa_pre_mat =
 Costa_pre_mat  <- Costa_pre_mat  +
   ggtitle("Maternal - Coast") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -1777,13 +1796,14 @@ Costa_pre_con =
   ylim(0,12) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
+    axis.title = element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -1793,7 +1813,7 @@ Costa_pre_con =
 Costa_pre_con  <- Costa_pre_con  +
   ggtitle("Congenital - Coast") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14),  
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -1874,12 +1894,13 @@ Sierra_pre_mat =
   theme_bw() +
   theme(
     axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -1889,7 +1910,7 @@ Sierra_pre_mat =
 Sierra_pre_mat  <- Sierra_pre_mat  +
   ggtitle("Maternal - Highlands") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14),  
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -1944,12 +1965,13 @@ Sierra_pre_con =
   theme_bw() +
   theme(
     axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -1959,7 +1981,7 @@ Sierra_pre_con =
 Sierra_pre_con <- Sierra_pre_con  +
   ggtitle("Congenital - Highlands") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14),  
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -2039,12 +2061,13 @@ Selva_pre_mat =
   theme_bw() +
   theme(
     axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -2054,7 +2077,7 @@ Selva_pre_mat =
 Selva_pre_mat  <- Selva_pre_mat  +
   ggtitle("Maternal - Jungle") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14),  
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -2108,12 +2131,13 @@ Selva_pre_con =
   theme_bw() +
   theme(
     axis.title =  element_blank(),
-    legend.text = element_text(size = 8, face = "bold"),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "top",
-    legend.title = element_blank(),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
+    legend.text = element_text(size = 14, face = "bold"),
+    legend.title = element_blank(),
     panel.background = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold"),
@@ -2123,7 +2147,7 @@ Selva_pre_con =
 Selva_pre_con  <- Selva_pre_con +
   ggtitle("Congenital - Jungle") +
   theme(
-    plot.title = element_text(size = 10),  
+    plot.title = element_text(size = 14), 
     legend.position = "bottom", 
     legend.justification = "center") +
   guides(fill = guide_legend(nrow = 1)) +
@@ -2142,12 +2166,12 @@ Prenatal_graph  <- combined_plot +
   plot_annotation(
     title = "No prenatal visit", 
     theme = theme(
-      plot.title = element_text(size = 14, hjust = 0.5, face = "bold")
+      plot.title = element_text(size = 17, hjust = 0.1, face = "bold")
     )
   )
 
 Prenatal_graph
-ggsave("No_prenatal_visit_reg.png", plot = Prenatal_graph)
+#ggsave("No_prenatal_visit_reg.png", plot = Prenatal_graph)
 
 rm(Costa_pre_con, Sierra_pre_con, Selva_pre_con, Costa_pre_mat, Sierra_pre_mat, Selva_pre_mat)
 ```
@@ -2158,14 +2182,23 @@ combined_plot <- National_pov_con + National_edu_con + National_pre_con + Nation
   plot_layout(ncol = 3, guides = 'collect') &  
   theme(legend.position = 'bottom')
 
-National_graph  <- combined_plot + 
-  plot_annotation(
-    title = "National Graph", 
-    theme = theme(
-      plot.title = element_text(size = 14, hjust = 0.5, face = "bold")
-    )
-  )
+National_graph  <- combined_plot
 
 National_graph
 ggsave("National.png", plot = National_graph)
 ```
+
+```{r}
+#Nueva opción para guardar figuras*
+
+Determinantes_reg <-cowplot::plot_grid(Poverty_graph, Education_graph, Prenatal_graph, ncol = 1, 
+                                       labels = c("a", "b", "c"), label_size = 20)
+
+print(Determinantes_reg)
+
+ggsave("Determinantes_reg.png", plot = Determinantes_reg, width = 15, height = 20, dpi = 300)
+```
+
+
+
+
