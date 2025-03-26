@@ -272,8 +272,8 @@ National_pov_con =
   theme(
     axis.title = element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 12),
-    axis.title.x = element_text(size = 14),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_blank(),
     axis.title.y = element_text(size = 14),
     axis.line = element_line(colour = "black", size = 1),
     legend.text = element_text(size = 14, face = "bold"),
@@ -439,7 +439,7 @@ Costa_pov_con =
     axis.title = element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
     axis.text.x = element_text(size = 12),
-    axis.title.x = element_text(size = 14),
+    axis.title.x = element_blank(),
     axis.title.y = element_text(size = 14),
     axis.line = element_line(colour = "black", size = 1),
     legend.text = element_text(size = 14, face = "bold"),
@@ -530,10 +530,10 @@ Sierra_pov_mat =
   ylim(0,22) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
+    axis.title =  element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
     axis.text.x = element_text(size = 12),
-    axis.title.x = element_blank(),
+    axis.title.x = element_text(size = 14),
     axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
     legend.text = element_text(size = 14, face = "bold"),
@@ -600,7 +600,7 @@ Sierra_pov_con =
   ylim(0,8) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
+    axis.title = element_blank(),
     axis.text = element_text(face = "bold", family = "Arial"),
     axis.text.x = element_text(size = 12),
     axis.title.x = element_blank(),
@@ -695,10 +695,10 @@ Selva_pov_mat =
   ylim(0,23) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
+    axis.title =  element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
     axis.text.x = element_text(size = 12),
-    axis.title.x = element_blank(),
+    axis.title.x = element_text(size = 14),
     axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
     legend.text = element_text(size = 14, face = "bold"),
@@ -765,7 +765,7 @@ Selva_pov_con =
   ylim(0,8) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
+    axis.title = element_blank(),
     axis.text = element_text(face = "bold", family = "Arial"),
     axis.text.x = element_text(size = 12),
     axis.title.x = element_blank(),
@@ -878,10 +878,10 @@ National_edu_mat =
   ylim(0,9) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
+    axis.title =  element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
     axis.text.x = element_text(size = 12),
-    axis.title.x = element_blank(),
+    axis.title.x = element_text(size = 14),
     axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
     legend.text = element_text(size = 14, face = "bold"),
@@ -1116,7 +1116,7 @@ Costa_edu_con =
     axis.title = element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
     axis.text.x = element_text(size = 12),
-    axis.title.x = element_text(size = 14),
+    axis.title.x = element_blank(),
     axis.title.y = element_text(size = 14),
     axis.line = element_line(colour = "black", size = 1),
     legend.text = element_text(size = 14, face = "bold"),
@@ -1208,10 +1208,10 @@ Sierra_edu_mat =
   ylim(0,12) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
+    axis.title =  element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
     axis.text.x = element_text(size = 12),
-    axis.title.x = element_blank(),
+    axis.title.x = element_text(size = 14),
     axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
     legend.text = element_text(size = 14, face = "bold"),
@@ -1374,10 +1374,10 @@ Selva_edu_mat =
   ylim(0,12) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
+    axis.title =  element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
     axis.text.x = element_text(size = 12),
-    axis.title.x = element_blank(),
+    axis.title.x = element_text(size = 14),
     axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
     legend.text = element_text(size = 14, face = "bold"),
@@ -1560,10 +1560,10 @@ National_pre_mat =
   ylim(0,9) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
+    axis.title =  element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
     axis.text.x = element_text(size = 12),
-    axis.title.x = element_blank(),
+    axis.title.x = element_text(size = 14),
     axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
     legend.text = element_text(size = 14, face = "bold"),
@@ -1575,7 +1575,7 @@ National_pre_mat =
   )
 
 National_pre_mat <- National_pre_mat +
-  ggtitle("No prenatal visit - Maternal") +
+  ggtitle("No ANC - Maternal") +
   theme(
     plot.title = element_text(size = 14), 
     legend.position = "bottom", 
@@ -1647,7 +1647,7 @@ National_pre_con =
   )
 
 National_pre_con  <- National_pre_con  +
-  ggtitle("No prenatal visit - Congenital") +
+  ggtitle("No ANC - Congenital") +
   theme(
     plot.title = element_text(size = 14),  
     legend.position = "bottom", 
@@ -1799,7 +1799,7 @@ Costa_pre_con =
     axis.title = element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
     axis.text.x = element_text(size = 12),
-    axis.title.x = element_text(size = 14),
+    axis.title.x = element_blank(),
     axis.title.y = element_text(size = 14),
     axis.line = element_line(colour = "black", size = 1),
     legend.text = element_text(size = 14, face = "bold"),
@@ -1893,10 +1893,10 @@ Sierra_pre_mat =
   ylim(0,15) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
+    axis.title = element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
     axis.text.x = element_text(size = 12),
-    axis.title.x = element_blank(),
+    axis.title.x = element_text(size = 14),
     axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
     legend.text = element_text(size = 14, face = "bold"),
@@ -2060,10 +2060,10 @@ Selva_pre_mat =
   ylim(0,15) +
   theme_bw() +
   theme(
-    axis.title =  element_blank(),
+    axis.title = element_text(face ="bold", size = 15),
     axis.text = element_text(face = "bold", family = "Arial"),
     axis.text.x = element_text(size = 12),
-    axis.title.x = element_blank(),
+    axis.title.x = element_text(size = 14),
     axis.title.y = element_blank(),
     axis.line = element_line(colour = "black", size = 1),
     legend.text = element_text(size = 14, face = "bold"),
@@ -2164,7 +2164,7 @@ combined_plot <- Costa_pre_con + Sierra_pre_con + Selva_pre_con + Costa_pre_mat 
 
 Prenatal_graph  <- combined_plot + 
   plot_annotation(
-    title = "No prenatal visit", 
+    title = "No ANC", 
     theme = theme(
       plot.title = element_text(size = 17, hjust = 0.1, face = "bold")
     )
