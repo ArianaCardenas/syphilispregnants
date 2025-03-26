@@ -279,10 +279,10 @@ legend <- bi_legend(pal = custom_pal2,
                     ylab = "Poverty",
                     size = 10)
 
-mappoverty <- map_poverty | map15 | map18 |map22 | (legend/plot_spacer())
+mappoverty_MS <- map_poverty | map15 | map18 |map22 | (legend/plot_spacer())
  #+ plot_layout(widths = c(1, 1, 1, 1, 1))
 
-mappoverty
+mappoverty_MS
 ```
 
 EDUCATION:
@@ -462,13 +462,13 @@ finalPlot22
 legend <- bi_legend(pal = custom_pal2,
                     dim = 2,
                     xlab = "Rate",
-                    ylab = "Primary education",
+                    ylab = "Lower education",
                     size = 10)
 
-mapeducation <- map_education | map15 | map18 |map22 | (legend/plot_spacer())
+mapeducation_MS <- map_education | map15 | map18 |map22 | (legend/plot_spacer())
  #+ plot_layout(widths = c(1, 1, 1, 1, 1))
 
-mapeducation
+mapeducation_MS
 ```
 
 Prenatal Care
@@ -524,7 +524,7 @@ map_precare <- ggplot() +
 legend_precare <- bi_legend(pal = custom_pal2,
                     dim = 2,
                     xlab = "Rate",
-                    ylab = "No prenatal visit",
+                    ylab = "No ANC",
                     size = 10)
 
 # combine map with legend
@@ -558,7 +558,7 @@ map15 <- ggplot() +
 legend <- bi_legend(pal = custom_pal2,
                     dim = 2,
                     xlab = "Rate",
-                    ylab = "No prenatal visit",
+                    ylab = "No ANC",
                     size = 10)
 
 # combine map with legend
@@ -567,6 +567,7 @@ finalPlot15 <- ggdraw() +
   draw_plot(legend, .75, .6, .2, .2)
 
 finalPlot15
+map15
 ```
 
 ```{r, echo=FALSE, fig.height=6, fig.width=8}
@@ -592,7 +593,7 @@ map18 <- ggplot() +
 legend <- bi_legend(pal = custom_pal2,
                     dim = 2,
                     xlab = "Rate",
-                    ylab = "No prenatal visit",
+                    ylab = "No ANC",
                     size = 10)
 
 # combine map with legend
@@ -612,13 +613,12 @@ syphilis_precare22 = syphilis_precare %>%
   )
 datamap <- bi_class(syphilis_precare22, x = rate_mat, y = prenatal_visitno, style = "quantile", dim = 2)
 
-map15 <- ggplot() +
+map22 <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "black", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = custom_pal2, dim = 2) +
   labs(
     title = "2022"
-      #"Rate of congenital syphilis in extremely poor pregnants in 2015"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(1))) 
@@ -627,7 +627,7 @@ map15 <- ggplot() +
 legend <- bi_legend(pal = custom_pal2,
                     dim = 2,
                     xlab = "Rate",
-                    ylab = "No prenatal visit",
+                    ylab = "No ANC",
                     size = 10)
 
 
@@ -641,29 +641,84 @@ finalPlot22
 
 ```{r, echo = FALSE,fig.height = 5, fig.width = 10}
 
-mapprecare <- map_precare | map15 | map18 |map22 | (legend/plot_spacer())
+mapprecare_MS <- map_precare | map15 | map18 |map22 | (legend/plot_spacer())
  #+ plot_layout(widths = c(1, 1, 1, 1, 1))
 
-mapprecare
+mapprecare_MS
 ```
 
-```{r, echo = FALSE,fig.height = 4, fig.width = 10}
+```{r, echo = FALSE,fig.height = 7, fig.width = 10}
+maptotalsfinal <-cowplot::plot_grid(maptotals, maptotals_maternal, ncol = 1, 
+                                       labels = c("a. Congenital Syphilis", 
+                                                  "b. Maternal Syphilis"), label_size = 15)
 
-maptotals_maternal <- (map_poverty | legend_poverty | map_education | legend_education | map_precare | legend_precare) + plot_layout(widths = c(1, 0.6, 1, 0.6, 1, 0.6)) + 
-  plot_annotation(
-  title = 'Maternal Syphilis') 
+print(maptotalsfinal)
 
-
-maptotals_maternal
 ```
 ```{r}
-ggsave("Figures/Bivariate_maternal.png", plot = maptotals_maternal, width = 10, height = 4, dpi = 300)
+#ggsave("Figures/Bivariatemapstotal.png", plot = maptotalsfinal, width = 10, height = 7, dpi = 300)
 ```
 
-```{r, echo = FALSE,fig.height = 8, fig.width = 10}
+```{r, echo = FALSE,fig.height = 8, fig.width = 8}
+mapssupplementary1 <-cowplot::plot_grid(mappoverty_CS, mapeducation_CS, mapprecare_CS, 
+                                        ncol = 1, 
+                                       labels = c("a", 
+                                                  "b", 
+                                                  "c"), label_size = 20)
 
-maptotals_final <- (maptotals / maptotals_maternal)
+title <- ggdraw() + 
+  draw_label(
+    "Congenital Syphilis",
+    fontface = 'bold',
+    x = 0,
+    hjust = 0
+  )
 
-maptotals_final
+mapssupplementary1 = plot_grid(
+  title, mapssupplementary1,
+  ncol = 1,
+  # rel_heights values control vertical title margins
+  rel_heights = c(0.1, 1)
+)
+
+print(mapssupplementary1)
+
+```
+```{r, echo = FALSE,fig.height = 8, fig.width = 8}
+mapssupplementary2 <-cowplot::plot_grid(mappoverty_MS, mapeducation_MS, mapprecare_MS, 
+                                        ncol = 1, 
+                                       labels = c("d", 
+                                                  "e", 
+                                                  "f"), label_size = 20)
+
+title <- ggdraw() + 
+  draw_label(
+    "Maternal Syphilis",
+    fontface = 'bold',
+    x = 0,
+    hjust = 0
+  )
+
+mapssupplementary2 = plot_grid(
+  title, mapssupplementary2,
+  ncol = 1,
+  # rel_heights values control vertical title margins
+  rel_heights = c(0.1, 1)
+)
+
+print(mapssupplementary2)
+
+```
+
+```{r, echo = FALSE,fig.height = 14, fig.width = 7}
+mapssupplementaryfinal <-cowplot::plot_grid(mapssupplementary1, mapssupplementary2, 
+                                        ncol = 1)
+
+print(mapssupplementaryfinal)
+
+```
+
+```{r}
+#ggsave("Figures/BivariatemapsSup.png", plot = mapssupplementaryfinal, width = 7, height = 14, dpi = 300)
 ```
 

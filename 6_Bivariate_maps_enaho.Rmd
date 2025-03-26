@@ -278,10 +278,10 @@ finalPlot22
 
 ```{r, echo = FALSE,fig.height = 5, fig.width = 10}
 
-mappoverty <- map_poverty | map15 | map18 |map22 | (legend/plot_spacer())
+mappoverty_CS <- map_poverty | map15 | map18 |map22 | (legend/plot_spacer())
  #+ plot_layout(widths = c(1, 1, 1, 1, 1))
 
-mappoverty
+mappoverty_CS
 ```
 
 EDUCATION:
@@ -457,10 +457,10 @@ finalPlot22
 
 ```{r, echo = FALSE,fig.height = 5, fig.width = 10}
 
-mapeducation <- map_education | map15 | map18 |map22 | (legend/plot_spacer())
+mapeducation_CS <- map_education | map15 | map18 |map22 | (legend/plot_spacer())
  #+ plot_layout(widths = c(1, 1, 1, 1, 1))
 
-mapeducation
+mapeducation_CS
 ```
 
 Prenatal care
@@ -515,7 +515,7 @@ map_precare <- ggplot() +
 legend_precare <- bi_legend(pal = custom_pal2,
                     dim = 2,
                     xlab = "Rate",
-                    ylab = "No prenatal visit",
+                    ylab = "No ANC",
                     size = 10)
 
 # combine map with legend
@@ -541,7 +541,6 @@ map15 <- ggplot() +
   bi_scale_fill(pal = custom_pal2, dim = 2) +
   labs(
     title = "2015"
-      #"Rate of congenital syphilis in extremely poor pregnants in 2015"
   ) +
   bi_theme() +
   theme(plot.title = element_text(size = rel(1))) 
@@ -550,7 +549,7 @@ map15 <- ggplot() +
 legend <- bi_legend(pal = custom_pal2,
                     dim = 2,
                     xlab = "Rate",
-                    ylab = "No prenatal visit",
+                    ylab = "No ANC",
                     size = 10)
 
 # combine map with legend
@@ -559,6 +558,8 @@ finalPlot15 <- ggdraw() +
   draw_plot(legend, .75, .6, .2, .2)
 
 finalPlot15
+
+
 ```
 
 ```{r, echo=FALSE, fig.height=6, fig.width=8}
@@ -585,7 +586,7 @@ map18 <- ggplot() +
 legend <- bi_legend(pal = custom_pal2,
                     dim = 2,
                     xlab = "Rate",
-                    ylab = "No prenatal visit",
+                    ylab = "No ANC",
                     size = 10)
 
 # combine map with legend
@@ -605,7 +606,7 @@ syphilis_precare22 = syphilis_precare %>%
   )
 datamap <- bi_class(syphilis_precare22, x = rate_con, y = prenatal_visitno, style = "quantile", dim = 2)
 
-map15 <- ggplot() +
+map22 <- ggplot() +
   geom_sf(data = datamap, mapping = aes(geometry= geometry, fill = bi_class), 
           color = "black", size = 0.1, show.legend = FALSE) +
   bi_scale_fill(pal = custom_pal2, dim = 2) +
@@ -620,7 +621,7 @@ map15 <- ggplot() +
 legend <- bi_legend(pal = custom_pal2,
                     dim = 2,
                     xlab = "Rate",
-                    ylab = "No prenatal visit",
+                    ylab = "No ANC",
                     size = 10)
 
 
@@ -635,17 +636,15 @@ finalPlot22
 
 ```{r, echo = FALSE,fig.height = 5, fig.width = 10}
 
-mapprecare <- map_precare | map15 | map18 |map22 | (legend/plot_spacer())
+mapprecare_CS <- map_precare | map15 | map18 |map22 | (legend/plot_spacer())
  #+ plot_layout(widths = c(1, 1, 1, 1, 1))
 
-mapprecare
+mapprecare_CS
 ```
 
 ```{r, echo = FALSE,fig.height = 4, fig.width = 10}
 
-maptotals <- (map_poverty | legend_poverty | map_education | legend_education | map_precare | legend_precare) + plot_layout(widths = c(1, 0.6, 1, 0.6, 1, 0.6)) + 
-  plot_annotation(
-  title = 'Congenital Syphilis')
+maptotals <- (map_poverty | legend_poverty | map_education | legend_education | map_precare | legend_precare) + plot_layout(widths = c(1, 0.6, 1, 0.6, 1, 0.6)) 
 
 
 maptotals
