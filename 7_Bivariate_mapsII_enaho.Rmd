@@ -146,7 +146,7 @@ map_poverty <- ggplot() +
   #   title = "Total"
   # ) +
   bi_theme() +
-  theme(plot.title = element_text(size = rel(1))) 
+  theme(plot.title = element_text(size = rel(0.8))) 
   
 
 legend_poverty <- bi_legend(pal = custom_pal2,
@@ -181,7 +181,7 @@ map15 <- ggplot() +
       #"Rate of congenital syphilis in extremely poor pregnants in 2015"
   ) +
   bi_theme() +
-  theme(plot.title = element_text(size = rel(1))) 
+  theme(plot.title = element_text(size = rel(0.8))) 
   
 
 legend <- bi_legend(pal = custom_pal2,
@@ -217,7 +217,7 @@ map18 <- ggplot() +
       #"Rate of congenital syphilis in extremely poor pregnants in 2018"
   ) +
   bi_theme() +
-  theme(plot.title = element_text(size = rel(1))) 
+  theme(plot.title = element_text(size = rel(0.8))) 
   
 
 legend <- bi_legend(pal = custom_pal2,
@@ -253,7 +253,7 @@ map22 <- ggplot() +
     #  "Rate of congenital syphilis in extremely poor pregnants in 2018"
   ) +
   bi_theme() +
-  theme(plot.title = element_text(size = rel(1))) 
+  theme(plot.title = element_text(size = rel(0.8))) 
   
 
 legend <- bi_legend(pal = custom_pal2,
@@ -334,7 +334,7 @@ map_education <- ggplot() +
   #   title = "Total"
   # ) +
   bi_theme() +
-  theme(plot.title = element_text(size = rel(1))) 
+  theme(plot.title = element_text(size = rel(0.8))) 
   
 
 legend_education <- bi_legend(pal = custom_pal2,
@@ -370,7 +370,7 @@ map15 <- ggplot() +
     title = "2015"
   ) +
   bi_theme() +
-  theme(plot.title = element_text(size = rel(1))) 
+  theme(plot.title = element_text(size = rel(0.8))) 
   
 
 
@@ -406,7 +406,7 @@ map18 <- ggplot() +
     title = "2018"
   ) +
   bi_theme() +
-  theme(plot.title = element_text(size = rel(1))) 
+  theme(plot.title = element_text(size = rel(0.8))) 
   
 
 legend <- bi_legend(pal = custom_pal2,
@@ -441,7 +441,7 @@ map22 <- ggplot() +
     title = "2022"
   ) +
   bi_theme() +
-  theme(plot.title = element_text(size = rel(1))) 
+  theme(plot.title = element_text(size = rel(0.8))) 
   
 
 legend <- bi_legend(pal = custom_pal2,
@@ -518,7 +518,7 @@ map_precare <- ggplot() +
   #   title = "Total"
   # ) +
   bi_theme() +
-  theme(plot.title = element_text(size = rel(1))) 
+  theme(plot.title = element_text(size = rel(0.8))) 
   
 
 legend_precare <- bi_legend(pal = custom_pal2,
@@ -552,7 +552,7 @@ map15 <- ggplot() +
     title = "2015"
   ) +
   bi_theme() +
-  theme(plot.title = element_text(size = rel(1))) 
+  theme(plot.title = element_text(size = rel(0.8))) 
   
 
 legend <- bi_legend(pal = custom_pal2,
@@ -587,7 +587,7 @@ map18 <- ggplot() +
     title = "2018"
   ) +
   bi_theme() +
-  theme(plot.title = element_text(size = rel(1))) 
+  theme(plot.title = element_text(size = rel(0.8))) 
   
 
 legend <- bi_legend(pal = custom_pal2,
@@ -621,7 +621,7 @@ map22 <- ggplot() +
     title = "2022"
   ) +
   bi_theme() +
-  theme(plot.title = element_text(size = rel(1))) 
+  theme(plot.title = element_text(size = rel(0.8))) 
   
 
 legend <- bi_legend(pal = custom_pal2,
@@ -645,6 +645,13 @@ mapprecare_MS <- map_precare | map15 | map18 |map22 | (legend/plot_spacer())
  #+ plot_layout(widths = c(1, 1, 1, 1, 1))
 
 mapprecare_MS
+```
+```{r, echo = FALSE,fig.height = 4, fig.width = 10}
+
+maptotals_maternal <- (map_poverty | legend_poverty | map_education | legend_education | map_precare | legend_precare) + plot_layout(widths = c(1, 0.4, 1, 0.4, 1, 0.4)) 
+
+
+maptotals_maternal
 ```
 
 ```{r, echo = FALSE,fig.height = 7, fig.width = 10}
