@@ -289,5 +289,11 @@ library(ggplot2)
 g <- grid.arrange(congenital_line, maternal_line, syphi_tamizaje, ncol = 1)
 
 ggsave("Trends_2015-2022.png", plot = g, width = 7, height = 14, dpi = 300)
+
+
+figure1<-cowplot::plot_grid(congenital_line, maternal_line, syphi_tamizaje, ncol = 1, labels = c("a","b", "c"), label_size = 18)
+
+print(figure1)
+ggsave("Trends_2015-2022_2.png", plot = figure1, width = 7, height = 14, dpi = 300)
 ```
 

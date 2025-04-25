@@ -255,5 +255,10 @@ library(ggplot2)
 g <- grid.arrange(syphcongenita, syphmaterna, d15_d22_screening, ncol = 1)
 
 ggsave("Dumbells_final.png", plot = g, width = 8, height = 14, dpi = 300)
+
+figure3<-cowplot::plot_grid(syphcongenita, syphmaterna, d15_d22_screening, ncol = 1, labels = c("a","b", "c"), label_size = 18)
+
+print(figure3)
+ggsave("Dumbells_final_2.png", plot = figure3, width = 8, height = 14, dpi = 300)
 ```
 

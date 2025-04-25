@@ -133,6 +133,54 @@ syphmaterna <- ggplot(syphmaterna, aes(x = rate, y = NOMBDEP)) +
 syphmaterna
 #ggsave("Graph_dumbell_maternal.png", plot = syphmaterna, width = 8, height = 4, dpi = 300)
 ```
+```{r}
+##Otra forma de ordenar los departamentos#
+
+syphmaterna <- data_maternal_dep %>%
+  filter(year %in% c(2018, 2022)) %>% 
+  group_by(NOMBDEP) %>% 
+  summarise(
+    rate_2018 = max(rate[year == 2018], na.rm = TRUE),
+    rate_2022 = max(rate[year == 2022], na.rm = TRUE),
+    decrease_abs = rate_2022 - rate_2018,  # Disminución absoluta
+    decrease_pct = (decrease_abs / rate_2018) * 100  # Disminución porcentual
+  ) %>%
+  ungroup() %>%
+  arrange(desc(decrease_pct))  # Ordenar por mayor reducción porcentual
+
+# Unir con los datos originales para graficar
+syphmaterna_plot <- data_maternal_dep %>%
+  filter(year %in% c(2015, 2018, 2022)) %>%
+  left_join(syphmaterna, by = "NOMBDEP") %>%  
+  mutate(NOMBDEP = factor(NOMBDEP, levels = syphmaterna$NOMBDEP)) 
+
+syphmaterna2 <- ggplot(syphmaterna_plot, aes(x = rate, y = NOMBDEP, group = NOMBDEP)) +
+  geom_line() +
+  geom_point(aes(color = year), size = 3) +
+  scale_color_manual(values = c("#EACB2B", "#3B99B1" , "#F5191C")) +
+  xlab("Rate per 1000 live births")+
+  ylab("Departments") +
+  labs(title = "Maternal syphilis") +
+  theme_bw() +
+  theme(
+    axis.title = element_text(face ="bold", size = 15),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
+    plot.title = element_text(size = 17),
+    legend.text = element_text(size = 14, face = "bold"),
+    axis.text = element_text(face = "bold", family = "Arial"),
+    axis.text.x = element_text(size = 12),
+    legend.position = "right",
+    legend.title = element_blank(),
+    axis.line = element_line(colour = "black", linewidth = 1),
+    panel.background = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    panel.grid = element_blank()
+  ) 
+
+print (syphmaterna2)
+```
 
 
 Tabla de las 10 provincias con más casos de sífilis materna por 1000 nacidos vivos.
