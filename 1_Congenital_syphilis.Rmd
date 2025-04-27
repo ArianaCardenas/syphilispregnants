@@ -232,14 +232,28 @@ ggplot() +
 Mapa de casos por años
 
 ```{r}
-ggplot() +
+figureS1 <- ggplot() +
   geom_sf(data = data_congenital_dep,
           aes(geometry = geometry,fill = rate),
-          color = "black", size = 0.2) +
+          color = "black", size = 0.4) +
   scale_fill_gradient(low = "#D2EEEA", high = "#2A5676") +
   facet_wrap(.~year) + 
-  labs(title="Rate of congenital syphilis per 1000 newborn",
-       fill = "Rate")
+  labs(fill = "Rate") + 
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(),       
+    axis.ticks = element_blank(),     
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    strip.text = element_text(size = 14),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10)
+  )
+
+print(figureS1)
+
+ggsave("Trends_2015-2022_S1.png", plot = figureS1, width = 7, height = 8, dpi = 300)
+
 ```
 
 Joining Dumbell plots:
