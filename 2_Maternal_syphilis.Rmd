@@ -80,10 +80,20 @@ data_maternal_prov <- maternal_prov %>%
   
 data_maternal_dep <- maternal_dep %>%
   left_join(newborndep, by = c("NOMBDEP","year")) %>%
-  mutate(rate = (maternal/n)*1000) %>% 
+  mutate(
+    rate = (maternal/n)*1000,
+    lower_ci = qpois(0.025, lambda = maternal) / n * 1000,
+    upper_ci = qpois(0.975, lambda = maternal) / n * 1000
+  ) %>%
   mutate_if(is.numeric, round, 2) %>%
   left_join(departamentos, by = c("NOMBDEP"))
+
+data_maternal_dep_table <- data_maternal_dep %>% 
+  select(NOMBDEP, year, rate, lower_ci, upper_ci)
+
+DT::datatable(data_maternal_dep_table)
 ```
+
 
 ```{r}
 rm(maternal_prov,maternal_dep,maternal_long,newbornprov, newborndep)
@@ -204,7 +214,6 @@ data_maternal_table
 ```
 
 
-
 Mapa de sífilis materna por departamento.
 
 ```{r}
@@ -218,13 +227,26 @@ ggplot() +
 ```
 
 ```{r}
-ggplot() +
+figureS2 <- ggplot() +
   geom_sf(data = data_maternal_dep, aes(geometry = geometry,fill = rate),
-          color = "black", size = 0.2) +
+          color = "black", size = 0.4) +
   scale_fill_gradient(low = "#D2EEEA", high = "#2A5676") +
   facet_wrap(.~year) + 
-   labs(title="Cases of syphilis in pregnants, INS data",
-        fill = "Syphilis in pregnants per 1000 newborn") 
+     labs(fill = "Rate") + 
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(),       
+    axis.ticks = element_blank(),     
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    strip.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10)
+  )
+
+print(figureS2)
+
+ggsave("Trends_2015-2022_S2.png", plot = figureS2, width = 7, height = 8, dpi = 300)
 ```
 
 

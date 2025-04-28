@@ -88,6 +88,16 @@ syphilis_df %>%
   DT::datatable()
 ```
 
+```{r}
+syphilis_screening_dep <- syphilis_df %>% 
+  select(NOMBDEP,year,var,sypprop,`2.5 %`,`97.5 %`) %>% 
+  mutate(
+    across(.cols = sypprop:`97.5 %`, .fns = ~round(.*100,1))
+  ) %>% 
+  arrange(NOMBDEP, year) %>% 
+  DT::datatable()
+```
+
 ### grafico syphilis
 ```{r}
 syphi_tamizaje<-
@@ -184,6 +194,8 @@ data_congenital <- data_congenital %>%
     lower_ci = qpois(0.025, lambda = congenital) / n *1000,
     upper_ci = qpois(0.975, lambda = congenital) / n *1000
     )
+
+DT::datatable(data_congenital)
 ```
 
 ```{r}
@@ -247,6 +259,7 @@ data_maternal <- data_maternal %>%
     lower_ci = qpois(0.025, lambda = maternal) / n *1000,
     upper_ci = qpois(0.975, lambda = maternal) / n *1000
     )
+DT::datatable(data_maternal)
 ```
 
 #final maternal graph
