@@ -76,9 +76,19 @@ data_congenital_prov <- congenital_prov %>%
 
 data_congenital_dep <- congenital_dep %>%
   left_join(newborndep, by = c("NOMBDEP","year")) %>%
-  mutate(rate = (congenital/n)*1000) %>% 
+  mutate(
+    
+    rate = (congenital/n)*1000,
+    lower_ci = qpois(0.025, lambda = congenital) / n * 1000,
+    upper_ci = qpois(0.975, lambda = congenital) / n * 1000
+  ) %>%
   mutate_if(is.numeric, round, 2) %>%
   left_join(departamentos, by = c("NOMBDEP"))
+
+data_congenital_dep_table <- data_congenital_dep %>% 
+  select(NOMBDEP, year, rate, lower_ci, upper_ci)
+
+DT::datatable(data_congenital_dep_table)
 ```
 ## Casos de sífilis congénita por 1000 nacidos vivos por departamento.
 
@@ -245,7 +255,7 @@ figureS1 <- ggplot() +
     axis.ticks = element_blank(),     
     axis.title = element_blank(),
     panel.grid = element_blank(),
-    strip.text = element_text(size = 14),
+    strip.text = element_text(size = 12),
     legend.title = element_text(size = 12),
     legend.text = element_text(size = 10)
   )

@@ -79,25 +79,6 @@ syphilis_df<-
   )  
 ```
 
-```{r}
-syphilis_df %>% 
-  select(year,var,sypprop,`2.5 %`,`97.5 %`) %>% 
-  mutate(
-    across(.cols = sypprop:`97.5 %`, .fns = ~round(.*100,1))
-  ) %>% 
-  DT::datatable()
-```
-
-```{r}
-syphilis_screening_dep <- syphilis_df %>% 
-  select(NOMBDEP,year,var,sypprop,`2.5 %`,`97.5 %`) %>% 
-  mutate(
-    across(.cols = sypprop:`97.5 %`, .fns = ~round(.*100,1))
-  ) %>% 
-  arrange(NOMBDEP, year) %>% 
-  DT::datatable()
-```
-
 ### grafico syphilis
 ```{r}
 syphi_tamizaje<-

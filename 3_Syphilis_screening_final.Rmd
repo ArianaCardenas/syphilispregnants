@@ -97,6 +97,22 @@ syphilis_general = as.data.frame(syphilis_general)
 ```
 
 ```{r}
+library(dplyr)
+
+# Para syphilis_year
+syphilis_year_dep <- syphilis_year %>%
+  mutate(
+    lower_ci = syphilis_screening - 1.96 * se,
+    upper_ci = syphilis_screening + 1.96 * se
+  )
+
+syphilis_year_dep <- syphilis_year_dep %>%
+  mutate(
+    across(c(syphilis_screening, lower_ci, upper_ci), ~round(. * 100, 1))
+  )
+```
+
+```{r}
 data_grafico_prov <- syphilis_provincias  %>%
   left_join(provincias, by = c("NOMBPROV"))
 ```
