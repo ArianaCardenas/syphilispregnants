@@ -2180,12 +2180,14 @@ rm(Costa_pre_con, Sierra_pre_con, Selva_pre_con, Costa_pre_mat, Sierra_pre_mat, 
 ```{r, fig.height=6, fig.width=12}
 combined_plot <- National_pov_con + National_edu_con + National_pre_con + National_pov_mat + National_edu_mat + National_pre_mat +
   plot_layout(ncol = 3, guides = 'collect') &  
-  theme(legend.position = 'bottom')
+  theme(
+    legend.position = 'bottom',
+        )
 
 National_graph  <- combined_plot
 
 National_graph
-ggsave("National.png", plot = National_graph)
+ggsave("./Figures/National.png", plot = National_graph)
 ```
 
 ```{r}
