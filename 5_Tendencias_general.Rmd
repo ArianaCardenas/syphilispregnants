@@ -24,7 +24,7 @@ library(patchwork)
 library(janitor)
 ```
 
-## Trend of syphilis screening (2014 - 2022)
+## Trend of syphilis screening (2015 - 2022)
 
 ```{r pressure, echo=FALSE}
 syphilis <- read_csv("Data_final/data_syphilis.csv")
@@ -285,7 +285,7 @@ print(maternal_line)
 library(gridExtra)
 library(ggplot2)
 
-# Saving the figure
+# Saving figure 1:
 
 figure1<-cowplot::plot_grid(congenital_line, maternal_line, syphi_tamizaje, ncol = 1, labels = c("a","b", "c"), label_size = 18)
 
