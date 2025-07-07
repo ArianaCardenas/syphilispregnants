@@ -38,7 +38,7 @@ congenital_2022 <- data_congenital_dep %>%
 ```{r}
 #Goal 2: Decrease in maternal syphilis by 30% between 2018 - 2022
 
-##Run the file "2_Maternal_syphilis.Rmd" up to line 154
+##Run the file "2_Maternal_syphilis.Rmd" up to line 146
 
 maternal_2018<- data_maternal_dep %>% 
   filter(year==2018) %>% 
@@ -245,5 +245,21 @@ figure2<-cowplot::plot_grid(figure_2a, figure_2b, ncol = 1, labels = c("a","b"),
 
 print(figure2)
 ggsave("Figures/Figure 2_Goals_2022.png", plot = figure2, width = 8, height = 8, dpi = 300)
+```
+
+#Joining Dumbell plots:
+
+```{r}
+# Run "1_Congenital_syphilis.Rmd" to obtain Congenital Syphilis Dumbell Plot
+# Run "2_Maternal_syphilis.Rmd" to obtain Maternal Syphilis Dumbell Plot
+# Run "3_Syphilis_screening.Rmd" to obtain Syphilis screening Dumbell plot
+
+library(gridExtra)
+library(ggplot2)
+
+figure3<-cowplot::plot_grid(syphcongenita, syphmaterna, d15_d22_screening, ncol = 1, labels = c("a","b", "c"), label_size = 18)
+
+print(figure3)
+ggsave("Figures/Figure 3_Dumbells_final_2.png", plot = figure3, width = 8, height = 14, dpi = 300)
 ```
 

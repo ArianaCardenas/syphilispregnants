@@ -14,6 +14,7 @@ library(readr)
 library(survey)
 ```
 
+# Datasets
 ```{r}
 data_ubigeo <- read_csv("Data_final/data_ubigeo_innovalab.csv")
 data_ubigeo_2022_innova <- read_csv("Data_final/data_ubigeo_2022_innova.csv")
@@ -36,7 +37,7 @@ data_ubigeo = rbind(data_ubigeo,data_ubigeo_2022_innova)
 ```
 
 #####
-##Agrupación de regiones: https://www.inei.gob.pe/media/MenuRecursivo/boletines/indicador_de_la_produccion_departamental.pdf
+##Grouping of departments: https://www.inei.gob.pe/media/MenuRecursivo/boletines/indicador_de_la_produccion_departamental.pdf
 
 ```{r}
 data_ubigeo_macroregion = data_ubigeo %>%
@@ -66,7 +67,7 @@ rm(data_ubigeo_macroregion,data_ubigeo,data_syphilis)
 ```
 
 ```{r}
-# Filtrar los datos
+#Filter data
 data_filtered <- data_total %>%
   mutate(
     syphilis_screening=ifelse(syphilis_screening=="Yes",1, 0)
@@ -80,7 +81,7 @@ data_filtered$year = as.factor(data_filtered$year)
 data_filtered = data_filtered %>%
   filter(year!=2010&year!=2011&year!=2012&year!=2013)
 
-# Crear el diseño de muestreo estratificado
+# Create the stratified sampling design
 design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_filtered, na.rm = TRUE)
 
 options(survey.lonely.psu="adjust")
