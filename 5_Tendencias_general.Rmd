@@ -285,9 +285,11 @@ print(maternal_line)
 library(gridExtra)
 library(ggplot2)
 
-# Guardar la imagen con los gráficos combinados en una sola columna
-g <- grid.arrange(congenital_line, maternal_line, syphi_tamizaje, ncol = 1)
+# Saving the figure
 
-ggsave("Trends_2015-2022.png", plot = g, width = 7, height = 14, dpi = 300)
+figure1<-cowplot::plot_grid(congenital_line, maternal_line, syphi_tamizaje, ncol = 1, labels = c("a","b", "c"), label_size = 18)
+
+print(figure1)
+ggsave("Figures/Figure 1_Trends_2015-2022.png", plot = figure1, width = 7, height = 14, dpi = 300)
 ```
 
