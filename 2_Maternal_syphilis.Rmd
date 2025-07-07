@@ -147,26 +147,30 @@ data_maternal_table
 
 ```
 
-Map of maternal syphilis per year
+Map of maternal syphilis per year/department
+
 
 ```{r}
-ggplot() +
+figureS2 <- ggplot() +
   geom_sf(data = data_maternal_dep, aes(geometry = geometry,fill = rate),
-          color = "black", size = 0.2) +
-  scale_fill_gradient(low = "#D2EEEA", high = "#2A5676") +
-   labs(title="Cases of syphilis in pregnants, INS data",
-        fill = "Syphilis in pregnants per 1000 newborn")
-
-```
-
-```{r}
-ggplot() +
-  geom_sf(data = data_maternal_dep, aes(geometry = geometry,fill = rate),
-          color = "black", size = 0.2) +
+          color = "black", size = 0.4) +
   scale_fill_gradient(low = "#D2EEEA", high = "#2A5676") +
   facet_wrap(.~year) + 
-   labs(title="Cases of syphilis in pregnants, INS data",
-        fill = "Syphilis in pregnants per 1000 newborn") 
+  labs(fill = "Rate") +
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(),       
+    axis.ticks = element_blank(),     
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    strip.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10)
+  )
+
+print(figureS2)
+
+ggsave("Figures/S2 Figure_Maternal_2015-2022.png", plot = figureS2, width = 7, height = 8, dpi = 300)
 ```
 
 

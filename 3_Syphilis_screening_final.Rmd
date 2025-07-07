@@ -79,7 +79,7 @@ data_filtered$NOMBDEP = as.factor(data_filtered$NOMBDEP)
 data_filtered$year = as.factor(data_filtered$year)
 
 data_filtered = data_filtered %>%
-  filter(year!=2010&year!=2011&year!=2012&year!=2013)
+  filter(year!=2010&year!=2011&year!=2012&year!=2013&year!=2014)
 
 # Create the stratified sampling design
 design <- svydesign(id = ~ v001, strata = ~ v022, nest = TRUE, weights = ~ v005, data = data_filtered, na.rm = TRUE)
@@ -256,12 +256,25 @@ rm(data_grafico_2022)
 ```
 
 ```{r, fig.height=7, fig.width=9}
-ggplot() +
-  geom_sf(data = data_grafico_year, aes(geometry = geometry,fill = syphilis_screening), color = "black", size = 0.2) +
+figureS3 <- ggplot() +
+  geom_sf(data = data_grafico_year, aes(geometry = geometry,fill = syphilis_screening), color = "black", size = 0.4) +
   scale_fill_gradient(low = "#D2EEEA", high = "#2A5676") +
   facet_wrap(~year)+
-   labs(title="Syphilis screening 2015 - 2022",
-        fill = "Syphilis screening") 
+  labs(fill = "Rate") + 
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(),       
+    axis.ticks = element_blank(),     
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    strip.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10)
+  )
+
+print(figureS3)
+
+ggsave("Figures/ S3 Figure_Screening_2015-2022.png", plot = figureS3, width = 7, height = 8, dpi = 300)
 ```
 
 Grafico dumbbell general: syphilis_screening
