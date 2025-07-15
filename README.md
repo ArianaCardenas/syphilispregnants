@@ -4,10 +4,10 @@ This retrospective epidemiological study was conducted using Peruvian secondary 
 ## [Figure goals - 2022]
 ## Achievement of syphilis goals by 2022. a. Number of departments that met the established goals. b. Percentage of goals met by departments.
 # Repository structure
-•	Data_Enaho – Raw data from National Household Surveys for the period of 2015 – 2022. 
-•	Data_Endes – Raw data from Demographic and Health Surveys for the period of 2015 – 2022. Data of syphilis screening coverage from 2015 to 2022.
-•	Data_final – Datasets of epidemiological reports of congenital and maternal syphilis from 2015 to 2022. Datasets of live birth numbers per year (National Registry of Identification and Civil Status).
-•	Figures – Figures in the main text and supplementary information.
+### 	Data_Enaho – Raw data from National Household Surveys for the period of 2015 – 2022. 
+### 	Data_Endes – Raw data from Demographic and Health Surveys for the period of 2015 – 2022. Data of syphilis screening coverage from 2015 to 2022.
+### 	Data_final – Datasets of epidemiological reports of congenital and maternal syphilis from 2015 to 2022. Datasets of live birth numbers per year (National Registry of Identification and Civil Status).
+### 	Figures – Figures in the main text and supplementary information.
             o	Figure 1. Trends in syphilis in Peru between 2015 and 2022
             o	Figure 2. Achievement of syphilis goals by 2022
             o	Figure 3. Trends of syphilis in 2015, 2018 and 2022 at the departmental level
@@ -18,14 +18,14 @@ This retrospective epidemiological study was conducted using Peruvian secondary 
             o	S3 Figure. Percentages of syphilis screening during pregnancy at the department level in Peru, 2015 – 2022
             o	S4 Figure. Trends of average syphilis rates for each sociodemographic characteristic at the region level
             o	S5 Figure. Spatial distribution of syphilis rates and sociodemographic characteristics in 2015, 2018, and 2022
-•	1_Congenital_syphilis.Rmd – Rmarkdown of congenital syphilis rates.
-•	2_Maternal_syphilis.Rmd – Rmarkdown of maternal syphilis rates.
-•	3_Syphilis_screening_final.Rmd – Rmarkdown of syphilis screening percentages.
-•	4_Goals_syphilis.Rmd – Rmarkdown for describing syphilis goals in 2022.
-•	5_Tendencias_general.Rmd – National trends (between 2015 and 2022) in congenital and maternal syphilis, and syphilis screening.
-•	6_Bivariate_maps_enaho.Rmd – Bivariate maps showing co-ocurrence of higher congenital syphilis trends and social determinants in Peruvian departments.
-•	7_Bivariate_mapsII_enaho.Rmd – Bivariate maps showing co-ocurrence of higher maternal syphilis trends and social determinants in Peruvian departments.
-•	Data preparation_DHS_endes_1.R – Rmarkdown of DHS data preparation.
-•	Data preparation_DHS_endes_2.R – Rmarkdown of DHS data preparation, selection of variables.
-•	syphilispregnants.Rproj – R project file.
+### 	1_Congenital_syphilis.Rmd – Rmarkdown of congenital syphilis rates.
+### 	2_Maternal_syphilis.Rmd – Rmarkdown of maternal syphilis rates.
+### 	3_Syphilis_screening_final.Rmd – Rmarkdown of syphilis screening percentages.
+### 	4_Goals_syphilis.Rmd – Rmarkdown for describing syphilis goals in 2022.
+### 	5_Tendencias_general.Rmd – National trends (between 2015 and 2022) in congenital and maternal syphilis, and syphilis screening.
+### 	6_Bivariate_maps_enaho.Rmd – Bivariate maps showing co-ocurrence of higher congenital syphilis trends and social determinants in Peruvian departments.
+### 	7_Bivariate_mapsII_enaho.Rmd – Bivariate maps showing co-ocurrence of higher maternal syphilis trends and social determinants in Peruvian departments.
+### 	Data preparation_DHS_endes_1.R – Rmarkdown of DHS data preparation.
+### 	Data preparation_DHS_endes_2.R – Rmarkdown of DHS data preparation, selection of variables.
+### 	syphilispregnants.Rproj – R project file.
 <img width="442" height="640" alt="image" src="https://github.com/user-attachments/assets/a867161f-1735-4ac3-8c45-094b65b417ea" />
