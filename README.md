@@ -25,6 +25,7 @@ This retrospective epidemiological study was conducted using Peruvian secondary 
 ### 	5_Tendencias_general.Rmd – National trends (between 2015 and 2022) in congenital and maternal syphilis, and syphilis screening.
 ### 	6_Bivariate_maps_enaho.Rmd – Bivariate maps showing co-ocurrence of higher congenital syphilis trends and social determinants in Peruvian departments.
 ### 	7_Bivariate_mapsII_enaho.Rmd – Bivariate maps showing co-ocurrence of higher maternal syphilis trends and social determinants in Peruvian departments.
+###         8_Determinantes_final.Rmd - Trends of average syphilis rates for each sociodemographic characteristic at the national and regional level
 ### 	Data preparation_DHS_endes_1.R – Rmarkdown of DHS data preparation.
 ### 	Data preparation_DHS_endes_2.R – Rmarkdown of DHS data preparation, selection of variables.
 ### 	syphilispregnants.Rproj – R project file.
