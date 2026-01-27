@@ -76,7 +76,7 @@ congenital <- congenital %>%
 congenital <- rename(
   congenital, c("NOMBDEP"="DEPARTAMENTO","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
 
-congenital_long <- pivot_longer(congenital, cols = c(4:12), 
+congenital_long <- pivot_longer(congenital, cols = c(5:13), 
                                 names_to = "year", values_to = "congenital")
 
 
@@ -101,7 +101,7 @@ data_congenital_dep <- congenital_long_dep %>%
   mutate(year = as.character(year))
 ```
 
-```{r}
+```{r warning=FALSE}
 ## Congenital syphilis and poverty
 poverty = 
   data_enaho %>%
@@ -286,7 +286,7 @@ mappoverty
 
 EDUCATION:
 
-```{r}
+```{r warning=FALSE}
 ## Congenital syphilis and education
 education = 
   data_enaho %>%
@@ -319,7 +319,7 @@ syphilis_education <- syphilis_education %>%
 # Bivariate graphic of the rate of congenital syphilis and level education
 in the departments of Peru
 
-```{r, echo=FALSE, fig.height=8, fig.width=10}
+```{r echo=FALSE, fig.height=8, fig.width=10, warning=FALSE}
 
 datamap <- bi_class(syphilis_education, x = rate_con, y = less_than_secondary, style = "quantile", dim = 2)
 
@@ -465,7 +465,7 @@ mapeducation
 
 Prenatal care
 
-```{r}
+```{r warning=FALSE}
 ## Congenital syphilis and prenatal care
 precare = 
   data_enaho %>%
@@ -497,7 +497,7 @@ syphilis_precare <- syphilis_precare %>%
 # Bivariate graphic of the rate of congenital syphilis and prenatal care
 in the departments of Peru
 
-```{r, echo=FALSE, fig.height=6, fig.width=8}
+```{r echo=FALSE, fig.height=6, fig.width=8, warning=FALSE}
 
 datamap <- bi_class(syphilis_precare, x = rate_con, y = prenatal_visitno, style = "quantile", dim = 2)
 
