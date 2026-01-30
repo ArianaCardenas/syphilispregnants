@@ -1,0 +1,386 @@
+---
+title: "Marascuilo"
+output: html_document
+date: "2026-01-28"
+---
+
+```{r}
+library(sf)
+library(purrr)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+library(readr)
+library(survey)
+library(gridExtra)
+library(cowplot)
+library(readxl)
+library(wesanderson)
+library(patchwork)
+library(RSQLite)
+```
+
+```{r}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	cache = FALSE,
+	dev = "png",
+	dpi = 300
+)
+```
+
+```{r}
+data_enaho <- read_csv("Data_enaho/enaho2.csv")
+data_ubigeo <- read_csv("Data_final/data_ubigeo_innovalab.csv")
+departamentos <- read_sf("Límites - mapas/DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp")
+#data_syphilis <- read_csv("Data_final/data_syphilis.csv")
+
+data_enaho = rename(data_enaho, c("UBIGEO"="ubigeo"))
+
+data_ubigeo = data_ubigeo %>%
+  filter(year > 2014)
+
+data_ubigeo = data_ubigeo [,c(8,10,12,14)]
+
+data_ubigeo = distinct(data_ubigeo)
+
+data_enaho <- data_enaho %>%
+  left_join(data_ubigeo, by = c("UBIGEO")) %>%
+  mutate(
+    year = as.numeric(data_enaho$year),
+    region_natural = case_when(NOMBDEP == "TUMBES"|NOMBDEP == "PIURA"|NOMBDEP == "LAMBAYEQUE"|NOMBDEP == "LA LIBERTAD"|NOMBDEP == "ANCASH"|NOMBDEP == "LIMA"|NOMBDEP == "CALLAO"|NOMBDEP == "ICA"|NOMBDEP == "AREQUIPA"|NOMBDEP == "MOQUEGUA"|NOMBDEP == "TACNA" ~ "COSTA",
+                               NOMBDEP == "CAJAMARCA"|NOMBDEP == "HUANUCO"|NOMBDEP == "PASCO"|NOMBDEP == "JUNIN"|NOMBDEP == "HUANCAVELICA"|NOMBDEP == "AYACUCHO"|NOMBDEP == "APURIMAC"|NOMBDEP == "CUSCO"|NOMBDEP == "PUNO" ~ "SIERRA",
+                               NOMBDEP == "AMAZONAS"|NOMBDEP == "SAN MARTIN"|NOMBDEP == "LORETO"|NOMBDEP == "UCAYALI"|NOMBDEP == "MADRE DE DIOS" ~ "SELVA")
+  )
+
+rm(data_syphilis,data_ubigeo)
+```
+
+Uploading MINSA data (maternal and congenital syphilis):
+```{r, echo=FALSE}
+maternal <- read_csv("Data_final/syphilis_maternal.csv")
+newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
+newborn_distrito <- read_excel("Data_final/Reniec_Nacimientos_Distritos.xlsx")
+
+newborn_distrito = newborn_distrito %>% 
+  mutate(across(c(NOMBDEP, NOMBPROV, NOMBDIST),
+                ~ toupper(.x) %>%
+                  stringi::stri_trans_general("Latin-ASCII")))
+
+maternal = rename(
+  maternal, c("NOMBDEP"="departamento","NOMBPROV"="provincia","NOMBDIST"="distrito"))
+newborn = rename(
+  newborn, c("NOMBDEP"="departamento","NOMBPROV"="provincia","year"="years"))
+
+maternal_long <- pivot_longer(maternal, cols = c(4:11), 
+                                names_to = "year", values_to = "maternal")
+
+congenital <- read_csv("Data_final/syphilis_congenital.csv")
+
+congenital <- congenital %>%
+  select(!c(1))
+
+congenital <- rename(
+  congenital, c("NOMBDEP"="DEPARTAMENTO","NOMBPROV"="PROVINCIA","NOMBDIST"="DISTRITO"))
+
+congenital_long <- pivot_longer(congenital, cols = c(4:12), 
+                                names_to = "year", values_to = "congenital")
+
+#Provincial
+newborn_prov <- newborn %>%
+  group_by(NOMBDEP, NOMBPROV, year) %>%
+  summarise(newborntotal =sum(n, na.rm = TRUE)) %>%
+  ungroup()
+
+rm(maternal,congenital,newborn)
+```
+
+Maternal
+```{r}
+data_maternal_prov <- maternal_long %>%
+  group_by(NOMBDEP, NOMBPROV, year) %>%
+  filter( year > 2014) %>%
+  summarise(maternal =sum(maternal, na.rm = TRUE)) %>%
+  mutate(year=as.numeric(year))%>%
+  ungroup()
+
+#Calculating rates of maternal syphilis 
+data_maternal_prov <- data_maternal_prov %>%
+  left_join(newborn_prov, by = c("NOMBDEP","NOMBPROV","year")) %>%
+  mutate(rate_mat = (maternal/newborntotal)*1000)
+
+data_maternal_prov = data_maternal_prov %>%
+  mutate(
+    region_natural = case_when(NOMBDEP == "TUMBES"|NOMBDEP == "PIURA"|NOMBDEP == "LAMBAYEQUE"|NOMBDEP == "LA LIBERTAD"|NOMBDEP == "ANCASH"|NOMBDEP == "LIMA"|NOMBDEP == "CALLAO"|NOMBDEP == "ICA"|NOMBDEP == "AREQUIPA"|NOMBDEP == "MOQUEGUA"|NOMBDEP == "TACNA" ~ "COSTA",
+                               NOMBDEP == "CAJAMARCA"|NOMBDEP == "HUANUCO"|NOMBDEP == "PASCO"|NOMBDEP == "JUNIN"|NOMBDEP == "HUANCAVELICA"|NOMBDEP == "AYACUCHO"|NOMBDEP == "APURIMAC"|NOMBDEP == "CUSCO"|NOMBDEP == "PUNO" ~ "SIERRA",
+                               NOMBDEP == "AMAZONAS"|NOMBDEP == "SAN MARTIN"|NOMBDEP == "LORETO"|NOMBDEP == "UCAYALI"|NOMBDEP == "MADRE DE DIOS" ~ "SELVA")
+  )
+```
+
+Congenital:
+```{r}
+congenital_long$year = as.numeric(congenital_long$year) 
+
+#Provincial
+congenital_long_prov <- congenital_long %>%
+  group_by(NOMBDEP,NOMBPROV, year) %>%
+  summarise(congenital = sum(congenital, na.rm = TRUE)) %>%
+  unnest(congenital)
+
+data_congenital_prov <- congenital_long_prov %>%
+  left_join(newborn_prov, by = c("NOMBDEP","NOMBPROV","year")) %>%
+  mutate(rate_con = (congenital/newborntotal)*1000) %>% 
+  mutate_if(is.numeric, round, 2) %>%
+  filter(rate_con < 100.0)
+
+data_congenital_prov = data_congenital_prov %>%
+  mutate(
+    region_natural = case_when(NOMBDEP == "TUMBES"|NOMBDEP == "PIURA"|NOMBDEP == "LAMBAYEQUE"|NOMBDEP == "LA LIBERTAD"|NOMBDEP == "ANCASH"|NOMBDEP == "LIMA"|NOMBDEP == "CALLAO"|NOMBDEP == "ICA"|NOMBDEP == "AREQUIPA"|NOMBDEP == "MOQUEGUA"|NOMBDEP == "TACNA" ~ "COSTA",
+                               NOMBDEP == "CAJAMARCA"|NOMBDEP == "HUANUCO"|NOMBDEP == "PASCO"|NOMBDEP == "JUNIN"|NOMBDEP == "HUANCAVELICA"|NOMBDEP == "AYACUCHO"|NOMBDEP == "APURIMAC"|NOMBDEP == "CUSCO"|NOMBDEP == "PUNO" ~ "SIERRA",
+                               NOMBDEP == "AMAZONAS"|NOMBDEP == "SAN MARTIN"|NOMBDEP == "LORETO"|NOMBDEP == "UCAYALI"|NOMBDEP == "MADRE DE DIOS" ~ "SELVA")
+  )
+rm(congenital_long,congenital_long_dep,congenital_long_nac,newborn_nac,newborn_dep,data_ins_long,newborn_nac,newborn_dep, congenital_long_prov, departamentos, maternal_long, newborn_distrito, newborn_prov)
+```
+
+```{r}
+mat_tab <- data_maternal_prov %>%
+  group_by(region_natural) %>%
+  summarise(
+    total_cases = sum(maternal, na.rm = TRUE),
+    total_pop = sum(newborntotal, na.rm = TRUE)
+  ) %>%
+  mutate(prop = total_cases / total_pop)
+```
+
+```{r}
+con_tab <- data_congenital_prov %>%
+  group_by(region_natural) %>%
+  summarise(
+    total_cases = sum(congenital, na.rm = TRUE),
+    total_pop = sum(newborntotal, na.rm = TRUE)
+  ) %>%
+  mutate(prop = total_cases / total_pop)
+```
+
+```{r}
+marascuilo_test <- function(cases, totals, group_names, alpha = 0.05) {
+  
+  k <- length(cases)
+  props <- cases / totals
+  chisq_crit <- qchisq(1 - alpha, df = k - 1)
+  
+  results <- data.frame()
+  
+  for (i in 1:(k-1)) {
+    for (j in (i+1):k) {
+      
+      diff <- abs(props[i] - props[j])
+      critical_range <- sqrt(
+        chisq_crit * (
+          props[i]*(1 - props[i]) / totals[i] +
+          props[j]*(1 - props[j]) / totals[j]
+        )
+      )
+      
+      sig <- ifelse(diff > critical_range, "Significant", "Not significant")
+      
+      results <- rbind(results, data.frame(
+        Group1 = group_names[i],
+        Group2 = group_names[j],
+        Prop1 = props[i],
+        Prop2 = props[j],
+        Difference = diff,
+        CriticalRange = critical_range,
+        Result = sig
+      ))
+    }
+  }
+  
+  return(results)
+}
+
+```
+
+```{r}
+mat_results <- marascuilo_test(
+  cases = mat_tab$total_cases,
+  totals = mat_tab$total_pop,
+  group_names = mat_tab$region_natural
+)
+
+mat_results
+```
+
+```{r}
+con_results <- marascuilo_test(
+  cases = con_tab$total_cases,
+  totals = con_tab$total_pop,
+  group_names = con_tab$region_natural
+)
+
+con_results
+```
+
+```{r}
+rm(mat_tab, con_tab)
+```
+
+## Primero filtrar por región natural, y luego por cada determinante. Base: moda.
+
+Regiones naturales estratificadas por determinantes sociodemográficas
+
+```{r}
+get_mode <- function(x) {
+  ux <- na.omit(x)
+  if (length(ux) == 0) return(NA)
+  names(sort(table(ux), decreasing = TRUE))[1]
+}
+```
+
+```{r}
+enaho_mode <- data_enaho %>%
+  group_by(NOMBPROV, year) %>%
+  summarise(
+    education_mode = get_mode(education_level),
+    poverty_mode = get_mode(poverty),
+    prenatal_mode = get_mode(prenatal_visit),
+    .groups = "drop"
+  )
+```
+
+```{r}
+enaho_maternal <- data_maternal_prov %>%
+  left_join(enaho_mode, by = c("NOMBPROV", "year"))
+
+enaho_congenital <- data_congenital_prov %>%
+  left_join(enaho_mode, by = c("NOMBPROV", "year"))
+
+rm(enaho_mode)
+```
+
+```{r}
+mat_education <- enaho_maternal %>%
+  group_by(region_natural, education_mode) %>%
+  summarise(
+    total_cases = sum(maternal, na.rm = TRUE),
+    total_pop = sum(newborntotal, na.rm = TRUE)
+  ) %>%
+  mutate(prop = total_cases / total_pop)
+
+mat_poverty <- enaho_maternal %>%
+  group_by(region_natural, poverty_mode) %>%
+  summarise(
+    total_cases = sum(maternal, na.rm = TRUE),
+    total_pop = sum(newborntotal, na.rm = TRUE)
+  ) %>%
+  mutate(prop = total_cases / total_pop)
+
+mat_prenatal <- enaho_maternal %>%
+  group_by(region_natural, prenatal_mode) %>%
+  summarise(
+    total_cases = sum(maternal, na.rm = TRUE),
+    total_pop = sum(newborntotal, na.rm = TRUE)
+  ) %>%
+  mutate(prop = total_cases / total_pop)
+```
+
+```{r}
+by(mat_education, mat_education$education_mode
+   , function(df) {
+  marascuilo_test(
+    cases = df$total_cases,
+    totals = df$total_pop,
+    group_names = df$region_natural
+  )
+})
+```
+Al estratificar por nivel educativo, se observa que en las provincias donde predomina un nivel educativo menor a secundaria y se ubican en la Selva presentan las proporciones más altas de sífilis materna, seguidas de la Sierra, mientras que la Costa mantiene los niveles más bajos, siendo todas las diferencias estadísticamente significativas. Adicionalmente, entre las provincias con mayor nivel educativo (secundaria o más), las brechas regionales se reducen. 
+
+```{r}
+by(mat_poverty, mat_poverty$poverty_mode
+   , function(df) {
+  marascuilo_test(
+    cases = df$total_cases,
+    totals = df$total_pop,
+    group_names = df$region_natural
+  )
+})
+```
+Al estratificar por condición de pobreza, se observa que en las provincias donde predomina la pobreza y se ubican en la Selva presentan las proporciones más altas de sífilis materna. Adicionalmente, entre las provincias en las cuales no predomina la pobreza, aunque la Costa sigue mostrando proporciones menores, las diferencias entre la Sierra y Selva se atenúan.
+
+```{r}
+by(mat_prenatal, mat_prenatal$prenatal_mode
+   , function(df) {
+  marascuilo_test(
+    cases = df$total_cases,
+    totals = df$total_pop,
+    group_names = df$region_natural
+  )
+})
+```
+Al considerar el acceso a controles prenatales, se observó que, si bien una cobertura de atención prenatal se asocia con menores proporciones de sífilis materna, las desigualdades regionales persisten. Incluso en las provincias donde predominan los controles prenatales, tanto la Selva como la Sierra, mantienen proporciones más altas que la Costa
+
+```{r}
+con_education <- enaho_congenital %>%
+  group_by(region_natural, education_mode) %>%
+  summarise(
+    total_cases = sum(congenital, na.rm = TRUE),
+    total_pop = sum(newborntotal, na.rm = TRUE)
+  ) %>%
+  mutate(prop = total_cases / total_pop)
+
+con_poverty <- enaho_congenital %>%
+  group_by(region_natural, poverty_mode) %>%
+  summarise(
+    total_cases = sum(congenital, na.rm = TRUE),
+    total_pop = sum(newborntotal, na.rm = TRUE)
+  ) %>%
+  mutate(prop = total_cases / total_pop)
+
+con_prenatal <- enaho_congenital %>%
+  group_by(region_natural, prenatal_mode) %>%
+  summarise(
+    total_cases = sum(congenital, na.rm = TRUE),
+    total_pop = sum(newborntotal, na.rm = TRUE)
+  ) %>%
+  mutate(prop = total_cases / total_pop)
+```
+
+```{r}
+by(con_education, con_education$education_mode
+   , function(df) {
+  marascuilo_test(
+    cases = df$total_cases,
+    totals = df$total_pop,
+    group_names = df$region_natural
+  )
+})
+```
+Para el caso de la sífilis congénita, se observan también diferencias regionales, aunque menos marcadas que en la sífilis materna. 
+
+Se observa que en las provincias donde predomina el bajo nivel educativo, la Selva y la Sierra presentan proporciones más altas que la Costa.
+
+```{r}
+by(con_poverty, con_poverty$poverty_mode
+   , function(df) {
+  marascuilo_test(
+    cases = df$total_cases,
+    totals = df$total_pop,
+    group_names = df$region_natural
+  )
+})
+```
+Según la estratificación de condición de pobreza, las provincias donde predomina la pobreza, las diferencias regionales dejan de ser significativas.
+
+```{r}
+by(con_prenatal, con_prenatal$prenatal_mode
+   , function(df) {
+  marascuilo_test(
+    cases = df$total_cases,
+    totals = df$total_pop,
+    group_names = df$region_natural
+  )
+})
+```
+
+Finalmente, al estratificar por acceso a controles prenatales, se observa que la ausencia de controles tiende a homogeneizar el riesgo entre regiones, mientras que en las provincias con mejor vobertura prenatal, la Costa mantiene proporciones significativamente menores que la Sierra y la Selva. 
