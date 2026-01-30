@@ -20,9 +20,10 @@ library(patchwork)
 
 
 ```{r}
-#Goal 1: Rate of Congenital syphilis < 0.5 per 1000 individuals
+#Goal 1: Rate of Congenital syphilis < 0.5 per 1000 live births 
 
-##Correr el rmd de congenital syphilis hasta línea 177
+##Run the file "1_Congenital syphilis.Rmd" up to line 179
+
 pre_congenital_2022 <- data_congenital_dep %>% 
   filter(year==2022) %>% 
   group_by(NOMBDEP) %>% 
@@ -35,9 +36,9 @@ congenital_2022 <- data_congenital_dep %>%
 ```
 
 ```{r}
-#Goal 2: Decreade in maternal syphilis by 30% between 2018 - 2022
+#Goal 2: Decrease in maternal syphilis by 30% between 2018 - 2022
 
-##Correr el rmd de Syphilis_materna
+##Run the file "2_Maternal_syphilis.Rmd" up to line 146
 
 maternal_2018<- data_maternal_dep %>% 
   filter(year==2018) %>% 
@@ -61,13 +62,13 @@ combined_data_maternal <-  combined_data_maternal %>%
 ```{r}
 #Goal 3: Screening of syphilis - 2022
 
-#Correr el rmd de Syphilis_screening_final
+#Run the file "3_Syphilis_screening.Rmd" up to line 250
 freq_screening_2022 <- data_grafico_2022 %>%
   select(NOMBDEP, syphilis_screening)
 ```
 
 ```{r}
-#Combinamos los 3 goals
+#Joining the three goals
 
 combined_data_2022 <- congenital_2022 %>%
   left_join(freq_screening_2022, by = c("NOMBDEP")) %>% 
@@ -76,7 +77,7 @@ combined_data_2022 <- congenital_2022 %>%
 ```
 
 ```{r, fig.width = 8, fig.height = 5}
-#Figura de columnas -combinaciones
+#Figure: columns
 
 GOALS_2022 <- combined_data_2022 %>% 
     mutate(
@@ -118,7 +119,7 @@ library(innovar)
 hcl.colors("teal", n = 5)
 ```
 ```{r}
-#Figuras de mapas
+#Figure: Maps
 
 #Goal 3 - Syphilis screening
 
@@ -234,24 +235,7 @@ print(figure_2b2)
 
 ```
 
-
-```{r}
-Figure_2b = (figure_2b1 | figure_2b2 | figure_2b3) +
-  plot_layout(guides = "keep")
-
-Figure_2b
-```
-```{r fig.height=8, fig.width=8}
-Figure2 = figure_2a / Figure_2b +
-  plot_annotation(tag_levels = "a") +
-  plot_layout(heights = unit(c(6, 10), c('null', 'cm')))
-
-print(Figure2)
-
-```
-
-
-#Nueva opción para guardar figuras*
+#Saving figure 2_Goals 2022
 ```{r}
 figure_2a <- figure_2a + theme(plot.margin = margin(10, 50, 20, 50)) 
 figure_2b<-cowplot::plot_grid(figure_2b1,figure_2b2, figure_2b3, ncol = 3, rel_widths = c(1, 1, 1),  
@@ -260,6 +244,22 @@ figure_2b<-cowplot::plot_grid(figure_2b1,figure_2b2, figure_2b3, ncol = 3, rel_w
 figure2<-cowplot::plot_grid(figure_2a, figure_2b, ncol = 1, labels = c("a","b"), rel_heights = c(8,8))
 
 print(figure2)
-ggsave("Goals_2022.png", plot = figure2, width = 8, height = 8, dpi = 300)
+ggsave("Figures/Figure 2_Goals_2022.png", plot = figure2, width = 8, height = 8, dpi = 300)
+```
+
+#Joining Dumbell plots:
+
+```{r}
+# Run "1_Congenital_syphilis.Rmd" to obtain Congenital Syphilis Dumbell Plot
+# Run "2_Maternal_syphilis.Rmd" to obtain Maternal Syphilis Dumbell Plot
+# Run "3_Syphilis_screening.Rmd" to obtain Syphilis screening Dumbell plot
+
+library(gridExtra)
+library(ggplot2)
+
+figure3<-cowplot::plot_grid(syphcongenita, syphmaterna, d15_d22_screening, ncol = 1, labels = c("a","b", "c"), label_size = 18)
+
+print(figure3)
+ggsave("Figures/Figure 3_Dumbells_final_2.png", plot = figure3, width = 8, height = 14, dpi = 300)
 ```
 

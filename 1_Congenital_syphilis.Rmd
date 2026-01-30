@@ -18,7 +18,7 @@ library(kableExtra)
 library(gt)
 ```
 
-# Cargando las datas
+# Datasets
 
 ```{r, echo=FALSE}
 provincias <- read_sf("Límites - mapas/PROVINCIAS_inei_geogpsperu_suyopomalia.shp")
@@ -27,7 +27,7 @@ congenital <- read_csv("Data_final/syphilis_congenital.csv")
 newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
 ```
 
-Limpieza de la data
+# Cleaning datasets
 
 ```{r, echo=FALSE}
 
@@ -80,42 +80,9 @@ data_congenital_dep <- congenital_dep %>%
   mutate_if(is.numeric, round, 2) %>%
   left_join(departamentos, by = c("NOMBDEP"))
 ```
-## Casos de sífilis congénita por 1000 nacidos vivos por departamento.
+# Congenital syphilis cases per 1000 live births
 
-#Dumbell Plot años 2014, 2018 y 2022.
-
-
-```{r pressure, echo=FALSE}
-
-syphcongenita <- data_congenital_dep %>%
-  filter(year==2015|year==2018|year==2022)
-
-syphcongenita <- ggplot(syphcongenita, aes(x = rate, y = reorder(NOMBDEP,desc(ZONA)))) +
-  geom_line() +
-  geom_point(aes(color = year), size = 3) +
-  scale_color_manual(values = c("#3B99B1", "#EACB2B", "#F5191C")) +
-  xlab("Rate per 1000 newborns")+
-  ylab("Departments") +
-  labs(title = "Congenital Syphilis") +
-  theme_bw() +
-  theme(
-    axis.title = element_text(face ="bold", size = 11),
-    legend.text = element_text(size = 12, face = "bold"),
-    axis.text = element_text(face = "bold", family = "Arial"),
-    axis.text.x = element_text( size = 9),
-    legend.position = "right",
-    legend.title = element_blank(),
-    axis.line = element_line(colour = "black", linewidth = 1),
-    panel.background = element_blank(),
-    strip.background = element_blank(),
-    strip.text = element_text(face = "bold"),
-    panel.grid = element_blank()
-  ) 
-
-syphcongenita
-#ggsave("Graph_dumbell_congenital.png", plot = syphcongenita, width = 8, height = 4, dpi = 300)
-
-```
+##Dumbell Plot (years 2015, 2018, and 2022)
 
 ```{r}
 syphcongenita <- data_congenital_dep %>%
@@ -158,26 +125,26 @@ syphcongenita
 
 ```
 
-# Tabla de las 10 provincias con más casos de sífilis congénita por 1000 nacidos vivos.
+## Table of the 10 sub-departments with the most cases of congenital syphilis per 1000 live births.
 
 ```{r, echo=FALSE}
 
-data_congenital_table <- data_congenital_prov %>%
-  select(NOMBDEP, NOMBPROV, year, rate) %>%
-  arrange(desc(rate)) %>%
-  head(n= 10) %>%
-  gt(groupname_col = FALSE) %>%
-  tab_header(
-    title = "Departments, provinces and years with the highest rate of congenital sifilis"
-  ) %>%
-  tab_footnote(
-    footnote = "Rate per 1000 newborn",
-    locations = cells_column_labels(columns = rate)
-  )
-data_congenital_table
+#data_congenital_table <- data_congenital_prov %>%
+#  select(NOMBDEP, NOMBPROV, year, rate) %>%
+#  arrange(desc(rate)) %>%
+#  head(n= 10) %>%
+#  gt(groupname_col = FALSE) %>%
+#  tab_header(
+#    title = "Departments, provinces and years with the highest rate of congenital sifilis"
+#  ) %>%
+#  tab_footnote(
+#    footnote = "Rate per 1000 newborn",
+#    locations = cells_column_labels(columns = rate)
+#  )
+# data_congenital_table
 
 ```
-Tabla de departamentos y provincias que en el 2022 tuvieron ≤ 0.5 por 1000 nacidos vivos con sífilis congénita
+## Table of departments and provinces that in 2022 had ≤ 0.5 per 1000 live births with congenital syphilis
 
 ```{r, echo=FALSE}
 data_congenital_goal <- data_congenital_dep %>%
@@ -211,12 +178,11 @@ data_congenital_goal <- data_congenital_goal %>%
   )
 data_congenital_goal
   
-
 ```
 
-# Mapa de casos de sífilis congénita por 1000 nacidos vivos por departamento.
+# Map of congenital syphilis cases per 1000 live births by department
 
-Mapa que incluye el promedio de casos desde 2015 al 2022
+Map showing the average number of cases from 2015 to 2022
 
 ```{r}
 ggplot() +
@@ -229,31 +195,29 @@ ggplot() +
 
 ```
 
-Mapa de casos por años
+Map per year
 
 ```{r}
-ggplot() +
+figureS1 <- ggplot() +
   geom_sf(data = data_congenital_dep,
           aes(geometry = geometry,fill = rate),
-          color = "black", size = 0.2) +
+          color = "black", size = 0.4) +
   scale_fill_gradient(low = "#D2EEEA", high = "#2A5676") +
   facet_wrap(.~year) + 
-  labs(title="Rate of congenital syphilis per 1000 newborn",
-       fill = "Rate")
-```
+  labs(fill = "Rate") + 
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(),       
+    axis.ticks = element_blank(),     
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    strip.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10)
+  )
 
-Joining Dumbell plots:
+print(figureS1)
 
-```{r fig.height=13.5, fig.width=8.5}
-# Run "Mapas I.Rmd" to obtain Screening Syphilis Dumbell Plot
-# Run "Mapas Syphilis INS.Rmd" to obtain Maternal Syphilis Dumbell Plot
-
-library(gridExtra)
-library(ggplot2)
-
-# Guardar la imagen con los gráficos combinados en una sola columna
-g <- grid.arrange(syphcongenita, syphmaterna, d15_d22_screening, ncol = 1)
-
-ggsave("Dumbells_final.png", plot = g, width = 8, height = 14, dpi = 300)
+ggsave("Figures/S1 Figure_Congenital syphilis_2015-2022.png", plot = figureS1, width = 7, height = 8, dpi = 300)
 ```
 

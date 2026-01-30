@@ -17,7 +17,7 @@ library(kableExtra)
 library(gt)
 ```
 
-# Cargando los dataframe
+# Datasets
 
 ```{r}
 departamentos <- read_sf("Límites - mapas/DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp")
@@ -26,8 +26,7 @@ newborn <- read_csv("Data_final/Nacidos_vivos_long.csv")
 maternal <- read_csv("Data_final/syphilis_maternal.csv")
 ```
 
-# Limpiando y agrupando la data
-
+# Cleaning datasets
 
 ```{r }
 
@@ -65,11 +64,6 @@ newborndep <- newbornprov %>%
 
 ```
 
-
-Unimos dataframes y obtenemos el número de casos ajustado por población
-Para calcular la tasa de tamizaje de sífilis usamos la población femenina en general; 
-para calcular la tasa de sífilis reactiva usamos los nacidos vivos como un proxi de gestantes.
-
 ```{r}
 
 data_maternal_prov <- maternal_prov %>%
@@ -90,10 +84,9 @@ rm(maternal_prov,maternal_dep,maternal_long,newbornprov, newborndep)
 ```
 
 
-#Sífilis materna
+# Maternal syphilis
 
-Dumbell Plot años 2015, 2018 y 2022.
-
+##Dumbell Plot of maternal syphilis - year 2015, 2018 and 2022
 
 ```{r}
 syphmaterna <- data_maternal_dep %>%
@@ -134,8 +127,7 @@ syphmaterna
 #ggsave("Graph_dumbell_maternal.png", plot = syphmaterna, width = 8, height = 4, dpi = 300)
 ```
 
-
-Tabla de las 10 provincias con más casos de sífilis materna por 1000 nacidos vivos.
+Table of the 10 sub-departments with the most cases of maternal syphilis per 1000 live births.
 
 ```{r, echo=FALSE}
 
@@ -155,28 +147,30 @@ data_maternal_table
 
 ```
 
+Map of maternal syphilis per year/department
 
-
-Mapa de sífilis materna por departamento.
 
 ```{r}
-ggplot() +
+figureS2 <- ggplot() +
   geom_sf(data = data_maternal_dep, aes(geometry = geometry,fill = rate),
-          color = "black", size = 0.2) +
-  scale_fill_gradient(low = "#D2EEEA", high = "#2A5676") +
-   labs(title="Cases of syphilis in pregnants, INS data",
-        fill = "Syphilis in pregnants per 1000 newborn")
-
-```
-
-```{r}
-ggplot() +
-  geom_sf(data = data_maternal_dep, aes(geometry = geometry,fill = rate),
-          color = "black", size = 0.2) +
+          color = "black", size = 0.4) +
   scale_fill_gradient(low = "#D2EEEA", high = "#2A5676") +
   facet_wrap(.~year) + 
-   labs(title="Cases of syphilis in pregnants, INS data",
-        fill = "Syphilis in pregnants per 1000 newborn") 
+  labs(fill = "Rate") +
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(),       
+    axis.ticks = element_blank(),     
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    strip.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10)
+  )
+
+print(figureS2)
+
+ggsave("Figures/S2 Figure_Maternal_2015-2022.png", plot = figureS2, width = 7, height = 8, dpi = 300)
 ```
 
 
