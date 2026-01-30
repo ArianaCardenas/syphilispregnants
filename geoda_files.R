@@ -45,3 +45,17 @@ collapse_syph_ANC = collapse_syph_ANC %>%
 
 
 st_write(collapse_syph_ANC, "geoda/precare_cong.gpkg")
+
+
+############Maternal Syphilis
+
+collapse_syph_edu_mat = syphilis_education %>%
+  select(-c("geometry")) %>%
+  group_by(NOMBDEP) %>%
+  summarise(across(everything(), mean), .groups = 'drop')
+
+collapse_syph_edu_mat = collapse_syph_edu_mat %>%
+  left_join(departamentos2, by = "NOMBDEP")
+
+st_write(collapse_syph_edu_mat, "geoda/education_mat.gpkg")
+
