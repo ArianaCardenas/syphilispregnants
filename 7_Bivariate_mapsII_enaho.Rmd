@@ -656,12 +656,23 @@ maptotals_maternal <- (map_poverty | legend_poverty | map_education | legend_edu
 
 maptotals_maternal
 ```
+```{r, echo = FALSE,fig.height = 10, fig.width = 10}
+
+maptotals_maternal_years <- (mappoverty / mapeducation / mapprecare ) + 
+  plot_annotation(
+  title = 'Maternal Syphilis')
+
+maptotals_maternal_years
+```
 
 ```{r}
 #ggsave("Figures/Bivariate_maternal.png", plot = maptotals_maternal, width = 10, height = 4, dpi = 300)
+
+#ggsave("Figures/Bivariate_maternal_years.png", plot = maptotals_maternal_years, width = 10, height = 10, dpi = 300)
 ```
 
 ```{r, echo = FALSE,fig.height = 8, fig.width = 10}
+#Run Rmd 6_Bivariate_maps:
 
 maptotals_final <- (maptotals / maptotals_maternal)
 

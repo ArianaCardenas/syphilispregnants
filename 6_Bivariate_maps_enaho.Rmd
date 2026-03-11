@@ -651,7 +651,19 @@ maptotals <- (map_poverty | legend_poverty | map_education | legend_education | 
 maptotals
 ```
 
+```{r, echo = FALSE,fig.height = 10, fig.width = 10}
+
+maptotals_years <- (mappoverty / mapeducation / mapprecare) + 
+  plot_annotation(
+  title = 'Congenital Syphilis')
+
+
+maptotals_years
+```
+
 ```{r}
 # ggsave("Figures/Bivariate_congenital.png", plot = maptotals, width = 10, height = 4, dpi = 300)
+
+#ggsave("Figures/Bivariate_congenital_years.png", plot = maptotals_years, width = 10, height = 10, dpi = 300)
 ```
 
